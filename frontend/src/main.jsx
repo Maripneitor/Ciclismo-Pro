@@ -15,6 +15,7 @@ import UserTeamsPage from './pages/UserTeamsPage'
 import CreateTeamPage from './pages/CreateTeamPage'
 import TeamDetailPage from './pages/TeamDetailPage'
 import JoinTeamPage from './pages/JoinTeamPage' // Importar la nueva página
+import JoinWithCodePage from './pages/JoinWithCodePage' // Importar la página para unirse con código
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
@@ -72,7 +73,11 @@ const router = createBrowserRouter([
           },
           {
             path: "/join-team/:inviteToken",
-            element: <JoinTeamPage /> // Nueva ruta protegida
+            element: <JoinTeamPage /> // Ruta para unirse con enlace directo
+          },
+          {
+            path: "/dashboard/teams/join",
+            element: <JoinWithCodePage /> // Ruta para unirse con código manual
           }
         ]
       }

@@ -36,6 +36,18 @@ function UserTeamsPage() {
           <Link to="/dashboard" style={{ color: 'var(--primary-500)' }}>
             ← Volver al Dashboard
           </Link>
+          <Link to="/dashboard/teams/join">
+            <button style={{
+              padding: '0.5rem 1rem',
+              backgroundColor: 'var(--secondary-500)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}>
+              Unirse a Equipo
+            </button>
+          </Link>
           <Link to="/dashboard/teams/create">
             <button style={{
               padding: '0.5rem 1rem',
@@ -61,19 +73,32 @@ function UserTeamsPage() {
         }}>
           <h3>No perteneces a ningún equipo aún</h3>
           <p>¡Crea tu primer equipo o únete a uno existente!</p>
-          <Link to="/dashboard/teams/create">
-            <button style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: 'var(--primary-500)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              marginTop: '1rem'
-            }}>
-              Crear Mi Primer Equipo
-            </button>
-          </Link>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginTop: '1rem' }}>
+            <Link to="/dashboard/teams/join">
+              <button style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: 'var(--secondary-500)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}>
+                Unirse a un Equipo
+              </button>
+            </Link>
+            <Link to="/dashboard/teams/create">
+              <button style={{
+                padding: '0.75rem 1.5rem',
+                backgroundColor: 'var(--primary-500)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer'
+              }}>
+                Crear Mi Primer Equipo
+              </button>
+            </Link>
+          </div>
         </div>
       ) : (
         <div style={{ display: 'grid', gap: '1rem' }}>

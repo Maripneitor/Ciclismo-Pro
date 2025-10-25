@@ -25,12 +25,26 @@ function LoginPage() {
     setLoading(true);
     setError('');
 
+    // Validación básica
+    if (!formData.correo_electronico || !formData.contrasena) {
+      setError('Por favor completa todos los campos');
+      setLoading(false);
+      return;
+    }
+
+    console.log('Attempting login with:', {
+      email: formData.correo_electronico,
+      password: formData.contrasena
+    });
+
     const result = await loginUser(formData.correo_electronico, formData.contrasena);
+    
+    console.log('Login result:', result);
     
     if (result.success) {
       navigate('/dashboard');
     } else {
-      setError(result.message);
+      setError(result.message || 'Error desconocido en el login');
     }
     setLoading(false);
   };
@@ -68,14 +82,25 @@ function LoginPage() {
               style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
             />
           </div>
-          {error && <p style={{ color: 'red', marginBottom: '1rem' }}>{error}</p>}
+          {error && (
+            <div style={{ 
+              color: 'red', 
+              marginBottom: '1rem', 
+              padding: '0.5rem',
+              backgroundColor: '#ffe6e6',
+              border: '1px solid red',
+              borderRadius: '4px'
+            }}>
+              {error}
+            </div>
+          )}
           <button 
             type="submit" 
             disabled={loading}
             style={{ 
               width: '100%', 
               padding: '0.75rem', 
-              backgroundColor: '#0073e6', 
+              backgroundColor: loading ? '#ccc' : '#0073e6', 
               color: 'white', 
               border: 'none', 
               borderRadius: '4px',

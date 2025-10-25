@@ -14,6 +14,7 @@ import UserInscriptionsPage from './pages/UserInscriptionsPage'
 import UserTeamsPage from './pages/UserTeamsPage'
 import CreateTeamPage from './pages/CreateTeamPage'
 import TeamDetailPage from './pages/TeamDetailPage'
+import JoinTeamPage from './pages/JoinTeamPage' // Importar la nueva página
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
@@ -68,6 +69,10 @@ const router = createBrowserRouter([
           {
             path: "/dashboard/teams/:id",
             element: <TeamDetailPage />
+          },
+          {
+            path: "/join-team/:inviteToken",
+            element: <JoinTeamPage />
           }
         ]
       }

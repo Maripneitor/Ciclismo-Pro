@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import apiClient from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 function TeamDetailPage() {
   const { id } = useParams();
   const [team, setTeam] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [generatingLink, setGeneratingLink] = useState(false);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -24,9 +27,38 @@ function TeamDetailPage() {
     fetchTeam();
   }, [id]);
 
+  const handleGenerateInviteLink = async () => {
+    setGeneratingLink(true);
+    try {
+      const response = await apiClient.post(`/teams/${id}/generate-invite`);
+      
+      // Actualizar el equipo con el nuevo enlace
+      setTeam(prevTeam => ({
+        ...prevTeam,
+        enlace_invitacion: response.data.data.enlace_invitacion
+      }));
+    } catch (error) {
+      console.error('Error generating invite link:', error);
+      setError(error.response?.data?.message || 'Error al generar el enlace');
+    } finally {
+      setGeneratingLink(false);
+    }
+  };
+
+  const copyToClipboard = () => {
+    const inviteUrl = `${window.location.origin}/join-team/${team.enlace_invitacion}`;
+    navigator.clipboard.writeText(inviteUrl).then(() => {
+      alert('Enlace copiado al portapapeles');
+    }).catch(err => {
+      console.error('Error copying to clipboard:', err);
+    });
+  };
+
   if (loading) return <div className="container"><p>Cargando equipo...</p></div>;
   if (error) return <div className="container"><p>{error}</p></div>;
   if (!team) return <div className="container"><p>Equipo no encontrado</p></div>;
+
+  const isCaptain = user && team.id_capitan === user.id_usuario;
 
   return (
     <div className="container">
@@ -67,6 +99,82 @@ function TeamDetailPage() {
             </div>
           </div>
         </div>
+
+        {/* Sección de Invitaciones */}
+        {isCaptain && (
+          <div style={{ 
+            padding: '1.5rem', 
+            backgroundColor: 'var(--neutral-50)', 
+            borderRadius: '8px',
+            marginBottom: '2rem',
+            border: '1px solid var(--neutral-200)'
+          }}>
+            <h3 style={{ color: 'var(--primary-600)', marginBottom: '1rem' }}>Invitaciones</h3>
+            
+            {team.enlace_invitacion ? (
+              <div>
+                <p style={{ marginBottom: '1rem' }}>
+                  <strong>Enlace de invitación:</strong>
+                </p>
+                <div style={{ 
+                  display: 'flex', 
+                  gap: '0.5rem', 
+                  alignItems: 'center',
+                  marginBottom: '1rem'
+                }}>
+                  <code style={{ 
+                    flex: 1, 
+                    padding: '0.5rem', 
+                    backgroundColor: 'white', 
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    fontSize: '0.9rem',
+                    wordBreak: 'break-all'
+                  }}>
+                    {`${window.location.origin}/join-team/${team.enlace_invitacion}`}
+                  </code>
+                  <button 
+                    onClick={copyToClipboard}
+                    style={{
+                      padding: '0.5rem 1rem',
+                      backgroundColor: 'var(--primary-500)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    Copiar
+                  </button>
+                </div>
+                <p style={{ fontSize: '0.9rem', color: 'var(--neutral-600)' }}>
+                  Comparte este enlace con otros ciclistas para que se unan a tu equipo.
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p style={{ marginBottom: '1rem' }}>
+                  No hay enlace de invitación activo.
+                </p>
+                <button 
+                  onClick={handleGenerateInviteLink}
+                  disabled={generatingLink}
+                  style={{
+                    padding: '0.75rem 1.5rem',
+                    backgroundColor: generatingLink ? 'var(--neutral-400)' : 'var(--primary-500)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '4px',
+                    cursor: generatingLink ? 'not-allowed' : 'pointer'
+                  }}
+                >
+                  {generatingLink ? 'Generando...' : 'Generar Enlace de Invitación'}
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         <div>
           <h2 style={{ color: 'var(--primary-600)', marginBottom: '1rem' }}>Miembros del Equipo</h2>

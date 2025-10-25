@@ -9,6 +9,9 @@ import EventDetailPage from './pages/EventDetailPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
+import UserProfilePage from './pages/UserProfilePage'
+import UserInscriptionsPage from './pages/UserInscriptionsPage'
+import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
 const router = createBrowserRouter([
@@ -37,8 +40,21 @@ const router = createBrowserRouter([
         element: <RegisterPage />
       },
       {
-        path: "/dashboard",
-        element: <DashboardPage />
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/dashboard",
+            element: <DashboardPage />
+          },
+          {
+            path: "/dashboard/profile",
+            element: <UserProfilePage />
+          },
+          {
+            path: "/dashboard/inscripciones",
+            element: <UserInscriptionsPage />
+          }
+        ]
       }
     ]
   }

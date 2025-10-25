@@ -48,7 +48,34 @@ const getEventById = async (req, res) => {
   }
 };
 
+const getEventCategories = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const result = await db.query(
+      `SELECT c.id_categoria, c.nombre, c.descripcion 
+       FROM categorias_evento ce 
+       JOIN categorias c ON ce.id_categoria = c.id_categoria 
+       WHERE ce.id_evento = $1`,
+      [id]
+    );
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    console.error('Error obteniendo categorías del evento:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   getAllEvents,
-  getEventById
+  getEventById,
+  getEventCategories
 };

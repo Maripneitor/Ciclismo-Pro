@@ -1,12 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect, useContext } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from '../context/AuthContext';
 
 function EventDetailPage() {
   const { id } = useParams();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { isAuthenticated } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -31,7 +33,43 @@ function EventDetailPage() {
   return (
     <div className="container">
       <h1>{event.nombre}</h1>
-      <div style={{ border: '1px solid #ccc', padding: '2rem', margin: '1rem 0' }}>
+      
+      {/* Botón de Inscripción */}
+      <div style={{ marginBottom: '2rem' }}>
+        {isAuthenticated ? (
+          <Link to={`/eventos/${id}/register`}>
+            <button style={{
+              padding: '1rem 2rem',
+              backgroundColor: 'var(--primary-500)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '1.1rem',
+              fontWeight: 'bold'
+            }}>
+              Inscribirme Ahora
+            </button>
+          </Link>
+        ) : (
+          <Link to="/login">
+            <button style={{
+              padding: '1rem 2rem',
+              backgroundColor: 'var(--secondary-500)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '1.1rem',
+              fontWeight: 'bold'
+            }}>
+              Iniciar Sesión para Inscribirme
+            </button>
+          </Link>
+        )}
+      </div>
+
+      <div style={{ border: '1px solid #ccc', padding: '2rem', margin: '1rem 0', borderRadius: '8px', backgroundColor: 'white' }}>
         <p><strong>Descripción:</strong> {event.descripcion}</p>
         <p><strong>Fecha de inicio:</strong> {new Date(event.fecha_inicio).toLocaleString()}</p>
         <p><strong>Fecha de fin:</strong> {event.fecha_fin ? new Date(event.fecha_fin).toLocaleString() : 'No especificada'}</p>

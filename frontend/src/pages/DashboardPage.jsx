@@ -60,6 +60,29 @@ function DashboardPage() {
           </div>
         </Link>
 
+        <Link to="/dashboard/teams" style={{ textDecoration: 'none' }}>
+          <div style={{
+            border: '1px solid #ccc',
+            padding: '2rem',
+            borderRadius: '8px',
+            backgroundColor: 'white',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            cursor: 'pointer'
+          }} onMouseOver={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+          }} onMouseOut={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+          }}>
+            <h3 style={{ color: 'var(--primary-600)', marginBottom: '1rem' }}>👥 Mis Equipos</h3>
+            <p style={{ color: 'var(--neutral-600)', margin: 0 }}>
+              Gestiona tus equipos y colabora con otros ciclistas.
+            </p>
+          </div>
+        </Link>
+
         <Link to="/eventos" style={{ textDecoration: 'none' }}>
           <div style={{
             border: '1px solid #ccc',

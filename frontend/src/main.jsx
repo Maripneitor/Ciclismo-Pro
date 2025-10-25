@@ -11,6 +11,9 @@ import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import UserProfilePage from './pages/UserProfilePage'
 import UserInscriptionsPage from './pages/UserInscriptionsPage'
+import UserTeamsPage from './pages/UserTeamsPage'
+import CreateTeamPage from './pages/CreateTeamPage'
+import TeamDetailPage from './pages/TeamDetailPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import { AuthProvider } from './context/AuthContext'
 
@@ -53,6 +56,18 @@ const router = createBrowserRouter([
           {
             path: "/dashboard/inscripciones",
             element: <UserInscriptionsPage />
+          },
+          {
+            path: "/dashboard/teams",
+            element: <UserTeamsPage />
+          },
+          {
+            path: "/dashboard/teams/create",
+            element: <CreateTeamPage />
+          },
+          {
+            path: "/dashboard/teams/:id",
+            element: <TeamDetailPage />
           }
         ]
       }

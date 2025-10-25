@@ -1,3 +1,12 @@
+# Entrar al directorio backend
+cd backend
+
+# Instalar dependencias
+npm install
+
+# Ejecutar servidor (depende de tu package.json)
+npm start
+
 # Entrar al directorio frontend
 cd frontend
 
@@ -7,14 +16,7 @@ npm install
 # Ejecutar en modo desarrollo
 npm run dev
 
-# Entrar al directorio backend
-cd backend
 
-# Instalar dependencias
-npm install
-
-# Ejecutar servidor (depende de tu package.json)
-npm start
 # o
 npm run dev
 # Construir para producción

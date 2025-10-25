@@ -72,7 +72,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/join-team/:inviteToken",
-            element: <JoinTeamPage />
+            element: <JoinTeamPage /> // Nueva ruta protegida
           }
         ]
       }

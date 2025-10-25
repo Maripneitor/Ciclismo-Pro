@@ -2,7 +2,39 @@ const db = require('../db');
 const crypto = require('crypto');
 
 const getMyTeams = async (req, res) => {
-  // ... código existente sin cambios
+  try {
+    const userId = req.user.id_usuario;
+
+    const result = await db.query(
+      `SELECT 
+        e.id_equipo,
+        e.nombre,
+        e.descripcion,
+        e.id_capitan,
+        e.fecha_creacion,
+        e.enlace_invitacion,
+        u.nombre_completo as nombre_capitan
+       FROM equipos e
+       INNER JOIN usuarios u ON e.id_capitan = u.id_usuario
+       WHERE e.id_equipo IN (
+         SELECT id_equipo FROM miembros_equipo WHERE id_usuario = $1
+       )
+       ORDER BY e.fecha_creacion DESC`,
+      [userId]
+    );
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    console.error('Error obteniendo equipos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor',
+      error: error.message
+    });
+  }
 };
 
 const getTeamById = async (req, res) => {
@@ -25,18 +57,18 @@ const getTeamById = async (req, res) => {
       });
     }
 
-    // Obtener detalles del equipo - CORREGIDO: usar id_captian (con 't')
+    // Obtener detalles del equipo - CORREGIDO: usar id_capitan (sin 't')
     const teamResult = await db.query(
       `SELECT 
         e.id_equipo,
         e.nombre,
         e.descripcion,
-        e.id_captian,  // CORREGIDO: id_captian con 't'
+        e.id_capitan,
         e.fecha_creacion,
         e.enlace_invitacion,
         u.nombre_completo as nombre_capitan
        FROM equipos e
-       INNER JOIN usuarios u ON e.id_captian = u.id_usuario  // CORREGIDO: id_captian con 't'
+       INNER JOIN usuarios u ON e.id_capitan = u.id_usuario
        WHERE e.id_equipo = $1`,
       [teamId]
     );
@@ -48,14 +80,14 @@ const getTeamById = async (req, res) => {
       });
     }
 
-    // Obtener miembros del equipo - CORREGIDO: usar id_captian (con 't')
+    // Obtener miembros del equipo - CORREGIDO: usar id_capitan (sin 't')
     const membersResult = await db.query(
       `SELECT 
         u.id_usuario,
         u.nombre_completo,
         u.correo_electronico,
         me.fecha_union,
-        (u.id_usuario = e.id_captian) as es_capitan  // CORREGIDO: id_captian con 't'
+        (u.id_usuario = e.id_capitan) as es_capitan
        FROM miembros_equipo me
        INNER JOIN usuarios u ON me.id_usuario = u.id_usuario
        INNER JOIN equipos e ON me.id_equipo = e.id_equipo
@@ -88,16 +120,16 @@ const createTeam = async (req, res) => {
     await client.query('BEGIN');
     
     const { nombre, descripcion } = req.body;
-    const id_captian = req.user.id_usuario;  // CORREGIDO: id_captian con 't'
+    const id_capitan = req.user.id_usuario;  // CORREGIDO: id_capitan sin 't'
 
-    console.log('Creating team:', { nombre, descripcion, id_captian });
+    console.log('Creating team:', { nombre, descripcion, id_capitan });
 
-    // Crear el equipo - CORREGIDO: usar id_captian (con 't')
+    // Crear el equipo - CORREGIDO: usar id_capitan (sin 't')
     const teamResult = await client.query(
-      `INSERT INTO equipos (nombre, descripcion, id_captian)  // CORREGIDO: id_captian con 't'
+      `INSERT INTO equipos (nombre, descripcion, id_capitan)
        VALUES ($1, $2, $3) 
-       RETURNING id_equipo, nombre, descripcion, id_captian, fecha_creacion`,  // CORREGIDO: id_captian con 't'
-      [nombre, descripcion, id_captian]
+       RETURNING id_equipo, nombre, descripcion, id_capitan, fecha_creacion`,
+      [nombre, descripcion, id_capitan]
     );
 
     const newTeam = teamResult.rows[0];
@@ -106,7 +138,7 @@ const createTeam = async (req, res) => {
     await client.query(
       `INSERT INTO miembros_equipo (id_equipo, id_usuario) 
        VALUES ($1, $2)`,
-      [newTeam.id_equipo, id_captian]
+      [newTeam.id_equipo, id_capitan]
     );
 
     await client.query('COMMIT');
@@ -138,9 +170,9 @@ const generateInviteLink = async (req, res) => {
     console.log('Team ID from params:', teamId);
     console.log('User ID from token:', userId);
 
-    // Verificar que el usuario es el capitán del equipo - CORREGIDO: usar id_captian (con 't')
+    // Verificar que el usuario es el capitán del equipo - CORREGIDO: usar id_capitan (sin 't')
     const teamResult = await db.query(
-      'SELECT id_captian FROM equipos WHERE id_equipo = $1',  // CORREGIDO: id_captian con 't'
+      'SELECT id_capitan FROM equipos WHERE id_equipo = $1',
       [teamId]
     );
 
@@ -152,7 +184,7 @@ const generateInviteLink = async (req, res) => {
       });
     }
 
-    const captainId = teamResult.rows[0].id_captian;  // CORREGIDO: id_captian con 't'
+    const captainId = teamResult.rows[0].id_capitan;
     console.log('Team captain ID:', captainId);
     console.log('Is user captain?', captainId === userId);
 

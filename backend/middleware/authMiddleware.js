@@ -26,4 +26,31 @@ const protect = (req, res, next) => {
   }
 };
 
-module.exports = { protect };
+const isOrganizer = (req, res, next) => {
+  try {
+    // Verificar que el usuario esté autenticado (debería venir de protect)
+    if (!req.user) {
+      return res.status(401).json({
+        success: false,
+        message: 'No autorizado - Usuario no autenticado'
+      });
+    }
+
+    // Verificar que tenga rol de organizador o administrador
+    if (req.user.rol !== 'organizador' && req.user.rol !== 'administrador') {
+      return res.status(403).json({
+        success: false,
+        message: 'Acceso denegado. Se requiere rol de organizador o administrador.'
+      });
+    }
+
+    next();
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al verificar rol'
+    });
+  }
+};
+
+module.exports = { protect, isOrganizer };

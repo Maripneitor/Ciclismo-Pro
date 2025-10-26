@@ -1,18 +1,19 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode'; // NUEVA IMPORTACIÓN
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(null); // NUEVO ESTADO para user
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if (token) {
       try {
         localStorage.setItem('token', token);
-        const userData = JSON.parse(atob(token.split('.')[1]));
+        const userData = jwtDecode(token); // NUEVO: usar jwtDecode
         setUser(userData);
         setIsAuthenticated(true);
         console.log('User authenticated:', userData);
@@ -36,6 +37,8 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.success) {
         setToken(response.data.token);
+        const userData = jwtDecode(response.data.token); // NUEVO: decodificar token
+        setUser(userData);
         return { success: true };
       } else {
         return { 
@@ -64,6 +67,8 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.success) {
         setToken(response.data.token);
+        const userData = jwtDecode(response.data.token); // NUEVO: decodificar token
+        setUser(userData);
         return { success: true };
       } else {
         return { 
@@ -78,7 +83,6 @@ export const AuthProvider = ({ children }) => {
       let errorMessage = 'Error en el login';
       
       if (error.response) {
-        // El servidor respondió con un código de error
         if (error.response.status === 401) {
           errorMessage = 'Credenciales incorrectas. Verifica tu email y contraseña.';
         } else if (error.response.status === 500) {
@@ -87,7 +91,6 @@ export const AuthProvider = ({ children }) => {
           errorMessage = error.response.data?.message || `Error ${error.response.status}`;
         }
       } else if (error.request) {
-        // La petición fue hecha pero no se recibió respuesta
         errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
       }
       
@@ -101,7 +104,7 @@ export const AuthProvider = ({ children }) => {
   const logoutUser = () => {
     console.log('Logging out user');
     setToken(null);
-    setUser(null);
+    setUser(null); // NUEVO: limpiar user
     setIsAuthenticated(false);
     localStorage.removeItem('token');
   };
@@ -109,7 +112,7 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       token,
-      user,
+      user, // NUEVO: exportar user
       isAuthenticated,
       registerUser,
       loginUser,

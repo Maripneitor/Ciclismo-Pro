@@ -13,14 +13,16 @@ const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const inscriptionRoutes = require('./routes/inscriptionRoutes');
 const teamRoutes = require('./routes/teamRoutes');
-const dataRoutes = require('./routes/dataRoutes'); // NUEVA RUTA
+const dataRoutes = require('./routes/dataRoutes');
+const organizerRoutes = require('./routes/organizerRoutes'); // NUEVA IMPORTACIÓN
 
 app.use('/api/eventos', eventRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/inscripciones', inscriptionRoutes);
 app.use('/api/teams', teamRoutes);
-app.use('/api/data', dataRoutes); // NUEVA RUTA
+app.use('/api/data', dataRoutes);
+app.use('/api/organizer', organizerRoutes); // NUEVA RUTA
 
 app.listen(PORT, () => {
   console.log(`Servidor backend ejecutándose en puerto ${PORT}`);

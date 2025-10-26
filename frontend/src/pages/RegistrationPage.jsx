@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 
 function RegistrationPage() {
   const { id } = useParams();
+  const navigate = useNavigate();
   
   // Estados para almacenar los datos
   const [event, setEvent] = useState(null);
@@ -20,6 +21,7 @@ function RegistrationPage() {
   });
   
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -65,12 +67,58 @@ function RegistrationPage() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Por ahora solo mostramos los datos en consola
-    console.log('Datos del formulario:', formData);
-    console.log('Evento:', event);
-    alert('Funcionalidad de pago en desarrollo. Datos del formulario en consola.');
+    setSubmitting(true);
+    setError('');
+
+    // Validaciones básicas
+    if (!formData.id_categoria || !formData.id_talla_playera) {
+      setError('La categoría y la talla de playera son obligatorias');
+      setSubmitting(false);
+      return;
+    }
+
+    try {
+      // Preparar datos para enviar
+      const inscriptionData = {
+        id_evento: parseInt(id),
+        id_categoria: parseInt(formData.id_categoria),
+        id_talla_playera: parseInt(formData.id_talla_playera),
+        alias_dorsal: formData.alias_dorsal || null,
+        id_equipo: formData.id_equipo ? parseInt(formData.id_equipo) : null
+      };
+
+      console.log('Enviando datos de inscripción:', inscriptionData);
+
+      // Hacer la petición POST
+      const response = await apiClient.post('/inscripciones', inscriptionData);
+      
+      // Éxito
+      alert('¡Inscripción exitosa!');
+      navigate('/dashboard/inscripciones');
+
+    } catch (error) {
+      console.error('Error creating inscription:', error);
+      
+      let errorMessage = 'Error al crear la inscripción';
+      
+      if (error.response) {
+        if (error.response.status === 400) {
+          errorMessage = error.response.data.message || 'Ya estás inscrito en este evento';
+        } else if (error.response.status === 500) {
+          errorMessage = 'Error del servidor. Intenta nuevamente.';
+        } else {
+          errorMessage = error.response.data?.message || `Error ${error.response.status}`;
+        }
+      } else if (error.request) {
+        errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+      }
+      
+      alert(`Error: ${errorMessage}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) {
@@ -295,7 +343,7 @@ function RegistrationPage() {
               <strong>Cuota de inscripción:</strong> ${event.cuota_inscripcion || '0'}
             </p>
             <p style={{ margin: '0.5rem 0', fontSize: '0.9rem', color: 'var(--neutral-600)' }}>
-              Al continuar, serás redirigido al proceso de pago para completar tu inscripción.
+              Al hacer clic en "Confirmar Inscripción", serás inscrito en el evento.
             </p>
           </div>
 
@@ -317,18 +365,19 @@ function RegistrationPage() {
             </Link>
             <button 
               type="submit"
+              disabled={submitting}
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: 'var(--primary-500)',
+                backgroundColor: submitting ? 'var(--neutral-400)' : 'var(--primary-500)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: 'pointer',
+                cursor: submitting ? 'not-allowed' : 'pointer',
                 fontSize: '1rem',
                 fontWeight: 'bold'
               }}
             >
-              Continuar al Pago
+              {submitting ? 'Procesando...' : 'Confirmar Inscripción'}
             </button>
           </div>
         </form>

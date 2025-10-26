@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 function Header() {
-  const { isAuthenticated, logoutUser } = useContext(AuthContext);
+  const { isAuthenticated, logoutUser, user } = useContext(AuthContext); // AÑADIR user
 
   return (
     <header style={{
@@ -33,6 +33,16 @@ function Header() {
           <Link to="/eventos" style={{ color: 'white', textDecoration: 'none' }}>
             Explorar Eventos
           </Link>
+          {/* NUEVO: Enlace para organizadores */}
+          {user && (user.rol === 'organizador' || user.rol === 'administrador') && (
+            <Link to="/organizer/dashboard" style={{ 
+              color: 'var(--secondary-300)', 
+              textDecoration: 'none',
+              fontWeight: 'bold'
+            }}>
+              Panel de Organizador
+            </Link>
+          )}
         </nav>
 
         <div style={{ display: 'flex', gap: 'var(--spacing-md)' }}>
@@ -64,19 +74,34 @@ function Header() {
               </Link>
             </>
           ) : (
-            <button 
-              onClick={logoutUser}
-              style={{
-                padding: 'var(--spacing-sm) var(--spacing-md)',
-                backgroundColor: 'transparent',
-                color: 'white',
-                border: '1px solid white',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Cerrar Sesión
-            </button>
+            <>
+              <Link to="/dashboard">
+                <button style={{
+                  padding: 'var(--spacing-sm) var(--spacing-md)',
+                  backgroundColor: 'transparent',
+                  color: 'white',
+                  border: '1px solid white',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  marginRight: 'var(--spacing-sm)'
+                }}>
+                  Mi Dashboard
+                </button>
+              </Link>
+              <button 
+                onClick={logoutUser}
+                style={{
+                  padding: 'var(--spacing-sm) var(--spacing-md)',
+                  backgroundColor: 'transparent',
+                  color: 'white',
+                  border: '1px solid white',
+                  borderRadius: '4px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cerrar Sesión
+              </button>
+            </>
           )}
         </div>
       </div>

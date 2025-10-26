@@ -61,4 +61,91 @@ const getMyInscriptions = async (req, res) => {
   }
 };
 
-module.exports = { getMyInscriptions };
+const createInscription = async (req, res) => {
+  const client = await db.pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const userId = req.user.id_usuario;
+    const { 
+      id_evento, 
+      id_categoria, 
+      id_talla_playera, 
+      alias_dorsal, 
+      id_equipo 
+    } = req.body;
+
+    console.log('=== CREATE INSCRIPTION DEBUG ===');
+    console.log('User ID:', userId);
+    console.log('Request body:', req.body);
+
+    // 1. Verificar si ya está inscrito en este evento
+    const existingInscription = await client.query(
+      'SELECT * FROM inscripciones WHERE id_usuario = $1 AND id_evento = $2',
+      [userId, id_evento]
+    );
+
+    if (existingInscription.rows.length > 0) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Ya estás inscrito en este evento'
+      });
+    }
+
+    // 2. Generar número de dorsal único para este evento
+    const maxDorsalResult = await client.query(
+      'SELECT MAX(numero_dorsal) as max_dorsal FROM inscripciones WHERE id_evento = $1',
+      [id_evento]
+    );
+
+    const maxDorsal = maxDorsalResult.rows[0].max_dorsal;
+    const nuevoDorsal = (maxDorsal || 0) + 1;
+
+    console.log('Max dorsal:', maxDorsal, 'New dorsal:', nuevoDorsal);
+
+    // 3. Insertar la nueva inscripción
+    const newInscription = await client.query(
+      `INSERT INTO inscripciones 
+       (id_usuario, id_evento, id_categoria, id_talla_playera, id_equipo, numero_dorsal, alias_dorsal, estado) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, 'pendiente') 
+       RETURNING *`,
+      [
+        userId, 
+        id_evento, 
+        id_categoria, 
+        id_talla_playera, 
+        id_equipo || null, 
+        nuevoDorsal, 
+        alias_dorsal || null
+      ]
+    );
+
+    await client.query('COMMIT');
+
+    console.log('Inscription created successfully:', newInscription.rows[0]);
+
+    res.status(201).json({
+      success: true,
+      message: 'Inscripción creada exitosamente',
+      data: newInscription.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error creando inscripción:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al crear la inscripción',
+      error: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
+module.exports = { 
+  getMyInscriptions,
+  createInscription 
+};

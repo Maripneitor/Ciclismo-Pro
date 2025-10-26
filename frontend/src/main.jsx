@@ -16,8 +16,12 @@ import CreateTeamPage from './pages/CreateTeamPage'
 import TeamDetailPage from './pages/TeamDetailPage'
 import JoinTeamPage from './pages/JoinTeamPage'
 import JoinWithCodePage from './pages/JoinWithCodePage'
-import RegistrationPage from './pages/RegistrationPage' // NUEVA PÁGINA
+import RegistrationPage from './pages/RegistrationPage'
 import ProtectedRoute from './components/ProtectedRoute'
+import OrganizerRoute from './components/OrganizerRoute'
+import OrganizerLayout from './pages/organizer/OrganizerLayout'
+import OrganizerDashboardPage from './pages/organizer/OrganizerDashboardPage'
+import OrganizerEventsPage from './pages/organizer/OrganizerEventsPage' // NUEVA IMPORTACIÓN
 import { AuthProvider } from './context/AuthContext'
 
 const router = createBrowserRouter([
@@ -81,8 +85,28 @@ const router = createBrowserRouter([
             element: <JoinWithCodePage />
           },
           {
-            path: "/eventos/:id/register", // NUEVA RUTA
+            path: "/eventos/:id/register",
             element: <RegistrationPage />
+          }
+        ]
+      },
+      // NUEVO BLOQUE: Rutas de Organizador
+      {
+        element: <OrganizerRoute />,
+        children: [
+          {
+            path: "/organizer",
+            element: <OrganizerLayout />,
+            children: [
+              { 
+                path: "dashboard", 
+                element: <OrganizerDashboardPage /> 
+              },
+              { // NUEVA RUTA
+                path: "events", 
+                element: <OrganizerEventsPage /> 
+              }
+            ]
           }
         ]
       }

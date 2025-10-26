@@ -496,17 +496,6 @@ const updateProduct = async (req, res) => {
   }
 };
 
-module.exports = {
-  getAllUsers,
-  getAllEvents,
-  updateUserRole,
-  updateEventStatus,
-  getAllProducts,
-  getProductById,
-  createProduct,
-  updateProduct
-};
-
 // ========== GESTIÓN DE PEDIDOS ==========
 
 const getAllOrders = async (req, res) => {
@@ -664,7 +653,6 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-// Exportar todas las funciones (actualizar el export al final del archivo)
 module.exports = {
   getAllUsers,
   getAllEvents,
@@ -674,6 +662,6 @@ module.exports = {
   getProductById,
   createProduct,
   updateProduct,
-  getAllOrders,        // NUEVA FUNCIÓN
-  updateOrderStatus    // NUEVA FUNCIÓN
+  getAllOrders,
+  updateOrderStatus
 };

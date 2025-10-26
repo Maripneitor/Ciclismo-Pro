@@ -8,7 +8,9 @@ const {
   getAllProducts,
   getProductById,
   createProduct,
-  updateProduct
+  updateProduct,
+  getAllOrders,
+  updateOrderStatus
 } = require('../controllers/adminController');
 const { protect, isAdmin } = require('../middleware/authMiddleware');
 

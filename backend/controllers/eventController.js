@@ -82,7 +82,31 @@ const getAllEvents = async (req, res) => {
   }
 };
 
-// Las otras funciones (getEventById, getEventCategories) permanecen igual
+const getFeaturedEvents = async (req, res) => {
+  try {
+    const result = await db.query(
+      `SELECT * FROM eventos 
+       WHERE estado = 'proximo' AND es_destacado = true 
+       ORDER BY fecha_inicio ASC 
+       LIMIT 3`
+    );
+
+    console.log('Featured events found:', result.rows.length);
+
+    res.json({
+      success: true,
+      data: result.rows
+    });
+  } catch (error) {
+    console.error('Error obteniendo eventos destacados:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al obtener eventos destacados',
+      error: error.message
+    });
+  }
+};
+
 const getEventById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -140,6 +164,7 @@ const getEventCategories = async (req, res) => {
 
 module.exports = {
   getAllEvents,
+  getFeaturedEvents,
   getEventById,
   getEventCategories
 };

@@ -62,6 +62,7 @@ const getAllEvents = async (req, res) => {
         e.tipo,
         e.maximo_participantes,
         e.fecha_creacion,
+        e.es_destacado,
         u.nombre_completo as organizador,
         u.id_usuario as id_organizador
        FROM eventos e 
@@ -259,6 +260,84 @@ const updateEventStatus = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor al actualizar el estado del evento',
+      error: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
+// ========== GESTIÓN DE EVENTOS DESTACADOS ==========
+
+const toggleFeaturedEvent = async (req, res) => {
+  const client = await db.pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const eventId = req.params.id;
+    const { es_destacado } = req.body;
+    const adminId = req.user.id_usuario;
+
+    console.log('=== TOGGLE FEATURED EVENT ===');
+    console.log('Event ID:', eventId);
+    console.log('Featured Status:', es_destacado);
+    console.log('Admin ID:', adminId);
+    console.log('Admin Role:', req.user.rol);
+
+    // Validaciones básicas
+    if (es_destacado === undefined || es_destacado === null) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'El estado destacado es requerido'
+      });
+    }
+
+    // Verificar que el evento existe
+    const eventCheck = await client.query(
+      `SELECT e.id_evento, e.nombre, e.es_destacado, u.nombre_completo as organizador 
+       FROM eventos e 
+       JOIN usuarios u ON e.id_organizador = u.id_usuario 
+       WHERE e.id_evento = $1`,
+      [eventId]
+    );
+
+    if (eventCheck.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        success: false,
+        message: 'Evento no encontrado'
+      });
+    }
+
+    const event = eventCheck.rows[0];
+
+    // Actualizar el estado destacado del evento
+    const updatedEvent = await client.query(
+      `UPDATE eventos 
+       SET es_destacado = $1 
+       WHERE id_evento = $2 
+       RETURNING *`,
+      [es_destacado, eventId]
+    );
+
+    await client.query('COMMIT');
+
+    console.log('Event featured status updated successfully:', updatedEvent.rows[0]);
+
+    res.json({
+      success: true,
+      message: `Evento "${event.nombre}" ${es_destacado ? 'marcado como destacado' : 'quitado de destacados'}`,
+      data: updatedEvent.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error actualizando estado destacado del evento:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al actualizar el estado destacado del evento',
       error: error.message
     });
   } finally {
@@ -658,6 +737,7 @@ module.exports = {
   getAllEvents,
   updateUserRole,
   updateEventStatus,
+  toggleFeaturedEvent,
   getAllProducts,
   getProductById,
   createProduct,

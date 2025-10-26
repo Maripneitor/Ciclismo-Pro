@@ -5,6 +5,7 @@ const {
   getAllEvents, 
   updateUserRole, 
   updateEventStatus,
+  toggleFeaturedEvent,
   getAllProducts,
   getProductById,
   createProduct,
@@ -19,6 +20,7 @@ router.get('/users', protect, isAdmin, getAllUsers);
 router.get('/events', protect, isAdmin, getAllEvents);
 router.put('/users/:id/role', protect, isAdmin, updateUserRole);
 router.put('/events/:id/status', protect, isAdmin, updateEventStatus);
+router.put('/events/:id/feature', protect, isAdmin, toggleFeaturedEvent);
 
 // Rutas de gestión de productos
 router.get('/products', protect, isAdmin, getAllProducts);

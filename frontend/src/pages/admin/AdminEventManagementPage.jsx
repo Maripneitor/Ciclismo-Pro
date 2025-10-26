@@ -45,6 +45,27 @@ function AdminEventManagementPage() {
     }
   };
 
+  const handleFeatureToggle = async (eventId, currentFeaturedStatus) => {
+    try {
+      const response = await apiClient.put(`/admin/events/${eventId}/feature`, {
+        es_destacado: !currentFeaturedStatus
+      });
+      
+      if (response.data.success) {
+        setEvents(prevEvents =>
+          prevEvents.map(event =>
+            event.id_evento === eventId
+              ? { ...event, es_destacado: !currentFeaturedStatus }
+              : event
+          )
+        );
+      }
+    } catch (error) {
+      console.error('Error updating featured status:', error);
+      alert('Error al actualizar el estado destacado del evento');
+    }
+  };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES');
   };
@@ -119,6 +140,7 @@ function AdminEventManagementPage() {
                 <th>Fecha</th>
                 <th>Ubicación</th>
                 <th>Estado</th>
+                <th>Destacado</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -159,24 +181,34 @@ function AdminEventManagementPage() {
                     </span>
                   </td>
                   <td>
+                    <div className="checkbox-container">
+                      <input
+                        type="checkbox"
+                        checked={event.es_destacado || false}
+                        onChange={() => handleFeatureToggle(event.id_evento, event.es_destacado || false)}
+                        className="feature-checkbox"
+                      />
+                      <span className="checkbox-label">
+                        {event.es_destacado ? '⭐ Destacado' : 'Normal'}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
                     <div className="table-actions">
                       <select
                         value={event.estado}
                         onChange={(e) => handleStatusChange(event.id_evento, e.target.value)}
-                        className="filter-select"
-                        style={{ minWidth: '120px' }}
+                        className="status-select"
+                        style={{ 
+                          borderColor: getStatusColor(event.estado),
+                          color: getStatusColor(event.estado)
+                        }}
                       >
                         <option value="proximo">Próximo</option>
                         <option value="activo">Activo</option>
                         <option value="finalizado">Finalizado</option>
                         <option value="cancelado">Cancelado</option>
                       </select>
-                      <Link 
-                        to={`/eventos/${event.id_evento}`}
-                        className="action-btn action-btn-outline"
-                      >
-                        👁️ Ver
-                      </Link>
                     </div>
                   </td>
                 </tr>

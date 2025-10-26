@@ -11,6 +11,9 @@ import CartPage from './pages/CartPage'
 import OrderSuccessPage from './pages/OrderSuccessPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
+// NUEVAS IMPORTACIONES PARA RECUPERACIÓN DE CONTRASEÑA
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
 // Eliminar: import DashboardPage from './pages/DashboardPage'
 import UserProfilePage from './pages/UserProfilePage'
 import UserInscriptionsPage from './pages/UserInscriptionsPage'
@@ -79,6 +82,15 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <RegisterPage />
+      },
+      // ========== NUEVAS RUTAS PARA RECUPERACIÓN DE CONTRASEÑA ==========
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />
+      },
+      {
+        path: "/reset-password/:token",
+        element: <ResetPasswordPage />
       },
       {
         element: <ProtectedRoute />,

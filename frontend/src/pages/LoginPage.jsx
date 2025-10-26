@@ -159,18 +159,18 @@ function LoginPage() {
           </form>
 
           <div className="form-footer">
-            <p>
-              ¿No tienes cuenta?{' '}
-              <Link to="/register" className="form-link">
-                Regístrate aquí
-              </Link>
-            </p>
-            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-              <Link to="/forgot-password" className="form-link">
-                ¿Olvidaste tu contraseña?
-              </Link>
-            </p>
-          </div>
+  <p>
+    ¿No tienes cuenta?{' '}
+    <Link to="/register" className="form-link">
+      Regístrate aquí
+    </Link>
+  </p>
+  <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+    <Link to="/forgot-password" className="form-link">
+      ¿Olvidaste tu contraseña?
+    </Link>
+  </p>
+</div>
         </div>
       </div>
     </div>

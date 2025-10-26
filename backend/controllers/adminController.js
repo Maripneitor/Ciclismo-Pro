@@ -506,3 +506,174 @@ module.exports = {
   createProduct,
   updateProduct
 };
+
+// ========== GESTIÓN DE PEDIDOS ==========
+
+const getAllOrders = async (req, res) => {
+  try {
+    const adminId = req.user.id_usuario;
+
+    console.log('=== GET ALL ORDERS ===');
+    console.log('Admin ID:', adminId);
+    console.log('Admin Role:', req.user.rol);
+
+    const result = await db.query(
+      `SELECT 
+        p.id_pedido, 
+        p.total, 
+        p.estado, 
+        p.fecha_creacion,
+        p.fecha_actualizacion,
+        u.id_usuario,
+        u.nombre_completo as cliente,
+        u.correo_electronico
+       FROM pedidos_tienda p 
+       JOIN usuarios u ON p.id_usuario = u.id_usuario 
+       ORDER BY p.fecha_creacion DESC`
+    );
+
+    console.log('Total orders found:', result.rows.length);
+
+    // Obtener items para cada pedido
+    const ordersWithItems = await Promise.all(
+      result.rows.map(async (order) => {
+        const itemsResult = await db.query(
+          `SELECT 
+            ip.id_producto,
+            ip.cantidad,
+            ip.precio_unitario,
+            p.nombre as nombre_producto,
+            p.categoria
+           FROM items_pedido ip
+           JOIN productos_tienda p ON ip.id_producto = p.id_producto
+           WHERE ip.id_pedido = $1`,
+          [order.id_pedido]
+        );
+
+        return {
+          ...order,
+          items: itemsResult.rows,
+          items_count: itemsResult.rows.length
+        };
+      })
+    );
+
+    res.json({
+      success: true,
+      data: {
+        totalOrders: ordersWithItems.length,
+        orders: ordersWithItems
+      }
+    });
+  } catch (error) {
+    console.error('Error obteniendo todos los pedidos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al obtener pedidos',
+      error: error.message
+    });
+  }
+};
+
+const updateOrderStatus = async (req, res) => {
+  const client = await db.pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const orderId = req.params.id;
+    const { nuevoEstado } = req.body;
+    const adminId = req.user.id_usuario;
+
+    console.log('=== UPDATE ORDER STATUS ===');
+    console.log('Order ID:', orderId);
+    console.log('New Status:', nuevoEstado);
+    console.log('Admin ID:', adminId);
+    console.log('Admin Role:', req.user.rol);
+
+    // Validaciones básicas
+    if (!nuevoEstado) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'El nuevo estado es requerido'
+      });
+    }
+
+    // Validar que el estado sea uno de los permitidos
+    const allowedStatuses = ['pendiente', 'confirmado', 'procesando', 'enviado', 'entregado', 'cancelado'];
+    if (!allowedStatuses.includes(nuevoEstado)) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Estado no válido. Los estados permitidos son: pendiente, confirmado, procesando, enviado, entregado, cancelado'
+      });
+    }
+
+    // Verificar que el pedido existe
+    const orderCheck = await client.query(
+      `SELECT p.id_pedido, p.estado, u.nombre_completo as cliente 
+       FROM pedidos_tienda p 
+       JOIN usuarios u ON p.id_usuario = u.id_usuario 
+       WHERE p.id_pedido = $1`,
+      [orderId]
+    );
+
+    if (orderCheck.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        success: false,
+        message: 'Pedido no encontrado'
+      });
+    }
+
+    const order = orderCheck.rows[0];
+
+    // Actualizar el estado del pedido
+    const updatedOrder = await client.query(
+      `UPDATE pedidos_tienda 
+       SET estado = $1, fecha_actualizacion = CURRENT_TIMESTAMP
+       WHERE id_pedido = $2 
+       RETURNING *`,
+      [nuevoEstado, orderId]
+    );
+
+    await client.query('COMMIT');
+
+    console.log('Order status updated successfully:', updatedOrder.rows[0]);
+
+    res.json({
+      success: true,
+      message: `Estado del pedido #${orderId} actualizado a: ${nuevoEstado}`,
+      data: {
+        ...updatedOrder.rows[0],
+        cliente: order.cliente
+      }
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error actualizando estado del pedido:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al actualizar el estado del pedido',
+      error: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
+// Exportar todas las funciones (actualizar el export al final del archivo)
+module.exports = {
+  getAllUsers,
+  getAllEvents,
+  updateUserRole,
+  updateEventStatus,
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  getAllOrders,        // NUEVA FUNCIÓN
+  updateOrderStatus    // NUEVA FUNCIÓN
+};

@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { useCart } from '../context/CartContext';
 
 function Header() {
   const { isAuthenticated, logoutUser, user } = useContext(AuthContext);
+  const { cartItems } = useCart();
 
   return (
     <header style={{
@@ -33,9 +35,39 @@ function Header() {
           <Link to="/eventos" style={{ color: 'white', textDecoration: 'none' }}>
             Explorar Eventos
           </Link>
-          {/* NUEVO: Enlace a la Tienda */}
           <Link to="/store" style={{ color: 'white', textDecoration: 'none' }}>
             🛍️ Tienda
+          </Link>
+          
+          {/* Enlace al Carrito con contador */}
+          <Link to="/cart" style={{ 
+            color: 'white', 
+            textDecoration: 'none',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.25rem'
+          }}>
+            🛒 Carrito
+            {cartItems.length > 0 && (
+              <span style={{
+                position: 'absolute',
+                top: '-8px',
+                right: '-8px',
+                backgroundColor: 'var(--secondary-500)',
+                color: 'white',
+                borderRadius: '50%',
+                width: '20px',
+                height: '20px',
+                fontSize: '0.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontWeight: 'bold'
+              }}>
+                {cartItems.length}
+              </span>
+            )}
           </Link>
           
           {/* Enlace para organizadores */}

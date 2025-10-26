@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useCart } from '../context/CartContext';
 
 function StorePage() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todos');
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -25,7 +27,7 @@ function StorePage() {
   }, []);
 
   const handleAddToCart = (product) => {
-    // Por ahora solo muestra un mensaje, en el futuro se implementará el carrito
+    addToCart(product);
     alert(`¡${product.nombre} añadido al carrito! 🛒\n\nPrecio: $${product.precio}`);
   };
 

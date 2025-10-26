@@ -143,6 +143,38 @@ function AdminLayout() {
                 🛍️ Gestión de Tienda
               </Link>
             </li>
+            {/* NUEVO: Enlace a Gestión de Pedidos */}
+            <li style={{ marginBottom: '0.75rem' }}>
+              <Link 
+                to="/admin/orders"
+                style={{
+                  display: 'block',
+                  padding: '0.875rem 1rem',
+                  color: 'var(--neutral-200)',
+                  textDecoration: 'none',
+                  borderRadius: '6px',
+                  transition: 'all 0.2s ease',
+                  borderLeft: '3px solid transparent',
+                  ...isActiveLink('/admin/orders')
+                }}
+                onMouseOver={(e) => {
+                  if (!isActiveLink('/admin/orders').backgroundColor) {
+                    e.currentTarget.style.backgroundColor = 'var(--neutral-800)';
+                    e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.borderLeftColor = 'var(--primary-500)';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!isActiveLink('/admin/orders').backgroundColor) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = 'var(--neutral-200)';
+                    e.currentTarget.style.borderLeftColor = 'transparent';
+                  }
+                }}
+              >
+                📦 Gestión de Pedidos
+              </Link>
+            </li>
             {/* Espacio para futuras rutas de admin */}
             <li style={{ marginBottom: '0.75rem' }}>
               <div style={{

@@ -24,4 +24,8 @@ router.post('/products', protect, isAdmin, createProduct);
 router.get('/products/:id', protect, isAdmin, getProductById);
 router.put('/products/:id', protect, isAdmin, updateProduct);
 
+// Rutas de gestión de pedidos
+router.get('/orders', protect, isAdmin, getAllOrders);
+router.put('/orders/:id/status', protect, isAdmin, updateOrderStatus);
+
 module.exports = router;

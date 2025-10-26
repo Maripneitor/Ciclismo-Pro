@@ -6,13 +6,16 @@ import App from './App.jsx'
 import HomePage from './pages/HomePage'
 import EventsListPage from './pages/EventsListPage'
 import EventDetailPage from './pages/EventDetailPage'
-import StorePage from './pages/StorePage' // NUEVA IMPORTACIÓN
+import StorePage from './pages/StorePage'
+import CartPage from './pages/CartPage'
+import OrderSuccessPage from './pages/OrderSuccessPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
 import UserProfilePage from './pages/UserProfilePage'
 import UserInscriptionsPage from './pages/UserInscriptionsPage'
 import UserTeamsPage from './pages/UserTeamsPage'
+import UserOrdersPage from './pages/UserOrdersPage'
 import CreateTeamPage from './pages/CreateTeamPage'
 import TeamDetailPage from './pages/TeamDetailPage'
 import JoinTeamPage from './pages/JoinTeamPage'
@@ -29,9 +32,11 @@ import AdminLayout from './pages/admin/AdminLayout'
 import AdminUserManagementPage from './pages/admin/AdminUserManagementPage'
 import AdminEventManagementPage from './pages/admin/AdminEventManagementPage'
 import AdminProductManagementPage from './pages/admin/AdminProductManagementPage'
+import AdminOrderManagementPage from './pages/admin/AdminOrderManagementPage' // NUEVA IMPORTACIÓN
 import AdminCreateProductPage from './pages/admin/AdminCreateProductPage'
 import AdminEditProductPage from './pages/admin/AdminEditProductPage'
 import { AuthProvider } from './context/AuthContext'
+import { CartProvider } from './context/CartContext'
 
 const router = createBrowserRouter([
   {
@@ -51,8 +56,16 @@ const router = createBrowserRouter([
         element: <EventDetailPage />
       },
       {
-        path: "/store", // NUEVA RUTA PÚBLICA
+        path: "/store",
         element: <StorePage />
+      },
+      {
+        path: "/cart",
+        element: <CartPage />
+      },
+      {
+        path: "/order-success",
+        element: <OrderSuccessPage />
       },
       {
         path: "/login",
@@ -80,6 +93,10 @@ const router = createBrowserRouter([
           {
             path: "/dashboard/teams",
             element: <UserTeamsPage />
+          },
+          {
+            path: "/dashboard/orders",
+            element: <UserOrdersPage />
           },
           {
             path: "/dashboard/teams/create",
@@ -147,6 +164,10 @@ const router = createBrowserRouter([
                 path: "products", 
                 element: <AdminProductManagementPage /> 
               },
+              { 
+                path: "orders", // NUEVA RUTA
+                element: <AdminOrderManagementPage /> 
+              },
               {
                 path: "products/create", 
                 element: <AdminCreateProductPage /> 
@@ -166,7 +187,9 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <CartProvider>
+        <RouterProvider router={router} />
+      </CartProvider>
     </AuthProvider>
   </StrictMode>,
 )

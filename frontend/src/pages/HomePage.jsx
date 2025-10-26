@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import EventSearchForm from '../components/EventSearchForm';
 import './HomePage.css';
 
 function HomePage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -21,6 +23,22 @@ function HomePage() {
 
     fetchEvents();
   }, []);
+
+  const handleSearch = (searchData) => {
+    // Construir query string
+    const queryParams = new URLSearchParams();
+    
+    Object.entries(searchData).forEach(([key, value]) => {
+      if (value) {
+        queryParams.append(key, value);
+      }
+    });
+    
+    const queryString = queryParams.toString();
+    
+    // Redirigir a la página de eventos con los filtros
+    navigate(`/eventos${queryString ? `?${queryString}` : ''}`);
+  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
@@ -47,9 +65,15 @@ function HomePage() {
             Descubre los mejores eventos de ciclismo, conéctate con la comunidad 
             y lleva tu pasión al siguiente nivel. Todo en un solo lugar.
           </p>
+          
+          {/* ========== SEARCH FORM EN HERO ========== */}
+          <div className="hero-search">
+            <EventSearchForm onSearch={handleSearch} />
+          </div>
+          
           <div className="hero-buttons">
             <Link to="/eventos" className="btn btn-primary">
-              🚴 Explorar Eventos
+              🚴 Explorar Todos los Eventos
             </Link>
             <Link to="/register" className="btn btn-secondary">
               ✨ Unirse a la Comunidad

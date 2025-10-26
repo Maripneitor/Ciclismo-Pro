@@ -1,22 +1,27 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
+import EventSearchForm from '../components/EventSearchForm';
 import './EventsListPage.css';
 
 function EventsListPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({
-    search: '',
-    difficulty: '',
-    location: '',
-    type: ''
-  });
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // Convertir searchParams a objeto
+  const currentFilters = Object.fromEntries(searchParams.entries());
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get('/api/eventos');
+        setLoading(true);
+        
+        // Pasar los parámetros de búsqueda a la API
+        const response = await axios.get('/api/eventos', {
+          params: currentFilters
+        });
+        
         setEvents(response.data.data);
       } catch (error) {
         console.error('Error fetching events:', error);
@@ -26,20 +31,15 @@ function EventsListPage() {
     };
 
     fetchEvents();
-  }, []);
+  }, [searchParams]); // Se ejecuta cuando cambian los searchParams
 
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters(prev => ({
-      ...prev,
-      [name]: value
-    }));
+  const handleSearch = (searchData) => {
+    // Actualizar los parámetros de búsqueda en la URL
+    setSearchParams(searchData);
   };
 
-  const handleFilterSubmit = (e) => {
-    e.preventDefault();
-    // Aquí iría la lógica de filtrado cuando esté implementada
-    console.log('Filtros aplicados:', filters);
+  const handleClearFilters = () => {
+    setSearchParams({});
   };
 
   const formatDate = (dateString) => {
@@ -63,6 +63,9 @@ function EventsListPage() {
     }
   };
 
+  // Verificar si hay filtros activos
+  const hasActiveFilters = Object.keys(currentFilters).length > 0;
+
   return (
     <div className="events-list-page">
       {/* ========== PAGE HEADER ========== */}
@@ -76,69 +79,45 @@ function EventsListPage() {
         </div>
       </section>
 
-      {/* ========== FILTERS SECTION ========== */}
-      <section className="filters-section">
-        <div className="filters-container">
-          <form onSubmit={handleFilterSubmit} className="filters-form">
-            <div className="filter-group">
-              <label className="filter-label">Buscar Eventos</label>
-              <input
-                type="text"
-                name="search"
-                value={filters.search}
-                onChange={handleFilterChange}
-                placeholder="Nombre del evento..."
-                className="filter-input"
-              />
+      {/* ========== SEARCH FORM SECTION ========== */}
+      <section className="search-section">
+        <div className="container">
+          <EventSearchForm 
+            onSearch={handleSearch} 
+            initialData={currentFilters}
+          />
+          
+          {/* Mostrar filtros activos */}
+          {hasActiveFilters && (
+            <div className="active-filters">
+              <div className="active-filters-header">
+                <span>Filtros activos:</span>
+                <button 
+                  onClick={handleClearFilters}
+                  className="clear-filters-btn"
+                >
+                  🗑️ Limpiar todos
+                </button>
+              </div>
+              <div className="filter-tags">
+                {Object.entries(currentFilters).map(([key, value]) => (
+                  <span key={key} className="filter-tag">
+                    {key}: {value}
+                    <button 
+                      onClick={() => {
+                        const newParams = new URLSearchParams(searchParams);
+                        newParams.delete(key);
+                        setSearchParams(newParams);
+                      }}
+                      className="filter-tag-remove"
+                    >
+                      ×
+                    </button>
+                  </span>
+                ))}
+              </div>
             </div>
-            
-            <div className="filter-group">
-              <label className="filter-label">Dificultad</label>
-              <select
-                name="difficulty"
-                value={filters.difficulty}
-                onChange={handleFilterChange}
-                className="filter-select"
-              >
-                <option value="">Todas las dificultades</option>
-                <option value="principiante">Principiante</option>
-                <option value="intermedio">Intermedio</option>
-                <option value="avanzado">Avanzado</option>
-              </select>
-            </div>
-            
-            <div className="filter-group">
-              <label className="filter-label">Ubicación</label>
-              <input
-                type="text"
-                name="location"
-                value={filters.location}
-                onChange={handleFilterChange}
-                placeholder="Ciudad o región..."
-                className="filter-input"
-              />
-            </div>
-            
-            <div className="filter-group">
-              <label className="filter-label">Tipo de Evento</label>
-              <select
-                name="type"
-                value={filters.type}
-                onChange={handleFilterChange}
-                className="filter-select"
-              >
-                <option value="">Todos los tipos</option>
-                <option value="carretera">Carretera</option>
-                <option value="montaña">Montaña</option>
-                <option value="gravel">Gravel</option>
-                <option value="urbano">Urbano</option>
-              </select>
-            </div>
-            
-            <button type="submit" className="filter-button">
-              🔍 Aplicar Filtros
-            </button>
-          </form>
+          )}
         </div>
       </section>
 
@@ -146,7 +125,8 @@ function EventsListPage() {
       <section className="events-content">
         <div className="events-stats">
           <div className="events-count">
-            {events.length} Evento{events.length !== 1 ? 's' : ''} Disponible{events.length !== 1 ? 's' : ''}
+            {events.length} Evento{events.length !== 1 ? 's' : ''} Encontrado{events.length !== 1 ? 's' : ''}
+            {hasActiveFilters && ' con los filtros aplicados'}
           </div>
           <div className="events-sort">
             <span className="sort-label">Ordenar por:</span>
@@ -166,15 +146,24 @@ function EventsListPage() {
         ) : events.length === 0 ? (
           <div className="events-empty">
             <div className="empty-icon">🚴‍♂️</div>
-            <h3 className="empty-title">No se encontraron eventos</h3>
-            <p>Intenta ajustar tus filtros de búsqueda</p>
-            <button 
-              onClick={() => setFilters({ search: '', difficulty: '', location: '', type: '' })}
-              className="btn btn-primary"
-              style={{ marginTop: '1rem' }}
-            >
-              Limpiar Filtros
-            </button>
+            <h3 className="empty-title">
+              {hasActiveFilters ? 'No se encontraron eventos con los filtros aplicados' : 'No se encontraron eventos'}
+            </h3>
+            <p>
+              {hasActiveFilters 
+                ? 'Intenta ajustar tus criterios de búsqueda' 
+                : 'Pronto habrá nuevos eventos disponibles'
+              }
+            </p>
+            {hasActiveFilters && (
+              <button 
+                onClick={handleClearFilters}
+                className="btn btn-primary"
+                style={{ marginTop: '1rem' }}
+              >
+                Ver Todos los Eventos
+              </button>
+            )}
           </div>
         ) : (
           <>

@@ -1,0 +1,103 @@
+/* ========== SEARCH FORM STYLES ========== */
+.search-form {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-xl);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-light);
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.search-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.search-label {
+  margin-bottom: var(--spacing-sm);
+  font-weight: 600;
+  color: var(--color-gray-dark);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.search-input,
+.search-select {
+  padding: 0.75rem;
+  border: 1px solid var(--color-gray-medium);
+  border-radius: var(--border-radius-sm);
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background-color: var(--color-white);
+}
+
+.search-input:focus,
+.search-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.search-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.search-button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-family: var(--font-secondary);
+  font-size: 1rem;
+  min-width: 160px;
+}
+
+.search-button-primary {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.search-button-primary:hover {
+  background-color: #e55a2b;
+  transform: translateY(-1px);
+}
+
+.search-button-secondary {
+  background-color: var(--color-gray-light);
+  color: var(--color-gray-dark);
+  border: 1px solid var(--color-gray-medium);
+}
+
+.search-button-secondary:hover {
+  background-color: var(--color-gray-medium);
+  color: var(--color-white);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  .search-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-actions {
+    flex-direction: column;
+  }
+  
+  .search-button {
+    min-width: auto;
+    width: 100%;
+  }
+}

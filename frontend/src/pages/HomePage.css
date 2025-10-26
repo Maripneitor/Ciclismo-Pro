@@ -7,7 +7,7 @@
 .hero-section {
   background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
   color: var(--color-white);
-  padding: var(--spacing-2xl) 0;
+  padding: var(--spacing-2xl) 0 var(--spacing-xl) 0;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -46,6 +46,12 @@
   color: var(--color-gray-light);
   font-weight: 300;
   line-height: 1.6;
+}
+
+/* ========== HERO SEARCH ========== */
+.hero-search {
+  max-width: 800px;
+  margin: 0 auto var(--spacing-2xl) auto;
 }
 
 .hero-buttons {
@@ -350,7 +356,7 @@
 
 @media (max-width: 480px) {
   .hero-section {
-    padding: var(--spacing-xl) 0;
+    padding: var(--spacing-xl) 0 var(--spacing-lg) 0;
   }
   
   .features-section,

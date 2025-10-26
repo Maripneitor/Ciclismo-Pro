@@ -478,3 +478,88 @@
     padding: var(--spacing-md);
   }
 }
+
+/* ========== SKELETON LOADING STATES ========== */
+.skeleton-loading {
+  pointer-events: none;
+  user-select: none;
+}
+
+.skeleton-loading .events-grid,
+.skeleton-loading .featured-grid {
+  opacity: 0.7;
+}
+
+/* Mejoras para la animación de skeleton en las páginas */
+.events-grid,
+.featured-grid {
+  transition: opacity 0.3s ease;
+}
+
+/* Estados de carga mejorados */
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  color: var(--color-gray-medium);
+}
+
+.loading-state .loading-spinner {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Asegurar que los skeletons tengan el mismo tamaño que las tarjetas reales */
+.skeleton-card {
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-footer {
+  margin-top: auto;
+}
+
+
+
+/* ========== EMPTY STATE INTEGRATION ========== */
+.empty-state-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  width: 100%;
+}
+
+.featured-grid .empty-state,
+.events-grid .empty-state {
+  grid-column: 1 / -1;
+  margin: var(--spacing-xl) auto;
+}
+
+/* Mejoras para la integración con las secciones existentes */
+.events-empty,
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+}
+
+/* Transiciones suaves entre estados */
+.events-grid,
+.featured-grid {
+  transition: opacity 0.3s ease;
+}
+
+.loading-state .loading-spinner {
+  margin-bottom: var(--spacing-lg);
+}

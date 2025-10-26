@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import EventSearchForm from '../components/EventSearchForm';
+import SkeletonCard from '../components/SkeletonCard';
+import EmptyState from '../components/EmptyState';
 import './EventsListPage.css';
 
 function EventsListPage() {
   const [events, setEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   
   // Convertir searchParams a objeto
@@ -15,7 +17,7 @@ function EventsListPage() {
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         
         // Pasar los parámetros de búsqueda a la API
         const response = await axios.get('/api/eventos', {
@@ -26,7 +28,7 @@ function EventsListPage() {
       } catch (error) {
         console.error('Error fetching events:', error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -61,6 +63,13 @@ function EventsListPage() {
       case 'avanzado': return 'var(--color-error)';
       default: return 'var(--color-gray-medium)';
     }
+  };
+
+  // Renderizar skeleton cards para loading
+  const renderSkeletonCards = (count = 6) => {
+    return Array.from({ length: count }, (_, index) => (
+      <SkeletonCard key={index} />
+    ));
   };
 
   // Verificar si hay filtros activos
@@ -125,8 +134,11 @@ function EventsListPage() {
       <section className="events-content">
         <div className="events-stats">
           <div className="events-count">
-            {events.length} Evento{events.length !== 1 ? 's' : ''} Encontrado{events.length !== 1 ? 's' : ''}
-            {hasActiveFilters && ' con los filtros aplicados'}
+            {isLoading ? (
+              'Buscando eventos...'
+            ) : (
+              `${events.length} Evento${events.length !== 1 ? 's' : ''} Encontrado${events.length !== 1 ? 's' : ''}${hasActiveFilters ? ' con los filtros aplicados' : ''}`
+            )}
           </div>
           <div className="events-sort">
             <span className="sort-label">Ordenar por:</span>
@@ -138,33 +150,39 @@ function EventsListPage() {
           </div>
         </div>
 
-        {loading ? (
-          <div className="events-loading">
-            <div className="loading-spinner"></div>
-            <p>Buscando eventos emocionantes...</p>
+        {isLoading ? (
+          <div className="events-grid">
+            {renderSkeletonCards(6)}
           </div>
         ) : events.length === 0 ? (
-          <div className="events-empty">
-            <div className="empty-icon">🚴‍♂️</div>
-            <h3 className="empty-title">
-              {hasActiveFilters ? 'No se encontraron eventos con los filtros aplicados' : 'No se encontraron eventos'}
-            </h3>
-            <p>
-              {hasActiveFilters 
-                ? 'Intenta ajustar tus criterios de búsqueda' 
-                : 'Pronto habrá nuevos eventos disponibles'
-              }
-            </p>
-            {hasActiveFilters && (
-              <button 
-                onClick={handleClearFilters}
-                className="btn btn-primary"
-                style={{ marginTop: '1rem' }}
-              >
-                Ver Todos los Eventos
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={hasActiveFilters ? "🔍" : "📋"}
+            title={
+              hasActiveFilters 
+                ? "No se encontraron eventos" 
+                : "No hay eventos disponibles"
+            }
+            message={
+              hasActiveFilters
+                ? "No encontramos eventos que coincidan con tus criterios de búsqueda. Intenta ajustar los filtros o limpiar la búsqueda."
+                : "Actualmente no hay eventos programados. Vuelve pronto para descubrir nuevas aventuras deportivas."
+            }
+            actionButton={
+              hasActiveFilters ? (
+                <button 
+                  onClick={handleClearFilters}
+                  className="btn btn-primary"
+                >
+                  Limpiar Búsqueda
+                </button>
+              ) : (
+                <Link to="/" className="btn btn-primary">
+                  Volver al Inicio
+                </Link>
+              )
+            }
+            size="large"
+          />
         ) : (
           <>
             <div className="events-grid">

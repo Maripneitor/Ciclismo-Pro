@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../services/api';
+import SkeletonCard from '../components/SkeletonCard';
+import EmptyState from '../components/EmptyState';
 import './HomePage.css';
 
 function HomePage() {
   const [events, setEvents] = useState([]);
   const [featuredEvents, setFeaturedEvents] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setLoading(true);
+        setIsLoading(true);
         
         // Obtener eventos normales
         const eventsResponse = await apiClient.get('/eventos');
@@ -26,7 +28,7 @@ function HomePage() {
         console.error('Error fetching data:', error);
         setError('Error al cargar los eventos');
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
     };
 
@@ -73,16 +75,12 @@ function HomePage() {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="home-page">
-        <div className="loading-state">
-          <div className="loading-spinner"></div>
-          <p>Cargando eventos...</p>
-        </div>
-      </div>
-    );
-  }
+  // Renderizar skeleton cards para loading
+  const renderSkeletonCards = (count = 3, featured = false) => {
+    return Array.from({ length: count }, (_, index) => (
+      <SkeletonCard key={index} featured={featured} />
+    ));
+  };
 
   return (
     <div className="home-page">
@@ -123,22 +121,24 @@ function HomePage() {
       )}
 
       {/* ========== FEATURED EVENTS SECTION ========== */}
-      {featuredEvents.length > 0 && (
-        <section className="featured-section">
-          <div className="section-header">
-            <div className="section-badge">
-              ⭐ Eventos Estelares
-            </div>
-            <h2 className="section-title">
-              Experiencias Destacadas
-            </h2>
-            <p className="section-subtitle">
-              Los eventos más esperados de la temporada, seleccionados especialmente para ti
-            </p>
+      <section className="featured-section">
+        <div className="section-header">
+          <div className="section-badge">
+            ⭐ Eventos Estelares
           </div>
+          <h2 className="section-title">
+            Experiencias Destacadas
+          </h2>
+          <p className="section-subtitle">
+            Los eventos más esperados de la temporada, seleccionados especialmente para ti
+          </p>
+        </div>
 
-          <div className="featured-grid">
-            {featuredEvents.map(event => (
+        <div className="featured-grid">
+          {isLoading ? (
+            renderSkeletonCards(3, true)
+          ) : featuredEvents.length > 0 ? (
+            featuredEvents.map(event => (
               <div key={event.id_evento} className="featured-card">
                 <div className="card-header">
                   <div className="event-type">
@@ -193,10 +193,22 @@ function HomePage() {
                   </Link>
                 </div>
               </div>
-            ))}
-          </div>
-        </section>
-      )}
+            ))
+          ) : (
+            <EmptyState
+              icon="⭐"
+              title="No hay eventos destacados"
+              message="Pronto tendremos eventos especiales destacados para ti. Mientras tanto, explora nuestros próximos eventos."
+              actionButton={
+                <Link to="/eventos" className="btn btn-primary">
+                  Explorar Todos los Eventos
+                </Link>
+              }
+              size="large"
+            />
+          )}
+        </div>
+      </section>
 
       {/* ========== UPCOMING EVENTS SECTION ========== */}
       <section className="events-section">
@@ -209,82 +221,89 @@ function HomePage() {
           </p>
         </div>
 
-        {events.length === 0 ? (
-          <div className="empty-state">
-            <div className="empty-icon">📅</div>
-            <h3 className="empty-title">No hay eventos próximos</h3>
-            <p className="empty-description">
-              Pronto tendremos nuevas aventuras deportivas para ti.
-            </p>
-            <Link to="/eventos" className="btn btn-primary">
-              Ver Todos los Eventos
-            </Link>
-          </div>
-        ) : (
+        {isLoading ? (
           <div className="events-grid">
-            {events.slice(0, 6).map(event => (
-              <div key={event.id_evento} className="event-card">
-                <div className="card-header">
-                  <div className="event-type">
-                    {getEventTypeIcon(event.tipo)}
-                    <span>{event.tipo}</span>
-                  </div>
-                  {event.es_destacado && (
-                    <div className="featured-indicator">
-                      ⭐
+            {renderSkeletonCards(6)}
+          </div>
+        ) : events.length === 0 ? (
+          <EmptyState
+            icon="📅"
+            title="No hay eventos próximos"
+            message="Actualmente no hay eventos programados. Vuelve pronto para descubrir nuevas aventuras deportivas."
+            actionButton={
+              <Link to="/eventos" className="btn btn-primary">
+                Ver Todos los Eventos
+              </Link>
+            }
+            size="large"
+          />
+        ) : (
+          <>
+            <div className="events-grid">
+              {events.slice(0, 6).map(event => (
+                <div key={event.id_evento} className="event-card">
+                  <div className="card-header">
+                    <div className="event-type">
+                      {getEventTypeIcon(event.tipo)}
+                      <span>{event.tipo}</span>
                     </div>
-                  )}
-                </div>
-                
-                <div className="card-content">
-                  <h3 className="event-title">{event.nombre}</h3>
-                  <p className="event-description">
-                    {event.descripcion || 'Únete a esta increíble experiencia deportiva...'}
-                  </p>
-                  
-                  <div className="event-details">
-                    <div className="detail-item">
-                      <span className="detail-icon">📅</span>
-                      <span>{formatDate(event.fecha_inicio)}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-icon">📍</span>
-                      <span>{event.ubicacion}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card-footer">
-                  <div className="event-meta">
-                    {getDifficultyBadge(event.dificultad)}
-                    {event.cuota_inscripcion > 0 ? (
-                      <span className="price-tag">
-                        ${event.cuota_inscripcion}
-                      </span>
-                    ) : (
-                      <span className="price-tag free">
-                        Gratis
-                      </span>
+                    {event.es_destacado && (
+                      <div className="featured-indicator">
+                        ⭐
+                      </div>
                     )}
                   </div>
-                  <Link 
-                    to={`/eventos/${event.id_evento}`}
-                    className="btn btn-outline btn-small"
-                  >
-                    Más Info
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+                  
+                  <div className="card-content">
+                    <h3 className="event-title">{event.nombre}</h3>
+                    <p className="event-description">
+                      {event.descripcion || 'Únete a esta increíble experiencia deportiva...'}
+                    </p>
+                    
+                    <div className="event-details">
+                      <div className="detail-item">
+                        <span className="detail-icon">📅</span>
+                        <span>{formatDate(event.fecha_inicio)}</span>
+                      </div>
+                      <div className="detail-item">
+                        <span className="detail-icon">📍</span>
+                        <span>{event.ubicacion}</span>
+                      </div>
+                    </div>
+                  </div>
 
-        {events.length > 6 && (
-          <div className="section-actions">
-            <Link to="/eventos" className="btn btn-outline">
-              Ver Todos los Eventos ({events.length})
-            </Link>
-          </div>
+                  <div className="card-footer">
+                    <div className="event-meta">
+                      {getDifficultyBadge(event.dificultad)}
+                      {event.cuota_inscripcion > 0 ? (
+                        <span className="price-tag">
+                          ${event.cuota_inscripcion}
+                        </span>
+                      ) : (
+                        <span className="price-tag free">
+                          Gratis
+                        </span>
+                      )}
+                    </div>
+                    <Link 
+                      to={`/eventos/${event.id_evento}`}
+                      className="btn btn-outline btn-small"
+                    >
+                      Más Info
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {events.length > 6 && (
+              <div className="section-actions">
+                <Link to="/eventos" className="btn btn-outline">
+                  Ver Todos los Eventos ({events.length})
+                </Link>
+              </div>
+            )}
+          </>
         )}
       </section>
 

@@ -1,0 +1,198 @@
+/* ========== SKELETON CARD STYLES ========== */
+.skeleton-card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-light);
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Animación de pulso para todos los elementos skeleton */
+.skeleton-card * {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    background-color: var(--color-gray-light);
+  }
+  50% {
+    background-color: var(--color-gray-medium);
+  }
+  100% {
+    background-color: var(--color-gray-light);
+  }
+}
+
+/* ========== SKELETON IMAGE ========== */
+.skeleton-image {
+  height: 160px;
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  background: var(--color-gray-light);
+}
+
+/* ========== SKELETON HEADER ========== */
+.skeleton-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+}
+
+.skeleton-badge {
+  width: 60px;
+  height: 24px;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-gray-light);
+}
+
+.skeleton-title {
+  height: 28px;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-gray-light);
+  flex: 1;
+  margin-left: var(--spacing-md);
+}
+
+/* ========== SKELETON DETAILS ========== */
+.skeleton-details {
+  margin-bottom: var(--spacing-lg);
+}
+
+.skeleton-detail {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
+}
+
+.skeleton-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--color-gray-light);
+  flex-shrink: 0;
+}
+
+.skeleton-text {
+  height: 16px;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-gray-light);
+}
+
+.skeleton-text.short {
+  width: 40%;
+}
+
+.skeleton-text.medium {
+  width: 60%;
+}
+
+.skeleton-text.long {
+  width: 80%;
+}
+
+/* ========== SKELETON FOOTER ========== */
+.skeleton-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-gray-light);
+}
+
+.skeleton-price {
+  width: 80px;
+  height: 24px;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-gray-light);
+}
+
+.skeleton-button {
+  width: 100px;
+  height: 36px;
+  border-radius: var(--border-radius-sm);
+  background: var(--color-gray-light);
+}
+
+/* ========== VARIANTES DE SKELETON ========== */
+
+/* Skeleton para tarjetas destacadas */
+.skeleton-card.featured {
+  border: 2px solid var(--color-gray-light);
+  position: relative;
+}
+
+.skeleton-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--color-gray-light);
+}
+
+/* Skeleton para lista de eventos */
+.skeleton-card.list {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.skeleton-card.list .skeleton-image {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.skeleton-card.list .skeleton-content {
+  flex: 1;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  .skeleton-card {
+    padding: var(--spacing-md);
+  }
+  
+  .skeleton-image {
+    height: 120px;
+  }
+  
+  .skeleton-card.list {
+    flex-direction: column;
+  }
+  
+  .skeleton-card.list .skeleton-image {
+    width: 100%;
+    height: 140px;
+  }
+}
+
+/* Animación alternativa de brillo */
+@keyframes skeleton-shine {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+.skeleton-shine {
+  background: var(--color-gray-light);
+  background-image: linear-gradient(
+    90deg,
+    var(--color-gray-light) 0px,
+    var(--color-gray-lighter) 40px,
+    var(--color-gray-light) 80px
+  );
+  background-size: 200px 100%;
+  animation: skeleton-shine 1.5s infinite linear;
+}

@@ -362,3 +362,40 @@
     align-items: flex-start;
   }
 }
+
+
+
+/* ========== EMPTY STATE INTEGRATION ========== */
+.empty-state-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  width: 100%;
+}
+
+.featured-grid .empty-state,
+.events-grid .empty-state {
+  grid-column: 1 / -1;
+  margin: var(--spacing-xl) auto;
+}
+
+/* Mejoras para la integración con las secciones existentes */
+.events-empty,
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+}
+
+/* Transiciones suaves entre estados */
+.events-grid,
+.featured-grid {
+  transition: opacity 0.3s ease;
+}
+
+.loading-state .loading-spinner {
+  margin-bottom: var(--spacing-lg);
+}

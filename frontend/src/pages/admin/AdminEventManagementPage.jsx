@@ -1,42 +1,36 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../../services/api';
+import '../admin/AdminCommon.css';
 
 function AdminEventManagementPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [updatingStatuses, setUpdatingStatuses] = useState({});
 
   useEffect(() => {
-    const fetchAllEvents = async () => {
+    const fetchEvents = async () => {
       try {
-        setLoading(true);
         const response = await apiClient.get('/admin/events');
         setEvents(response.data.data.events || []);
       } catch (error) {
-        console.error('Error fetching all events:', error);
-        setError(error.response?.data?.message || 'Error al cargar los eventos');
+        console.error('Error fetching events:', error);
+        setError('Error al cargar los eventos');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchAllEvents();
+    fetchEvents();
   }, []);
 
   const handleStatusChange = async (eventId, newStatus) => {
     try {
-      // Mostrar estado de carga para este evento específico
-      setUpdatingStatuses(prev => ({ ...prev, [eventId]: true }));
+      const response = await apiClient.put(`/admin/events/${eventId}/status`, {
+        nuevoEstado: newStatus
+      });
       
-      const response = await apiClient.put(
-        `/admin/events/${eventId}/status`,
-        { nuevoEstado: newStatus }
-      );
-
       if (response.data.success) {
-        // Actualizar el estado local del evento
         setEvents(prevEvents =>
           prevEvents.map(event =>
             event.id_evento === eventId
@@ -44,639 +38,152 @@ function AdminEventManagementPage() {
               : event
           )
         );
-        
-        console.log(`Estado actualizado para evento ${eventId}: ${newStatus}`);
       }
     } catch (error) {
       console.error('Error updating event status:', error);
-      alert(error.response?.data?.message || 'Error al actualizar el estado del evento');
-    } finally {
-      // Remover estado de carga para este evento
-      setUpdatingStatuses(prev => ({ ...prev, [eventId]: false }));
-    }
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'proximo': return 'var(--success)';
-      case 'activo': return 'var(--primary-500)';
-      case 'finalizado': return 'var(--neutral-500)';
-      case 'cancelado': return 'var(--error)';
-      default: return 'var(--neutral-400)';
-    }
-  };
-
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'proximo': return 'Próximo';
-      case 'activo': return 'Activo';
-      case 'finalizado': return 'Finalizado';
-      case 'cancelado': return 'Cancelado';
-      default: return status;
-    }
-  };
-
-  const getStatusOptions = () => {
-    return [
-      { value: 'proximo', label: 'Próximo' },
-      { value: 'activo', label: 'Activo' },
-      { value: 'finalizado', label: 'Finalizado' },
-      { value: 'cancelado', label: 'Cancelado' }
-    ];
-  };
-
-  const getDifficultyColor = (difficulty) => {
-    switch (difficulty) {
-      case 'facil': return 'var(--success)';
-      case 'media': return 'var(--warning)';
-      case 'dificil': return 'var(--error)';
-      case 'extrema': return 'var(--primary-700)';
-      default: return 'var(--neutral-500)';
-    }
-  };
-
-  const getDifficultyText = (difficulty) => {
-    switch (difficulty) {
-      case 'facil': return 'Fácil';
-      case 'media': return 'Media';
-      case 'dificil': return 'Difícil';
-      case 'extrema': return 'Extrema';
-      default: return difficulty;
+      alert('Error al actualizar el estado del evento');
     }
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    return new Date(dateString).toLocaleDateString('es-ES');
   };
 
-  const formatCurrency = (amount) => {
-    if (!amount) return 'Gratis';
-    return `$${amount.toLocaleString('es-ES')}`;
+  const getStatusColor = (estado) => {
+    switch (estado) {
+      case 'proximo': return 'var(--color-success)';
+      case 'activo': return 'var(--color-primary)';
+      case 'finalizado': return 'var(--color-info)';
+      case 'cancelado': return 'var(--color-error)';
+      default: return 'var(--color-gray-medium)';
+    }
   };
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <h2>Cargando eventos...</h2>
-        <p>Obteniendo lista completa de eventos de la plataforma...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <h2 style={{ color: 'var(--error)' }}>Error</h2>
-        <p>{error}</p>
-        <Link to="/admin/users">
-          <button style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: 'var(--primary-500)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginTop: '1rem'
-          }}>
-            Volver a Gestión de Usuarios
-          </button>
-        </Link>
+      <div className="admin-page">
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <p>Cargando eventos...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <div style={{ marginBottom: '2rem' }}>
-        <h1>Gestión de Eventos</h1>
-        <p style={{ color: 'var(--neutral-600)' }}>
-          Supervisa y modera todos los eventos creados en la plataforma
-        </p>
-      </div>
-
-      {/* Resumen de estadísticas */}
-      <div style={{ 
-        marginBottom: '2rem',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '1rem'
-      }}>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '1.5rem',
-          borderRadius: '8px',
-          border: '1px solid var(--neutral-200)',
-          textAlign: 'center',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <h3 style={{ 
-            color: 'var(--primary-600)', 
-            margin: '0 0 0.5rem 0',
-            fontSize: '2rem'
-          }}>
-            {events.length}
-          </h3>
-          <p style={{ margin: 0, color: 'var(--neutral-600)', fontWeight: '500' }}>Total Eventos</p>
+    <div className="admin-page">
+      {/* ========== HEADER ========== */}
+      <div className="admin-header">
+        <div className="header-content">
+          <h1 className="page-title">Gestión de Eventos</h1>
+          <p className="page-subtitle">
+            Administra todos los eventos del sistema
+          </p>
         </div>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '1.5rem',
-          borderRadius: '8px',
-          border: '1px solid var(--neutral-200)',
-          textAlign: 'center',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <h3 style={{ 
-            color: 'var(--success)', 
-            margin: '0 0 0.5rem 0',
-            fontSize: '2rem'
-          }}>
-            {events.filter(e => e.estado === 'proximo').length}
-          </h3>
-          <p style={{ margin: 0, color: 'var(--neutral-600)', fontWeight: '500' }}>Próximos</p>
-        </div>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '1.5rem',
-          borderRadius: '8px',
-          border: '1px solid var(--neutral-200)',
-          textAlign: 'center',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <h3 style={{ 
-            color: 'var(--primary-500)', 
-            margin: '0 0 0.5rem 0',
-            fontSize: '2rem'
-          }}>
-            {events.filter(e => e.estado === 'activo').length}
-          </h3>
-          <p style={{ margin: 0, color: 'var(--neutral-600)', fontWeight: '500' }}>Activos</p>
-        </div>
-        <div style={{
-          backgroundColor: 'white',
-          padding: '1.5rem',
-          borderRadius: '8px',
-          border: '1px solid var(--neutral-200)',
-          textAlign: 'center',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-        }}>
-          <h3 style={{ 
-            color: 'var(--neutral-500)', 
-            margin: '0 0 0.5rem 0',
-            fontSize: '2rem'
-          }}>
-            {events.filter(e => e.estado === 'finalizado').length}
-          </h3>
-          <p style={{ margin: 0, color: 'var(--neutral-600)', fontWeight: '500' }}>Finalizados</p>
+        <div className="header-actions">
+          <Link to="/admin" className="btn btn-outline">
+            ← Volver al Panel
+          </Link>
         </div>
       </div>
 
-      {/* Lista de Eventos */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        border: '1px solid var(--neutral-200)',
-        overflow: 'hidden',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ 
-          padding: '1.5rem',
-          borderBottom: '1px solid var(--neutral-200)',
-          backgroundColor: 'var(--neutral-50)'
-        }}>
-          <h2 style={{ margin: 0, color: 'var(--neutral-800)' }}>Lista de Eventos de la Plataforma</h2>
-          <p style={{ margin: '0.5rem 0 0 0', color: 'var(--neutral-600)' }}>
-            Mostrando {events.length} eventos en total
+      {error && (
+        <div className="alert alert-error">
+          {error}
+        </div>
+      )}
+
+      {/* ========== EVENTS TABLE ========== */}
+      <div className="admin-table-container">
+        <div className="table-header">
+          <h3 className="table-title">Todos los Eventos</h3>
+          <p className="table-subtitle">
+            {events.length} evento{events.length !== 1 ? 's' : ''} en el sistema
           </p>
         </div>
 
         {events.length === 0 ? (
-          <div style={{ 
-            textAlign: 'center', 
-            padding: '3rem 2rem',
-            color: 'var(--neutral-500)'
-          }}>
-            <h3>No hay eventos creados</h3>
-            <p>Los eventos aparecerán aquí una vez que los organizadores los creen.</p>
+          <div className="empty-state">
+            <div className="empty-icon">🎯</div>
+            <h3 className="empty-title">No hay eventos</h3>
+            <p className="empty-description">
+              Los eventos aparecerán aquí una vez que sean creados por los organizadores.
+            </p>
           </div>
         ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ 
-              width: '100%', 
-              borderCollapse: 'collapse' 
-            }}>
-              <thead>
-                <tr style={{ 
-                  backgroundColor: 'var(--neutral-50)',
-                  borderBottom: '2px solid var(--neutral-200)'
-                }}>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Evento
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Organizador
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Estado Actual
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Gestionar Estado
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Fecha Inicio
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Ubicación
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Distancia
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Dificultad
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {events.map((event, index) => (
-                  <tr 
-                    key={event.id_evento}
-                    style={{ 
-                      borderBottom: '1px solid var(--neutral-100)',
-                      transition: 'background-color 0.2s ease'
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = 'var(--neutral-50)';
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                  >
-                    <td style={{ padding: '1rem' }}>
-                      <div>
-                        <strong style={{ 
-                          color: 'var(--neutral-800)',
-                          display: 'block',
-                          marginBottom: '0.25rem',
-                          fontSize: '0.95rem'
-                        }}>
-                          {event.nombre}
-                        </strong>
-                        {event.descripcion && (
-                          <small style={{ 
-                            color: 'var(--neutral-500)',
-                            display: 'block',
-                            lineHeight: '1.4',
-                            fontSize: '0.85rem'
-                          }}>
-                            {event.descripcion.length > 60 
-                              ? `${event.descripcion.substring(0, 60)}...` 
-                              : event.descripcion
-                            }
-                          </small>
-                        )}
-                        <small style={{ 
-                          color: 'var(--neutral-400)',
-                          fontSize: '0.75rem',
-                          fontFamily: 'monospace'
-                        }}>
-                          ID: #{event.id_evento}
-                        </small>
-                      </div>
-                    </td>
-                    <td style={{ padding: '1rem' }}>
-                      <div>
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th>Evento</th>
+                <th>Organizador</th>
+                <th>Fecha</th>
+                <th>Ubicación</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {events.map(event => (
+                <tr key={event.id_evento}>
+                  <td>
+                    <div>
+                      <strong style={{ color: 'var(--color-secondary)' }}>
+                        {event.nombre}
+                      </strong>
+                      {event.descripcion && (
                         <div style={{ 
-                          color: 'var(--neutral-800)', 
-                          fontWeight: '500',
-                          fontSize: '0.95rem'
+                          fontSize: '0.8rem', 
+                          color: 'var(--color-gray-medium)',
+                          marginTop: 'var(--spacing-xs)'
                         }}>
-                          {event.organizador}
+                          {event.descripcion.length > 100 
+                            ? `${event.descripcion.substring(0, 100)}...` 
+                            : event.descripcion
+                          }
                         </div>
-                        <small style={{ 
-                          color: 'var(--neutral-500)',
-                          fontSize: '0.8rem'
-                        }}>
-                          ID: #{event.id_organizador}
-                        </small>
-                      </div>
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <span style={{
-                        padding: '0.4rem 1rem',
+                      )}
+                    </div>
+                  </td>
+                  <td>{event.organizador}</td>
+                  <td>{formatDate(event.fecha_inicio)}</td>
+                  <td>{event.ubicacion}</td>
+                  <td>
+                    <span 
+                      className="status-badge"
+                      style={{ 
                         backgroundColor: getStatusColor(event.estado),
-                        color: 'white',
-                        borderRadius: '20px',
-                        fontSize: '0.8rem',
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {getStatusText(event.estado)}
-                      </span>
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
+                        color: 'var(--color-white)'
+                      }}
+                    >
+                      {event.estado}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="table-actions">
                       <select
                         value={event.estado}
                         onChange={(e) => handleStatusChange(event.id_evento, e.target.value)}
-                        disabled={updatingStatuses[event.id_evento]}
-                        style={{
-                          padding: '0.5rem 1rem',
-                          border: '1px solid var(--neutral-300)',
-                          borderRadius: '6px',
-                          backgroundColor: 'white',
-                          color: 'var(--neutral-800)',
-                          fontSize: '0.85rem',
-                          fontWeight: '500',
-                          cursor: updatingStatuses[event.id_evento] ? 'not-allowed' : 'pointer',
-                          minWidth: '140px',
-                          opacity: updatingStatuses[event.id_evento] ? 0.7 : 1,
-                          transition: 'all 0.2s ease'
-                        }}
-                        onMouseOver={(e) => {
-                          if (!updatingStatuses[event.id_evento]) {
-                            e.currentTarget.style.borderColor = 'var(--primary-500)';
-                            e.currentTarget.style.boxShadow = '0 0 0 2px rgba(0, 115, 230, 0.1)';
-                          }
-                        }}
-                        onMouseOut={(e) => {
-                          if (!updatingStatuses[event.id_evento]) {
-                            e.currentTarget.style.borderColor = 'var(--neutral-300)';
-                            e.currentTarget.style.boxShadow = 'none';
-                          }
-                        }}
+                        className="filter-select"
+                        style={{ minWidth: '120px' }}
                       >
-                        {getStatusOptions().map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
+                        <option value="proximo">Próximo</option>
+                        <option value="activo">Activo</option>
+                        <option value="finalizado">Finalizado</option>
+                        <option value="cancelado">Cancelado</option>
                       </select>
-                      {updatingStatuses[event.id_evento] && (
-                        <div style={{ 
-                          marginTop: '0.5rem',
-                          fontSize: '0.75rem',
-                          color: 'var(--primary-500)',
-                          fontWeight: '500'
-                        }}>
-                          Actualizando...
-                        </div>
-                      )}
-                    </td>
-                    <td style={{ 
-                      padding: '1rem', 
-                      textAlign: 'center',
-                      color: 'var(--neutral-700)',
-                      fontWeight: '500',
-                      fontSize: '0.9rem'
-                    }}>
-                      {formatDate(event.fecha_inicio)}
-                      {event.fecha_fin && (
-                        <div style={{ 
-                          fontSize: '0.8rem',
-                          color: 'var(--neutral-500)',
-                          marginTop: '0.25rem'
-                        }}>
-                          al {formatDate(event.fecha_fin)}
-                        </div>
-                      )}
-                    </td>
-                    <td style={{ 
-                      padding: '1rem', 
-                      textAlign: 'center',
-                      color: 'var(--neutral-700)',
-                      fontSize: '0.9rem'
-                    }}>
-                      {event.ubicacion || '-'}
-                    </td>
-                    <td style={{ 
-                      padding: '1rem', 
-                      textAlign: 'center',
-                      color: 'var(--neutral-800)',
-                      fontWeight: 'bold',
-                      fontSize: '0.95rem'
-                    }}>
-                      {event.distancia_km ? `${event.distancia_km} km` : '-'}
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      {event.dificultad && (
-                        <span style={{
-                          padding: '0.3rem 0.8rem',
-                          backgroundColor: getDifficultyColor(event.dificultad),
-                          color: 'white',
-                          borderRadius: '20px',
-                          fontSize: '0.75rem',
-                          fontWeight: 'bold',
-                          textTransform: 'uppercase'
-                        }}>
-                          {getDifficultyText(event.dificultad)}
-                        </span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                      <Link 
+                        to={`/eventos/${event.id_evento}`}
+                        className="action-btn action-btn-outline"
+                      >
+                        👁️ Ver
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         )}
-      </div>
-
-      {/* Información de moderación */}
-      <div style={{ 
-        marginTop: '2rem',
-        padding: '1.5rem',
-        backgroundColor: 'var(--primary-50)',
-        borderRadius: '8px',
-        border: '1px solid var(--primary-200)'
-      }}>
-        <h4 style={{ marginBottom: '1rem', color: 'var(--primary-700)' }}>💡 Información de Moderación:</h4>
-        <div style={{ display: 'grid', gap: '0.75rem' }}>
-          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
-            <strong>Próximo:</strong> Evento programado para el futuro. Los usuarios pueden inscribirse.
-          </p>
-          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
-            <strong>Activo:</strong> Evento en curso. Las inscripciones pueden estar cerradas.
-          </p>
-          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
-            <strong>Finalizado:</strong> Evento completado. Solo modo consulta.
-          </p>
-          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
-            <strong>Cancelado:</strong> Evento cancelado. No visible para nuevos usuarios.
-          </p>
-          <p style={{ margin: '0.5rem 0 0 0', color: 'var(--primary-700)', fontSize: '0.9rem', fontWeight: '500' }}>
-            ⚠️ <strong>Precaución:</strong> Los cambios de estado son inmediatos y afectan la visibilidad del evento.
-          </p>
-        </div>
-      </div>
-
-      {/* Leyenda de estados */}
-      <div style={{ 
-        marginTop: '2rem',
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '1.5rem'
-      }}>
-        <div style={{ 
-          padding: '1.5rem',
-          backgroundColor: 'var(--neutral-50)',
-          borderRadius: '8px',
-          border: '1px solid var(--neutral-200)'
-        }}>
-          <h4 style={{ marginBottom: '1rem', color: 'var(--neutral-700)' }}>Leyenda de Estados:</h4>
-          <div style={{ display: 'grid', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--success)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Próximo - Evento programado para el futuro</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--primary-500)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Activo - Evento en curso</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--neutral-500)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Finalizado - Evento completado</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--error)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Cancelado - Evento cancelado</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Leyenda de dificultad */}
-        <div style={{ 
-          padding: '1.5rem',
-          backgroundColor: 'var(--neutral-50)',
-          borderRadius: '8px',
-          border: '1px solid var(--neutral-200)'
-        }}>
-          <h4 style={{ marginBottom: '1rem', color: 'var(--neutral-700)' }}>Leyenda de Dificultad:</h4>
-          <div style={{ display: 'grid', gap: '0.75rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--success)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Fácil - Para principiantes</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--warning)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Media - Nivel intermedio</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--error)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Difícil - Para ciclistas experimentados</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <div style={{
-                width: '12px',
-                height: '12px',
-                backgroundColor: 'var(--primary-700)',
-                borderRadius: '50%'
-              }}></div>
-              <span style={{ fontSize: '0.9rem' }}>Extrema - Solo expertos</span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

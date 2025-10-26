@@ -1,85 +1,81 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import './Footer.css';
 
 function Footer() {
   const [email, setEmail] = useState('');
 
   const handleSubscribe = (e) => {
     e.preventDefault();
-    alert(`Gracias por suscribirte con: ${email}`);
-    setEmail('');
+    if (email) {
+      alert(`¡Gracias por suscribirte con: ${email}! Te mantendremos informado sobre nuestros eventos.`);
+      setEmail('');
+    }
   };
 
   return (
-    <footer style={{
-      backgroundColor: 'var(--neutral-800)',
-      color: 'white',
-      padding: 'var(--spacing-2xl) 0 var(--spacing-xl)',
-      marginTop: 'auto'
-    }}>
-      <div className="container">
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-          gap: 'var(--spacing-2xl)',
-          marginBottom: 'var(--spacing-xl)'
-        }}>
-          <div>
-            <h4 style={{ marginBottom: 'var(--spacing-md)', color: 'var(--primary-300)' }}>Navegación</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-              <Link to="/" style={{ color: 'var(--neutral-200)', textDecoration: 'none' }}>
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-grid">
+          {/* Columna 1: Navegación */}
+          <div className="footer-section">
+            <h4>Navegación</h4>
+            <div className="footer-links">
+              <Link to="/" className="footer-link">
                 Inicio
               </Link>
-              <Link to="/eventos" style={{ color: 'var(--neutral-200)', textDecoration: 'none' }}>
+              <Link to="/eventos" className="footer-link">
                 Eventos
+              </Link>
+              <Link to="/store" className="footer-link">
+                Tienda
+              </Link>
+              <Link to="/dashboard" className="footer-link">
+                Mi Dashboard
               </Link>
             </div>
           </div>
 
-          <div>
-            <h4 style={{ marginBottom: 'var(--spacing-md)', color: 'var(--primary-300)' }}>Legal</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-              <span style={{ color: 'var(--neutral-200)', cursor: 'pointer' }}>Términos y Condiciones</span>
-              <span style={{ color: 'var(--neutral-200)', cursor: 'pointer' }}>Política de Privacidad</span>
+          {/* Columna 2: Legal */}
+          <div className="footer-section">
+            <h4>Legal</h4>
+            <div className="footer-links">
+              <span className="footer-text">Términos y Condiciones</span>
+              <span className="footer-text">Política de Privacidad</span>
+              <span className="footer-text">Cookies</span>
+              <span className="footer-text">Aviso Legal</span>
             </div>
           </div>
 
-          <div>
-            <h4 style={{ marginBottom: 'var(--spacing-md)', color: 'var(--primary-300)' }}>Comunidad</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--spacing-sm)' }}>
-              <span style={{ color: 'var(--neutral-200)', cursor: 'pointer' }}>Facebook</span>
-              <span style={{ color: 'var(--neutral-200)', cursor: 'pointer' }}>Instagram</span>
+          {/* Columna 3: Comunidad */}
+          <div className="footer-section">
+            <h4>Comunidad</h4>
+            <div className="footer-links">
+              <span className="footer-text">Facebook</span>
+              <span className="footer-text">Instagram</span>
+              <span className="footer-text">Twitter</span>
+              <span className="footer-text">Strava Club</span>
             </div>
           </div>
 
-          <div>
-            <h4 style={{ marginBottom: 'var(--spacing-md)', color: 'var(--primary-300)' }}>Newsletter</h4>
-            <form onSubmit={handleSubscribe}>
+          {/* Columna 4: Newsletter */}
+          <div className="footer-section">
+            <h4>Newsletter</h4>
+            <p style={{ marginBottom: '1rem', color: 'var(--color-gray-light)' }}>
+              Suscríbete para recibir noticias sobre eventos y ofertas especiales.
+            </p>
+            <form onSubmit={handleSubscribe} className="newsletter-form">
               <input
                 type="email"
                 placeholder="Tu correo electrónico"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                style={{
-                  width: '100%',
-                  padding: 'var(--spacing-sm)',
-                  marginBottom: 'var(--spacing-sm)',
-                  border: 'none',
-                  borderRadius: '4px'
-                }}
+                className="newsletter-input"
               />
               <button 
                 type="submit"
-                style={{
-                  width: '100%',
-                  padding: 'var(--spacing-sm)',
-                  backgroundColor: 'var(--primary-500)',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
+                className="newsletter-btn"
               >
                 Suscribirse
               </button>
@@ -87,13 +83,12 @@ function Footer() {
           </div>
         </div>
 
-        <div style={{
-          borderTop: '1px solid var(--neutral-600)',
-          paddingTop: 'var(--spacing-md)',
-          textAlign: 'center',
-          color: 'var(--neutral-400)'
-        }}>
+        {/* Línea inferior */}
+        <div className="footer-bottom">
           <p>&copy; 2024 Ciclismo Pro. Todos los derechos reservados.</p>
+          <p style={{ marginTop: '0.5rem', fontSize: '0.8rem' }}>
+            Passion for cycling, powered by technology 🚴‍♂️💨
+          </p>
         </div>
       </div>
     </footer>

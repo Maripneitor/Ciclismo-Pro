@@ -1,0 +1,203 @@
+/* ========== HEADER STYLES ========== */
+.header {
+  background-color: var(--color-secondary);
+  color: var(--color-white);
+  padding: var(--spacing-md) 0;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* ========== LOGO ========== */
+.logo {
+  color: var(--color-white);
+  font-family: var(--font-primary);
+  font-size: 2rem;
+  text-decoration: none;
+  font-weight: 400;
+  letter-spacing: 1px;
+  transition: color 0.2s ease;
+}
+
+.logo:hover {
+  color: var(--color-accent2);
+}
+
+/* ========== NAVIGATION ========== */
+.nav {
+  display: flex;
+  gap: var(--spacing-lg);
+  align-items: center;
+}
+
+.nav-link {
+  color: var(--color-white);
+  text-decoration: none;
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  transition: all 0.2s ease;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-accent2);
+}
+
+/* ========== CART LINK ========== */
+.cart-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.cart-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: var(--color-accent2);
+  color: var(--color-secondary);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+/* ========== PANEL LINKS ========== */
+.organizer-link {
+  color: var(--color-accent2);
+  font-weight: 600;
+}
+
+.admin-link {
+  color: var(--color-warning);
+  font-weight: 600;
+}
+
+/* ========== AUTH BUTTONS ========== */
+.auth-buttons {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+}
+
+/* Botón base para header */
+.header-btn {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  font-family: var(--font-secondary);
+  font-size: 0.95rem;
+}
+
+/* Botón de login (outline) */
+.btn-login {
+  background-color: transparent;
+  color: var(--color-white);
+  border: 1px solid var(--color-white);
+}
+
+.btn-login:hover {
+  background-color: var(--color-white);
+  color: var(--color-secondary);
+}
+
+/* Botón de registro (primary) */
+.btn-register {
+  background-color: var(--color-white);
+  color: var(--color-secondary);
+  border: 1px solid var(--color-white);
+}
+
+.btn-register:hover {
+  background-color: var(--color-accent2);
+  color: var(--color-secondary);
+  border-color: var(--color-accent2);
+}
+
+/* Botón de dashboard */
+.btn-dashboard {
+  background-color: transparent;
+  color: var(--color-white);
+  border: 1px solid var(--color-white);
+  margin-right: var(--spacing-sm);
+}
+
+.btn-dashboard:hover {
+  background-color: var(--color-white);
+  color: var(--color-secondary);
+}
+
+/* Botón de logout (secondary) */
+.btn-logout {
+  background-color: transparent;
+  color: var(--color-white);
+  border: 1px solid var(--color-white);
+}
+
+.btn-logout:hover {
+  background-color: var(--color-error);
+  color: var(--color-white);
+  border-color: var(--color-error);
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    padding: var(--spacing-md);
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-sm);
+  }
+
+  .auth-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .logo {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-link {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+
+  .header-btn {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.9rem;
+  }
+}

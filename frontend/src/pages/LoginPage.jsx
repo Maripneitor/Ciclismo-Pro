@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import './LoginPage.css';
 
 function LoginPage() {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ function LoginPage() {
       ...formData,
       [e.target.name]: e.target.value
     });
+    // Limpiar error cuando el usuario empiece a escribir
+    if (error) setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -33,8 +36,7 @@ function LoginPage() {
     }
 
     console.log('Attempting login with:', {
-      email: formData.correo_electronico,
-      password: formData.contrasena
+      email: formData.correo_electronico
     });
 
     const result = await loginUser(formData.correo_electronico, formData.contrasena);
@@ -50,69 +52,126 @@ function LoginPage() {
   };
 
   return (
-    <div className="container">
-      <div style={{ maxWidth: '400px', margin: '0 auto' }}>
-        <h1>Iniciar Sesión</h1>
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label htmlFor="correo_electronico" style={{ display: 'block', marginBottom: '0.5rem' }}>
-              Correo Electrónico
-            </label>
-            <input
-              type="email"
-              id="correo_electronico"
-              name="correo_electronico"
-              value={formData.correo_electronico}
-              onChange={handleChange}
-              required
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
-            />
-          </div>
-          <div style={{ marginBottom: '1rem' }}>
-            <label htmlFor="contrasena" style={{ display: 'block', marginBottom: '0.5rem' }}>
-              Contraseña
-            </label>
-            <input
-              type="password"
-              id="contrasena"
-              name="contrasena"
-              value={formData.contrasena}
-              onChange={handleChange}
-              required
-              style={{ width: '100%', padding: '0.5rem', border: '1px solid #ccc', borderRadius: '4px' }}
-            />
-          </div>
-          {error && (
-            <div style={{ 
-              color: 'red', 
-              marginBottom: '1rem', 
-              padding: '0.5rem',
-              backgroundColor: '#ffe6e6',
-              border: '1px solid red',
-              borderRadius: '4px'
-            }}>
-              {error}
+    <div className="auth-container">
+      {/* ========== VISUAL PANEL ========== */}
+      <div className="visual-panel">
+        <div className="visual-content">
+          <span className="visual-icon">🚴‍♂️</span>
+          <h1 className="visual-title">Bienvenido de Vuelta</h1>
+          <p className="visual-subtitle">
+            Accede a tu cuenta para gestionar tus inscripciones, 
+            unirte a equipos y descubrir nuevos eventos ciclistas.
+          </p>
+          
+          <div className="visual-features">
+            <div className="visual-feature">
+              <span className="feature-icon">✅</span>
+              <span>Gestiona tus inscripciones</span>
             </div>
-          )}
-          <button 
-            type="submit" 
-            disabled={loading}
-            style={{ 
-              width: '100%', 
-              padding: '0.75rem', 
-              backgroundColor: loading ? '#ccc' : '#0073e6', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '4px',
-              cursor: loading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          </button>
-        </form>
-        <p style={{ marginTop: '1rem', textAlign: 'center' }}>
-          ¿No tienes cuenta? <a href="/register">Regístrate aquí</a>
-        </p>
+            <div className="visual-feature">
+              <span className="feature-icon">👥</span>
+              <span>Únete a equipos</span>
+            </div>
+            <div className="visual-feature">
+              <span className="feature-icon">🎯</span>
+              <span>Descubre eventos exclusivos</span>
+            </div>
+            <div className="visual-feature">
+              <span className="feature-icon">📊</span>
+              <span>Revisa tu progreso</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ========== FORM PANEL ========== */}
+      <div className="form-panel">
+        <div className="form-container">
+          <div className="form-header">
+            <h1 className="form-title">Iniciar Sesión</h1>
+            <p className="form-subtitle">
+              Ingresa tus credenciales para acceder a tu cuenta
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form">
+            {error && (
+              <div className="form-error">
+                {error}
+              </div>
+            )}
+
+            <div className="form-group">
+              <label htmlFor="correo_electronico" className="form-label">
+                Correo Electrónico
+              </label>
+              <input
+                type="email"
+                id="correo_electronico"
+                name="correo_electronico"
+                value={formData.correo_electronico}
+                onChange={handleChange}
+                required
+                placeholder="tu@email.com"
+                className="form-input"
+                disabled={loading}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="contrasena" className="form-label">
+                Contraseña
+              </label>
+              <input
+                type="password"
+                id="contrasena"
+                name="contrasena"
+                value={formData.contrasena}
+                onChange={handleChange}
+                required
+                placeholder="••••••••"
+                className="form-input"
+                disabled={loading}
+              />
+            </div>
+
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="submit-button"
+            >
+              {loading ? (
+                <span className="loading-text">
+                  <div style={{
+                    width: '16px',
+                    height: '16px',
+                    border: '2px solid transparent',
+                    borderTop: '2px solid currentColor',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
+                  Iniciando sesión...
+                </span>
+              ) : (
+                '🚀 Iniciar Sesión'
+              )}
+            </button>
+          </form>
+
+          <div className="form-footer">
+            <p>
+              ¿No tienes cuenta?{' '}
+              <Link to="/register" className="form-link">
+                Regístrate aquí
+              </Link>
+            </p>
+            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              <Link to="/forgot-password" className="form-link">
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

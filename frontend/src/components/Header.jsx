@@ -2,69 +2,37 @@ import { Link } from 'react-router-dom';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import './Header.css';
 
 function Header() {
   const { isAuthenticated, logoutUser, user } = useContext(AuthContext);
   const { cartItems } = useCart();
 
   return (
-    <header style={{
-      backgroundColor: 'var(--primary-500)',
-      color: 'white',
-      padding: 'var(--spacing-md) 0',
-      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-    }}>
-      <div className="container" style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <Link to="/" style={{
-          color: 'white',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-          textDecoration: 'none'
-        }}>
+    <header className="header">
+      <div className="header-container">
+        {/* Logo */}
+        <Link to="/" className="logo">
           🚴 Ciclismo Pro
         </Link>
 
-        <nav style={{ display: 'flex', gap: 'var(--spacing-lg)', alignItems: 'center' }}>
-          <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
+        {/* Navegación Principal */}
+        <nav className="nav">
+          <Link to="/" className="nav-link">
             Inicio
           </Link>
-          <Link to="/eventos" style={{ color: 'white', textDecoration: 'none' }}>
+          <Link to="/eventos" className="nav-link">
             Explorar Eventos
           </Link>
-          <Link to="/store" style={{ color: 'white', textDecoration: 'none' }}>
+          <Link to="/store" className="nav-link">
             🛍️ Tienda
           </Link>
           
           {/* Enlace al Carrito con contador */}
-          <Link to="/cart" style={{ 
-            color: 'white', 
-            textDecoration: 'none',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.25rem'
-          }}>
+          <Link to="/cart" className="nav-link cart-link">
             🛒 Carrito
             {cartItems.length > 0 && (
-              <span style={{
-                position: 'absolute',
-                top: '-8px',
-                right: '-8px',
-                backgroundColor: 'var(--secondary-500)',
-                color: 'white',
-                borderRadius: '50%',
-                width: '20px',
-                height: '20px',
-                fontSize: '0.75rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 'bold'
-              }}>
+              <span className="cart-badge">
                 {cartItems.length}
               </span>
             )}
@@ -72,57 +40,30 @@ function Header() {
           
           {/* Enlace para organizadores */}
           {user && (user.rol === 'organizador' || user.rol === 'administrador') && (
-            <Link to="/organizer/dashboard" style={{ 
-              color: 'var(--secondary-300)', 
-              textDecoration: 'none',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.25rem'
-            }}>
+            <Link to="/organizer/dashboard" className="nav-link organizer-link">
               🎯 Panel de Organizador
             </Link>
           )}
           
           {/* Enlace para administradores */}
           {user && user.rol === 'administrador' && (
-            <Link to="/admin/users" style={{ 
-              color: 'var(--warning)', 
-              textDecoration: 'none',
-              fontWeight: 'bold',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.25rem'
-            }}>
+            <Link to="/admin/users" className="nav-link admin-link">
               🛡️ Panel de Admin
             </Link>
           )}
         </nav>
 
-        <div style={{ display: 'flex', gap: 'var(--spacing-md)' }}>
+        {/* Botones de Autenticación */}
+        <div className="auth-buttons">
           {!isAuthenticated ? (
             <>
               <Link to="/login">
-                <button style={{
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  backgroundColor: 'transparent',
-                  color: 'white',
-                  border: '1px solid white',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}>
+                <button className="header-btn btn-login">
                   Iniciar Sesión
                 </button>
               </Link>
               <Link to="/register">
-                <button style={{
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  backgroundColor: 'white',
-                  color: 'var(--primary-500)',
-                  border: 'none',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}>
+                <button className="header-btn btn-register">
                   Registrarse
                 </button>
               </Link>
@@ -130,28 +71,13 @@ function Header() {
           ) : (
             <>
               <Link to="/dashboard">
-                <button style={{
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  backgroundColor: 'transparent',
-                  color: 'white',
-                  border: '1px solid white',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  marginRight: 'var(--spacing-sm)'
-                }}>
+                <button className="header-btn btn-dashboard">
                   Mi Dashboard
                 </button>
               </Link>
               <button 
                 onClick={logoutUser}
-                style={{
-                  padding: 'var(--spacing-sm) var(--spacing-md)',
-                  backgroundColor: 'transparent',
-                  color: 'white',
-                  border: '1px solid white',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
+                className="header-btn btn-logout"
               >
                 Cerrar Sesión
               </button>

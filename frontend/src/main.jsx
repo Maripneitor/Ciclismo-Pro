@@ -11,7 +11,7 @@ import CartPage from './pages/CartPage'
 import OrderSuccessPage from './pages/OrderSuccessPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-import DashboardPage from './pages/DashboardPage'
+// Eliminar: import DashboardPage from './pages/DashboardPage'
 import UserProfilePage from './pages/UserProfilePage'
 import UserInscriptionsPage from './pages/UserInscriptionsPage'
 import UserTeamsPage from './pages/UserTeamsPage'
@@ -32,11 +32,15 @@ import AdminLayout from './pages/admin/AdminLayout'
 import AdminUserManagementPage from './pages/admin/AdminUserManagementPage'
 import AdminEventManagementPage from './pages/admin/AdminEventManagementPage'
 import AdminProductManagementPage from './pages/admin/AdminProductManagementPage'
-import AdminOrderManagementPage from './pages/admin/AdminOrderManagementPage' // NUEVA IMPORTACIÓN
+import AdminOrderManagementPage from './pages/admin/AdminOrderManagementPage'
 import AdminCreateProductPage from './pages/admin/AdminCreateProductPage'
 import AdminEditProductPage from './pages/admin/AdminEditProductPage'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+
+// NUEVAS IMPORTACIONES
+import UserDashboardLayout from './pages/UserDashboardLayout'
+import UserDashboardHomePage from './pages/UserDashboardHomePage'
 
 const router = createBrowserRouter([
   {
@@ -78,34 +82,21 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
+          // ========== NUEVO LAYOUT DEL DASHBOARD ==========
           {
             path: "/dashboard",
-            element: <DashboardPage />
+            element: <UserDashboardLayout />,
+            children: [
+              { index: true, element: <UserDashboardHomePage /> },
+              { path: "profile", element: <UserProfilePage /> },
+              { path: "inscripciones", element: <UserInscriptionsPage /> },
+              { path: "teams", element: <UserTeamsPage /> },
+              { path: "teams/create", element: <CreateTeamPage /> },
+              { path: "teams/:id", element: <TeamDetailPage /> },
+              { path: "orders", element: <UserOrdersPage /> }
+            ]
           },
-          {
-            path: "/dashboard/profile",
-            element: <UserProfilePage />
-          },
-          {
-            path: "/dashboard/inscripciones",
-            element: <UserInscriptionsPage />
-          },
-          {
-            path: "/dashboard/teams",
-            element: <UserTeamsPage />
-          },
-          {
-            path: "/dashboard/orders",
-            element: <UserOrdersPage />
-          },
-          {
-            path: "/dashboard/teams/create",
-            element: <CreateTeamPage />
-          },
-          {
-            path: "/dashboard/teams/:id",
-            element: <TeamDetailPage />
-          },
+          // Rutas que NO usan el layout del dashboard
           {
             path: "/join-team/:inviteToken",
             element: <JoinTeamPage />
@@ -165,7 +156,7 @@ const router = createBrowserRouter([
                 element: <AdminProductManagementPage /> 
               },
               { 
-                path: "orders", // NUEVA RUTA
+                path: "orders",
                 element: <AdminOrderManagementPage /> 
               },
               {

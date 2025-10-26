@@ -6,6 +6,7 @@ import App from './App.jsx'
 import HomePage from './pages/HomePage'
 import EventsListPage from './pages/EventsListPage'
 import EventDetailPage from './pages/EventDetailPage'
+import StorePage from './pages/StorePage' // NUEVA IMPORTACIÓN
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import DashboardPage from './pages/DashboardPage'
@@ -26,7 +27,10 @@ import OrganizerEventsPage from './pages/organizer/OrganizerEventsPage'
 import OrganizerEventDetailPage from './pages/organizer/OrganizerEventDetailPage'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminUserManagementPage from './pages/admin/AdminUserManagementPage'
-import AdminEventManagementPage from './pages/admin/AdminEventManagementPage' // NUEVA IMPORTACIÓN
+import AdminEventManagementPage from './pages/admin/AdminEventManagementPage'
+import AdminProductManagementPage from './pages/admin/AdminProductManagementPage'
+import AdminCreateProductPage from './pages/admin/AdminCreateProductPage'
+import AdminEditProductPage from './pages/admin/AdminEditProductPage'
 import { AuthProvider } from './context/AuthContext'
 
 const router = createBrowserRouter([
@@ -45,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: "/eventos/:id",
         element: <EventDetailPage />
+      },
+      {
+        path: "/store", // NUEVA RUTA PÚBLICA
+        element: <StorePage />
       },
       {
         path: "/login",
@@ -131,9 +139,21 @@ const router = createBrowserRouter([
                 path: "users", 
                 element: <AdminUserManagementPage /> 
               },
-              { // NUEVA RUTA
+              { 
                 path: "events", 
                 element: <AdminEventManagementPage /> 
+              },
+              { 
+                path: "products", 
+                element: <AdminProductManagementPage /> 
+              },
+              {
+                path: "products/create", 
+                element: <AdminCreateProductPage /> 
+              },
+              {
+                path: "products/edit/:id", 
+                element: <AdminEditProductPage /> 
               }
             ]
           }

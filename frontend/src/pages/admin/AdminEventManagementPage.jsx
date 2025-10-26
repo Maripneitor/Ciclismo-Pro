@@ -6,6 +6,7 @@ function AdminEventManagementPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [updatingStatuses, setUpdatingStatuses] = useState({});
 
   useEffect(() => {
     const fetchAllEvents = async () => {
@@ -23,6 +24,37 @@ function AdminEventManagementPage() {
 
     fetchAllEvents();
   }, []);
+
+  const handleStatusChange = async (eventId, newStatus) => {
+    try {
+      // Mostrar estado de carga para este evento específico
+      setUpdatingStatuses(prev => ({ ...prev, [eventId]: true }));
+      
+      const response = await apiClient.put(
+        `/admin/events/${eventId}/status`,
+        { nuevoEstado: newStatus }
+      );
+
+      if (response.data.success) {
+        // Actualizar el estado local del evento
+        setEvents(prevEvents =>
+          prevEvents.map(event =>
+            event.id_evento === eventId
+              ? { ...event, estado: newStatus }
+              : event
+          )
+        );
+        
+        console.log(`Estado actualizado para evento ${eventId}: ${newStatus}`);
+      }
+    } catch (error) {
+      console.error('Error updating event status:', error);
+      alert(error.response?.data?.message || 'Error al actualizar el estado del evento');
+    } finally {
+      // Remover estado de carga para este evento
+      setUpdatingStatuses(prev => ({ ...prev, [eventId]: false }));
+    }
+  };
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -42,6 +74,15 @@ function AdminEventManagementPage() {
       case 'cancelado': return 'Cancelado';
       default: return status;
     }
+  };
+
+  const getStatusOptions = () => {
+    return [
+      { value: 'proximo', label: 'Próximo' },
+      { value: 'activo', label: 'Activo' },
+      { value: 'finalizado', label: 'Finalizado' },
+      { value: 'cancelado', label: 'Cancelado' }
+    ];
   };
 
   const getDifficultyColor = (difficulty) => {
@@ -113,7 +154,7 @@ function AdminEventManagementPage() {
       <div style={{ marginBottom: '2rem' }}>
         <h1>Gestión de Eventos</h1>
         <p style={{ color: 'var(--neutral-600)' }}>
-          Supervisa todos los eventos creados en la plataforma
+          Supervisa y modera todos los eventos creados en la plataforma
         </p>
       </div>
 
@@ -264,7 +305,18 @@ function AdminEventManagementPage() {
                     textTransform: 'uppercase',
                     letterSpacing: '0.5px'
                   }}>
-                    Estado
+                    Estado Actual
+                  </th>
+                  <th style={{ 
+                    padding: '1rem', 
+                    textAlign: 'center', 
+                    fontWeight: '600',
+                    color: 'var(--neutral-700)',
+                    fontSize: '0.9rem',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    Gestionar Estado
                   </th>
                   <th style={{ 
                     padding: '1rem', 
@@ -309,17 +361,6 @@ function AdminEventManagementPage() {
                     letterSpacing: '0.5px'
                   }}>
                     Dificultad
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Cuota
                   </th>
                 </tr>
               </thead>
@@ -401,6 +442,54 @@ function AdminEventManagementPage() {
                         {getStatusText(event.estado)}
                       </span>
                     </td>
+                    <td style={{ padding: '1rem', textAlign: 'center' }}>
+                      <select
+                        value={event.estado}
+                        onChange={(e) => handleStatusChange(event.id_evento, e.target.value)}
+                        disabled={updatingStatuses[event.id_evento]}
+                        style={{
+                          padding: '0.5rem 1rem',
+                          border: '1px solid var(--neutral-300)',
+                          borderRadius: '6px',
+                          backgroundColor: 'white',
+                          color: 'var(--neutral-800)',
+                          fontSize: '0.85rem',
+                          fontWeight: '500',
+                          cursor: updatingStatuses[event.id_evento] ? 'not-allowed' : 'pointer',
+                          minWidth: '140px',
+                          opacity: updatingStatuses[event.id_evento] ? 0.7 : 1,
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseOver={(e) => {
+                          if (!updatingStatuses[event.id_evento]) {
+                            e.currentTarget.style.borderColor = 'var(--primary-500)';
+                            e.currentTarget.style.boxShadow = '0 0 0 2px rgba(0, 115, 230, 0.1)';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          if (!updatingStatuses[event.id_evento]) {
+                            e.currentTarget.style.borderColor = 'var(--neutral-300)';
+                            e.currentTarget.style.boxShadow = 'none';
+                          }
+                        }}
+                      >
+                        {getStatusOptions().map(option => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      {updatingStatuses[event.id_evento] && (
+                        <div style={{ 
+                          marginTop: '0.5rem',
+                          fontSize: '0.75rem',
+                          color: 'var(--primary-500)',
+                          fontWeight: '500'
+                        }}>
+                          Actualizando...
+                        </div>
+                      )}
+                    </td>
                     <td style={{ 
                       padding: '1rem', 
                       textAlign: 'center',
@@ -451,15 +540,6 @@ function AdminEventManagementPage() {
                         </span>
                       )}
                     </td>
-                    <td style={{ 
-                      padding: '1rem', 
-                      textAlign: 'center',
-                      color: event.cuota_inscripcion ? 'var(--neutral-800)' : 'var(--success)',
-                      fontWeight: 'bold',
-                      fontSize: '0.9rem'
-                    }}>
-                      {formatCurrency(event.cuota_inscripcion)}
-                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -468,14 +548,41 @@ function AdminEventManagementPage() {
         )}
       </div>
 
-      {/* Información adicional */}
+      {/* Información de moderación */}
+      <div style={{ 
+        marginTop: '2rem',
+        padding: '1.5rem',
+        backgroundColor: 'var(--primary-50)',
+        borderRadius: '8px',
+        border: '1px solid var(--primary-200)'
+      }}>
+        <h4 style={{ marginBottom: '1rem', color: 'var(--primary-700)' }}>💡 Información de Moderación:</h4>
+        <div style={{ display: 'grid', gap: '0.75rem' }}>
+          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
+            <strong>Próximo:</strong> Evento programado para el futuro. Los usuarios pueden inscribirse.
+          </p>
+          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
+            <strong>Activo:</strong> Evento en curso. Las inscripciones pueden estar cerradas.
+          </p>
+          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
+            <strong>Finalizado:</strong> Evento completado. Solo modo consulta.
+          </p>
+          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
+            <strong>Cancelado:</strong> Evento cancelado. No visible para nuevos usuarios.
+          </p>
+          <p style={{ margin: '0.5rem 0 0 0', color: 'var(--primary-700)', fontSize: '0.9rem', fontWeight: '500' }}>
+            ⚠️ <strong>Precaución:</strong> Los cambios de estado son inmediatos y afectan la visibilidad del evento.
+          </p>
+        </div>
+      </div>
+
+      {/* Leyenda de estados */}
       <div style={{ 
         marginTop: '2rem',
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
         gap: '1.5rem'
       }}>
-        {/* Leyenda de estados */}
         <div style={{ 
           padding: '1.5rem',
           backgroundColor: 'var(--neutral-50)',

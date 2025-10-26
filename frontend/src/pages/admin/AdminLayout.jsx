@@ -12,7 +12,7 @@ function AdminLayout() {
   };
 
   const isActiveLink = (path) => {
-    return location.pathname === path ? {
+    return location.pathname.startsWith(path) ? {
       backgroundColor: 'var(--neutral-700)',
       color: 'white',
       borderLeftColor: 'var(--primary-500)'
@@ -110,6 +110,37 @@ function AdminLayout() {
                 }}
               >
                 🚴 Gestión de Eventos
+              </Link>
+            </li>
+            <li style={{ marginBottom: '0.75rem' }}>
+              <Link 
+                to="/admin/products"
+                style={{
+                  display: 'block',
+                  padding: '0.875rem 1rem',
+                  color: 'var(--neutral-200)',
+                  textDecoration: 'none',
+                  borderRadius: '6px',
+                  transition: 'all 0.2s ease',
+                  borderLeft: '3px solid transparent',
+                  ...isActiveLink('/admin/products')
+                }}
+                onMouseOver={(e) => {
+                  if (!isActiveLink('/admin/products').backgroundColor) {
+                    e.currentTarget.style.backgroundColor = 'var(--neutral-800)';
+                    e.currentTarget.style.color = 'white';
+                    e.currentTarget.style.borderLeftColor = 'var(--primary-500)';
+                  }
+                }}
+                onMouseOut={(e) => {
+                  if (!isActiveLink('/admin/products').backgroundColor) {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = 'var(--neutral-200)';
+                    e.currentTarget.style.borderLeftColor = 'transparent';
+                  }
+                }}
+              >
+                🛍️ Gestión de Tienda
               </Link>
             </li>
             {/* Espacio para futuras rutas de admin */}

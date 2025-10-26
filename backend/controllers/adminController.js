@@ -180,8 +180,329 @@ const updateUserRole = async (req, res) => {
   }
 };
 
+const updateEventStatus = async (req, res) => {
+  const client = await db.pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const eventId = req.params.id;
+    const { nuevoEstado } = req.body;
+    const adminId = req.user.id_usuario;
+
+    console.log('=== UPDATE EVENT STATUS ===');
+    console.log('Event ID:', eventId);
+    console.log('New Status:', nuevoEstado);
+    console.log('Admin ID:', adminId);
+    console.log('Admin Role:', req.user.rol);
+
+    // Validaciones básicas
+    if (!nuevoEstado) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'El nuevo estado es requerido'
+      });
+    }
+
+    // Validar que el estado sea uno de los permitidos
+    const allowedStatuses = ['proximo', 'activo', 'finalizado', 'cancelado'];
+    if (!allowedStatuses.includes(nuevoEstado)) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Estado no válido. Los estados permitidos son: proximo, activo, finalizado, cancelado'
+      });
+    }
+
+    // Verificar que el evento existe
+    const eventCheck = await client.query(
+      `SELECT e.id_evento, e.nombre, e.estado, u.nombre_completo as organizador 
+       FROM eventos e 
+       JOIN usuarios u ON e.id_organizador = u.id_usuario 
+       WHERE e.id_evento = $1`,
+      [eventId]
+    );
+
+    if (eventCheck.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        success: false,
+        message: 'Evento no encontrado'
+      });
+    }
+
+    const event = eventCheck.rows[0];
+
+    // Actualizar el estado del evento
+    const updatedEvent = await client.query(
+      `UPDATE eventos 
+       SET estado = $1 
+       WHERE id_evento = $2 
+       RETURNING *`,
+      [nuevoEstado, eventId]
+    );
+
+    await client.query('COMMIT');
+
+    console.log('Event status updated successfully:', updatedEvent.rows[0]);
+
+    res.json({
+      success: true,
+      message: `Estado del evento "${event.nombre}" actualizado a: ${nuevoEstado}`,
+      data: updatedEvent.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error actualizando estado del evento:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al actualizar el estado del evento',
+      error: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
+// ========== GESTIÓN DE PRODUCTOS ==========
+
+const getAllProducts = async (req, res) => {
+  try {
+    const adminId = req.user.id_usuario;
+
+    console.log('=== GET ALL PRODUCTS ===');
+    console.log('Admin ID:', adminId);
+    console.log('Admin Role:', req.user.rol);
+
+    const result = await db.query(
+      `SELECT * FROM productos_tienda ORDER BY id_producto DESC`
+    );
+
+    console.log('Total products found:', result.rows.length);
+
+    res.json({
+      success: true,
+      data: {
+        totalProducts: result.rows.length,
+        products: result.rows
+      }
+    });
+  } catch (error) {
+    console.error('Error obteniendo todos los productos:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al obtener productos',
+      error: error.message
+    });
+  }
+};
+
+const getProductById = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const adminId = req.user.id_usuario;
+
+    console.log('=== GET PRODUCT BY ID ===');
+    console.log('Product ID:', productId);
+    console.log('Admin ID:', adminId);
+
+    const result = await db.query(
+      'SELECT * FROM productos_tienda WHERE id_producto = $1',
+      [productId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Producto no encontrado'
+      });
+    }
+
+    console.log('Product found:', result.rows[0]);
+
+    res.json({
+      success: true,
+      data: result.rows[0]
+    });
+  } catch (error) {
+    console.error('Error obteniendo producto:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al obtener el producto',
+      error: error.message
+    });
+  }
+};
+
+const createProduct = async (req, res) => {
+  const client = await db.pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const { nombre, descripcion, precio, categoria, inventario } = req.body;
+    const adminId = req.user.id_usuario;
+
+    console.log('=== CREATE PRODUCT ===');
+    console.log('Admin ID:', adminId);
+    console.log('Request body:', req.body);
+
+    // Validaciones básicas
+    if (!nombre || !precio || !categoria || inventario === undefined) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Nombre, precio, categoría e inventario son campos obligatorios'
+      });
+    }
+
+    // Validar que el precio sea un número positivo
+    if (precio < 0) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'El precio debe ser un número positivo'
+      });
+    }
+
+    // Validar que el inventario sea un número entero no negativo
+    if (inventario < 0 || !Number.isInteger(inventario)) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'El inventario debe ser un número entero no negativo'
+      });
+    }
+
+    // Insertar el nuevo producto
+    const newProduct = await client.query(
+      `INSERT INTO productos_tienda 
+       (nombre, descripcion, precio, categoria, inventario, activo) 
+       VALUES ($1, $2, $3, $4, $5, true) 
+       RETURNING *`,
+      [nombre, descripcion || null, precio, categoria, inventario]
+    );
+
+    await client.query('COMMIT');
+
+    console.log('Product created successfully:', newProduct.rows[0]);
+
+    res.status(201).json({
+      success: true,
+      message: 'Producto creado exitosamente',
+      data: newProduct.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error creando producto:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al crear el producto',
+      error: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
+const updateProduct = async (req, res) => {
+  const client = await db.pool.connect();
+  
+  try {
+    await client.query('BEGIN');
+    
+    const productId = req.params.id;
+    const { nombre, descripcion, precio, categoria, inventario, activo } = req.body;
+    const adminId = req.user.id_usuario;
+
+    console.log('=== UPDATE PRODUCT ===');
+    console.log('Product ID:', productId);
+    console.log('Admin ID:', adminId);
+    console.log('Request body:', req.body);
+
+    // Validaciones básicas
+    if (!nombre || !precio || !categoria || inventario === undefined) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Nombre, precio, categoría e inventario son campos obligatorios'
+      });
+    }
+
+    // Validar que el precio sea un número positivo
+    if (precio < 0) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'El precio debe ser un número positivo'
+      });
+    }
+
+    // Validar que el inventario sea un número entero no negativo
+    if (inventario < 0 || !Number.isInteger(inventario)) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'El inventario debe ser un número entero no negativo'
+      });
+    }
+
+    // Verificar que el producto existe
+    const productCheck = await client.query(
+      'SELECT id_producto, nombre FROM productos_tienda WHERE id_producto = $1',
+      [productId]
+    );
+
+    if (productCheck.rows.length === 0) {
+      await client.query('ROLLBACK');
+      return res.status(404).json({
+        success: false,
+        message: 'Producto no encontrado'
+      });
+    }
+
+    // Actualizar el producto
+    const updatedProduct = await client.query(
+      `UPDATE productos_tienda 
+       SET nombre = $1, descripcion = $2, precio = $3, categoria = $4, inventario = $5, activo = $6
+       WHERE id_producto = $7 
+       RETURNING *`,
+      [nombre, descripcion || null, precio, categoria, inventario, activo !== false, productId]
+    );
+
+    await client.query('COMMIT');
+
+    console.log('Product updated successfully:', updatedProduct.rows[0]);
+
+    res.json({
+      success: true,
+      message: 'Producto actualizado exitosamente',
+      data: updatedProduct.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error actualizando producto:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al actualizar el producto',
+      error: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
 module.exports = {
   getAllUsers,
   getAllEvents,
-  updateUserRole
+  updateUserRole,
+  updateEventStatus,
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct
 };

@@ -33,6 +33,10 @@ function Header() {
           <Link to="/eventos" style={{ color: 'white', textDecoration: 'none' }}>
             Explorar Eventos
           </Link>
+          {/* NUEVO: Enlace a la Tienda */}
+          <Link to="/store" style={{ color: 'white', textDecoration: 'none' }}>
+            🛍️ Tienda
+          </Link>
           
           {/* Enlace para organizadores */}
           {user && (user.rol === 'organizador' || user.rol === 'administrador') && (
@@ -48,7 +52,7 @@ function Header() {
             </Link>
           )}
           
-          {/* NUEVO: Enlace para administradores */}
+          {/* Enlace para administradores */}
           {user && user.rol === 'administrador' && (
             <Link to="/admin/users" style={{ 
               color: 'var(--warning)', 

@@ -3,7 +3,7 @@ import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 
 function Header() {
-  const { isAuthenticated, logoutUser, user } = useContext(AuthContext); // AÑADIR user
+  const { isAuthenticated, logoutUser, user } = useContext(AuthContext);
 
   return (
     <header style={{
@@ -23,24 +23,42 @@ function Header() {
           fontWeight: 'bold',
           textDecoration: 'none'
         }}>
-          Logo
+          🚴 Ciclismo Pro
         </Link>
 
-        <nav style={{ display: 'flex', gap: 'var(--spacing-lg)' }}>
+        <nav style={{ display: 'flex', gap: 'var(--spacing-lg)', alignItems: 'center' }}>
           <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
             Inicio
           </Link>
           <Link to="/eventos" style={{ color: 'white', textDecoration: 'none' }}>
             Explorar Eventos
           </Link>
-          {/* NUEVO: Enlace para organizadores */}
+          
+          {/* Enlace para organizadores */}
           {user && (user.rol === 'organizador' || user.rol === 'administrador') && (
             <Link to="/organizer/dashboard" style={{ 
               color: 'var(--secondary-300)', 
               textDecoration: 'none',
-              fontWeight: 'bold'
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem'
             }}>
-              Panel de Organizador
+              🎯 Panel de Organizador
+            </Link>
+          )}
+          
+          {/* NUEVO: Enlace para administradores */}
+          {user && user.rol === 'administrador' && (
+            <Link to="/admin/users" style={{ 
+              color: 'var(--warning)', 
+              textDecoration: 'none',
+              fontWeight: 'bold',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.25rem'
+            }}>
+              🛡️ Panel de Admin
             </Link>
           )}
         </nav>

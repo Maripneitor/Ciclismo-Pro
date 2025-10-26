@@ -19,10 +19,14 @@ import JoinWithCodePage from './pages/JoinWithCodePage'
 import RegistrationPage from './pages/RegistrationPage'
 import ProtectedRoute from './components/ProtectedRoute'
 import OrganizerRoute from './components/OrganizerRoute'
+import AdminRoute from './components/AdminRoute'
 import OrganizerLayout from './pages/organizer/OrganizerLayout'
 import OrganizerDashboardPage from './pages/organizer/OrganizerDashboardPage'
 import OrganizerEventsPage from './pages/organizer/OrganizerEventsPage'
-import OrganizerEventDetailPage from './pages/organizer/OrganizerEventDetailPage' // NUEVA IMPORTACIÓN
+import OrganizerEventDetailPage from './pages/organizer/OrganizerEventDetailPage'
+import AdminLayout from './pages/admin/AdminLayout'
+import AdminUserManagementPage from './pages/admin/AdminUserManagementPage'
+import AdminEventManagementPage from './pages/admin/AdminEventManagementPage' // NUEVA IMPORTACIÓN
 import { AuthProvider } from './context/AuthContext'
 
 const router = createBrowserRouter([
@@ -91,7 +95,7 @@ const router = createBrowserRouter([
           }
         ]
       },
-      // NUEVO BLOQUE: Rutas de Organizador
+      // Rutas de Organizador
       {
         element: <OrganizerRoute />,
         children: [
@@ -107,9 +111,29 @@ const router = createBrowserRouter([
                 path: "events", 
                 element: <OrganizerEventsPage /> 
               },
-              { // NUEVA RUTA
+              { 
                 path: "events/:id", 
                 element: <OrganizerEventDetailPage /> 
+              }
+            ]
+          }
+        ]
+      },
+      // Rutas de Administrador
+      {
+        element: <AdminRoute />,
+        children: [
+          {
+            path: "/admin",
+            element: <AdminLayout />,
+            children: [
+              { 
+                path: "users", 
+                element: <AdminUserManagementPage /> 
+              },
+              { // NUEVA RUTA
+                path: "events", 
+                element: <AdminEventManagementPage /> 
               }
             ]
           }

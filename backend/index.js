@@ -15,7 +15,8 @@ const inscriptionRoutes = require('./routes/inscriptionRoutes');
 const teamRoutes = require('./routes/teamRoutes');
 const dataRoutes = require('./routes/dataRoutes');
 const organizerRoutes = require('./routes/organizerRoutes');
-const inscriptionAdminRoutes = require('./routes/inscriptionAdminRoutes'); // NUEVA IMPORTACIÓN
+const inscriptionAdminRoutes = require('./routes/inscriptionAdminRoutes');
+const adminRoutes = require('./routes/adminRoutes'); // NUEVA IMPORTACIÓN
 
 app.use('/api/eventos', eventRoutes);
 app.use('/api/auth', authRoutes);
@@ -24,7 +25,8 @@ app.use('/api/inscripciones', inscriptionRoutes);
 app.use('/api/teams', teamRoutes);
 app.use('/api/data', dataRoutes);
 app.use('/api/organizer', organizerRoutes);
-app.use('/api/admin/inscripciones', inscriptionAdminRoutes); // NUEVA RUTA
+app.use('/api/admin/inscripciones', inscriptionAdminRoutes);
+app.use('/api/admin', adminRoutes); // NUEVA RUTA
 
 app.listen(PORT, () => {
   console.log(`Servidor backend ejecutándose en puerto ${PORT}`);

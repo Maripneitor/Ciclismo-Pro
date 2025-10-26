@@ -37,6 +37,7 @@ import AdminCreateProductPage from './pages/admin/AdminCreateProductPage'
 import AdminEditProductPage from './pages/admin/AdminEditProductPage'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
 
 // NUEVAS IMPORTACIONES
 import UserDashboardLayout from './pages/UserDashboardLayout'
@@ -108,6 +109,11 @@ const router = createBrowserRouter([
           {
             path: "/eventos/:id/register",
             element: <RegistrationPage />
+          },
+          // NUEVA RUTA: Página de éxito de inscripción
+          {
+            path: "/eventos/:id_evento/success",
+            element: <RegistrationSuccessPage />
           }
         ]
       },

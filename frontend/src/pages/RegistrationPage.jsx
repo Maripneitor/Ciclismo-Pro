@@ -96,7 +96,7 @@ function RegistrationPage() {
       
       // Éxito
       alert('¡Inscripción exitosa!');
-      navigate('/dashboard/inscripciones');
+     navigate(`/eventos/${id}/success`);
 
     } catch (error) {
       console.error('Error creating inscription:', error);

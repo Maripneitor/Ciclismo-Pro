@@ -218,13 +218,25 @@ function OrganizerEventsPage() {
                 >
                   <td style={{ padding: '1rem' }}>
                     <div>
-                      <strong style={{ 
-                        color: 'var(--neutral-800)',
-                        display: 'block',
-                        marginBottom: '0.25rem'
-                      }}>
+                      {/* ACTUALIZADO: Convertir nombre en Link */}
+                      <Link 
+                        to={`/organizer/events/${event.id_evento}`}
+                        style={{ 
+                          color: 'var(--neutral-800)',
+                          textDecoration: 'none',
+                          fontWeight: 'bold',
+                          display: 'block',
+                          marginBottom: '0.25rem'
+                        }}
+                        onMouseOver={(e) => {
+                          e.currentTarget.style.color = 'var(--primary-500)';
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.color = 'var(--neutral-800)';
+                        }}
+                      >
                         {event.nombre}
-                      </strong>
+                      </Link>
                       {event.descripcion && (
                         <small style={{ 
                           color: 'var(--neutral-500)',
@@ -298,17 +310,19 @@ function OrganizerEventsPage() {
                       }}>
                         Editar
                       </button>
-                      <button style={{
-                        padding: '0.5rem 1rem',
-                        backgroundColor: 'var(--primary-500)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '0.875rem'
-                      }}>
-                        Ver
-                      </button>
+                      <Link to={`/organizer/events/${event.id_evento}`}>
+                        <button style={{
+                          padding: '0.5rem 1rem',
+                          backgroundColor: 'var(--primary-500)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '0.875rem'
+                        }}>
+                          Ver
+                        </button>
+                      </Link>
                     </div>
                   </td>
                 </tr>

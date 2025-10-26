@@ -21,7 +21,8 @@ import ProtectedRoute from './components/ProtectedRoute'
 import OrganizerRoute from './components/OrganizerRoute'
 import OrganizerLayout from './pages/organizer/OrganizerLayout'
 import OrganizerDashboardPage from './pages/organizer/OrganizerDashboardPage'
-import OrganizerEventsPage from './pages/organizer/OrganizerEventsPage' // NUEVA IMPORTACIÓN
+import OrganizerEventsPage from './pages/organizer/OrganizerEventsPage'
+import OrganizerEventDetailPage from './pages/organizer/OrganizerEventDetailPage' // NUEVA IMPORTACIÓN
 import { AuthProvider } from './context/AuthContext'
 
 const router = createBrowserRouter([
@@ -102,9 +103,13 @@ const router = createBrowserRouter([
                 path: "dashboard", 
                 element: <OrganizerDashboardPage /> 
               },
-              { // NUEVA RUTA
+              { 
                 path: "events", 
                 element: <OrganizerEventsPage /> 
+              },
+              { // NUEVA RUTA
+                path: "events/:id", 
+                element: <OrganizerEventDetailPage /> 
               }
             ]
           }

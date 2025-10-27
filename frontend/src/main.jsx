@@ -11,10 +11,8 @@ import CartPage from './pages/CartPage'
 import OrderSuccessPage from './pages/OrderSuccessPage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-// NUEVAS IMPORTACIONES PARA RECUPERACIÓN DE CONTRASEÑA
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
-// Eliminar: import DashboardPage from './pages/DashboardPage'
 import UserProfilePage from './pages/UserProfilePage'
 import UserInscriptionsPage from './pages/UserInscriptionsPage'
 import UserTeamsPage from './pages/UserTeamsPage'
@@ -40,9 +38,8 @@ import AdminCreateProductPage from './pages/admin/AdminCreateProductPage'
 import AdminEditProductPage from './pages/admin/AdminEditProductPage'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
+import { ThemeProvider } from './context/ThemeContext'
 import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
-
-// NUEVAS IMPORTACIONES
 import UserDashboardLayout from './pages/UserDashboardLayout'
 import UserDashboardHomePage from './pages/UserDashboardHomePage'
 
@@ -83,7 +80,6 @@ const router = createBrowserRouter([
         path: "/register",
         element: <RegisterPage />
       },
-      // ========== NUEVAS RUTAS PARA RECUPERACIÓN DE CONTRASEÑA ==========
       {
         path: "/forgot-password",
         element: <ForgotPasswordPage />
@@ -95,7 +91,6 @@ const router = createBrowserRouter([
       {
         element: <ProtectedRoute />,
         children: [
-          // ========== NUEVO LAYOUT DEL DASHBOARD ==========
           {
             path: "/dashboard",
             element: <UserDashboardLayout />,
@@ -109,7 +104,6 @@ const router = createBrowserRouter([
               { path: "orders", element: <UserOrdersPage /> }
             ]
           },
-          // Rutas que NO usan el layout del dashboard
           {
             path: "/join-team/:inviteToken",
             element: <JoinTeamPage />
@@ -122,14 +116,12 @@ const router = createBrowserRouter([
             path: "/eventos/:id/register",
             element: <RegistrationPage />
           },
-          // NUEVA RUTA: Página de éxito de inscripción
           {
             path: "/eventos/:id_evento/success",
             element: <RegistrationSuccessPage />
           }
         ]
       },
-      // Rutas de Organizador
       {
         element: <OrganizerRoute />,
         children: [
@@ -153,7 +145,6 @@ const router = createBrowserRouter([
           }
         ]
       },
-      // Rutas de Administrador
       {
         element: <AdminRoute />,
         children: [
@@ -195,10 +186,12 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <CartProvider>
-        <RouterProvider router={router} />
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <RouterProvider router={router} />
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   </StrictMode>,
 )

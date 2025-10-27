@@ -1,0 +1,76 @@
+.admin-events-header {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: var(--spacing-xl);
+padding-bottom: var(--spacing-lg);
+border-bottom: 1px solid var(--color-gray-light);
+}
+
+.events-stats {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: var(--spacing-lg);
+margin-bottom: var(--spacing-xl);
+}
+
+.stat-card {
+background-color: var(--color-white);
+padding: var(--spacing-lg);
+border-radius: var(--border-radius-md);
+border: 1px solid var(--color-gray-light);
+text-align: center;
+box-shadow: var(--shadow-sm);
+}
+
+.events-table-container {
+background-color: var(--color-white);
+border-radius: var(--border-radius-md);
+border: 1px solid var(--color-gray-light);
+overflow: hidden;
+box-shadow: var(--shadow-sm);
+}
+
+.table-actions {
+display: flex;
+gap: var(--spacing-sm);
+justify-content: flex-end;
+}
+
+.action-btn {
+padding: var(--spacing-xs) var(--spacing-sm);
+border: none;
+border-radius: var(--border-radius-sm);
+cursor: pointer;
+font-size: 0.8rem;
+transition: all var(--transition-fast);
+}
+
+.btn-edit {
+background-color: var(--color-warning);
+color: var(--color-white);
+}
+
+.btn-delete {
+background-color: var(--color-error);
+color: var(--color-white);
+}
+
+.btn-view {
+background-color: var(--color-info);
+color: var(--color-white);
+}
+
+body.dark .admin-events-header {
+border-bottom-color: var(--color-gray-medium);
+}
+
+body.dark .stat-card {
+background-color: var(--color-secondary);
+border-color: var(--color-gray-medium);
+}
+
+body.dark .events-table-container {
+background-color: var(--color-secondary);
+border-color: var(--color-gray-medium);
+}

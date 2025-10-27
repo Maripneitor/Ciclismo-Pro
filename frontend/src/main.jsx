@@ -28,6 +28,7 @@ import AdminRoute from './components/AdminRoute'
 import OrganizerLayout from './pages/organizer/OrganizerLayout'
 import OrganizerDashboardPage from './pages/organizer/OrganizerDashboardPage'
 import OrganizerEventsPage from './pages/organizer/OrganizerEventsPage'
+import CreateEventPage from './pages/organizer/CreateEventPage'
 import OrganizerEventDetailPage from './pages/organizer/OrganizerEventDetailPage'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminUserManagementPage from './pages/admin/AdminUserManagementPage'
@@ -39,7 +40,7 @@ import AdminEditProductPage from './pages/admin/AdminEditProductPage'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ThemeProvider } from './context/ThemeContext'
-import RegistrationSuccessPage from './pages/RegistrationSuccessPage';
+import RegistrationSuccessPage from './pages/RegistrationSuccessPage'
 import UserDashboardLayout from './pages/UserDashboardLayout'
 import UserDashboardHomePage from './pages/UserDashboardHomePage'
 
@@ -48,46 +49,16 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      {
-        index: true,
-        element: <HomePage />
-      },
-      {
-        path: "/eventos",
-        element: <EventsListPage />
-      },
-      {
-        path: "/eventos/:id",
-        element: <EventDetailPage />
-      },
-      {
-        path: "/store",
-        element: <StorePage />
-      },
-      {
-        path: "/cart",
-        element: <CartPage />
-      },
-      {
-        path: "/order-success",
-        element: <OrderSuccessPage />
-      },
-      {
-        path: "/login",
-        element: <LoginPage />
-      },
-      {
-        path: "/register",
-        element: <RegisterPage />
-      },
-      {
-        path: "/forgot-password",
-        element: <ForgotPasswordPage />
-      },
-      {
-        path: "/reset-password/:token",
-        element: <ResetPasswordPage />
-      },
+      { index: true, element: <HomePage /> },
+      { path: "/eventos", element: <EventsListPage /> },
+      { path: "/eventos/:id", element: <EventDetailPage /> },
+      { path: "/store", element: <StorePage /> },
+      { path: "/cart", element: <CartPage /> },
+      { path: "/order-success", element: <OrderSuccessPage /> },
+      { path: "/login", element: <LoginPage /> },
+      { path: "/register", element: <RegisterPage /> },
+      { path: "/forgot-password", element: <ForgotPasswordPage /> },
+      { path: "/reset-password/:token", element: <ResetPasswordPage /> },
       {
         element: <ProtectedRoute />,
         children: [
@@ -104,22 +75,10 @@ const router = createBrowserRouter([
               { path: "orders", element: <UserOrdersPage /> }
             ]
           },
-          {
-            path: "/join-team/:inviteToken",
-            element: <JoinTeamPage />
-          },
-          {
-            path: "/dashboard/teams/join",
-            element: <JoinWithCodePage />
-          },
-          {
-            path: "/eventos/:id/register",
-            element: <RegistrationPage />
-          },
-          {
-            path: "/eventos/:id_evento/success",
-            element: <RegistrationSuccessPage />
-          }
+          { path: "/join-team/:inviteToken", element: <JoinTeamPage /> },
+          { path: "/dashboard/teams/join", element: <JoinWithCodePage /> },
+          { path: "/eventos/:id/register", element: <RegistrationPage /> },
+          { path: "/eventos/:id_evento/success", element: <RegistrationSuccessPage /> }
         ]
       },
       {
@@ -129,18 +88,10 @@ const router = createBrowserRouter([
             path: "/organizer",
             element: <OrganizerLayout />,
             children: [
-              { 
-                path: "dashboard", 
-                element: <OrganizerDashboardPage /> 
-              },
-              { 
-                path: "events", 
-                element: <OrganizerEventsPage /> 
-              },
-              { 
-                path: "events/:id", 
-                element: <OrganizerEventDetailPage /> 
-              }
+              { path: "dashboard", element: <OrganizerDashboardPage /> },
+              { path: "events", element: <OrganizerEventsPage /> },
+              { path: "events/create", element: <CreateEventPage /> },
+              { path: "events/:id", element: <OrganizerEventDetailPage /> }
             ]
           }
         ]
@@ -152,37 +103,19 @@ const router = createBrowserRouter([
             path: "/admin",
             element: <AdminLayout />,
             children: [
-              { 
-                path: "users", 
-                element: <AdminUserManagementPage /> 
-              },
-              { 
-                path: "events", 
-                element: <AdminEventManagementPage /> 
-              },
-              { 
-                path: "products", 
-                element: <AdminProductManagementPage /> 
-              },
-              { 
-                path: "orders",
-                element: <AdminOrderManagementPage /> 
-              },
-              {
-                path: "products/create", 
-                element: <AdminCreateProductPage /> 
-              },
-              {
-                path: "products/edit/:id", 
-                element: <AdminEditProductPage /> 
-              }
+              { path: "users", element: <AdminUserManagementPage /> },
+              { path: "events", element: <AdminEventManagementPage /> },
+              { path: "products", element: <AdminProductManagementPage /> },
+              { path: "orders", element: <AdminOrderManagementPage /> },
+              { path: "products/create", element: <AdminCreateProductPage /> },
+              { path: "products/edit/:id", element: <AdminEditProductPage /> }
             ]
           }
         ]
       }
     ]
   }
-]);
+])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

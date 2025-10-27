@@ -1,5 +1,84 @@
 const db = require('../db');
 
+// Función de utilidad para crear eventos (Nueva)
+const createEvent = async (req, res) => {
+  const client = await db.pool.connect();
+  try {
+    await client.query('BEGIN');
+    
+    const organizerId = req.user.id_usuario;
+    const { 
+      nombre, 
+      descripcion,
+      fecha_inicio, 
+      fecha_fin, 
+      ubicacion, 
+      distancia_km, 
+      dificultad, 
+      tipo, 
+      cuota_inscripcion, 
+      maximo_participantes 
+    } = req.body;
+
+    console.log('=== CREATE EVENT DEBUG ===');
+    console.log('Organizer ID:', organizerId);
+    console.log('Event Name:', nombre);
+
+    // Validación básica
+    if (!nombre || !fecha_inicio || !ubicacion || !distancia_km || !dificultad || !tipo || cuota_inscripcion === undefined) {
+      await client.query('ROLLBACK');
+      return res.status(400).json({
+        success: false,
+        message: 'Faltan campos obligatorios: nombre, fecha_inicio, ubicacion, distancia_km, dificultad, tipo y cuota_inscripcion.'
+      });
+    }
+
+    // Insertar el nuevo evento
+    const newEvent = await client.query(
+      `INSERT INTO eventos (
+        id_organizador, nombre, descripcion, estado, fecha_inicio, fecha_fin, ubicacion, 
+        distancia_km, dificultad, tipo, cuota_inscripcion, maximo_participantes
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+       RETURNING *`,
+      [
+        organizerId, 
+        nombre, 
+        descripcion || null, 
+        'proximo', // Estado inicial
+        fecha_inicio, 
+        fecha_fin || null, 
+        ubicacion, 
+        distancia_km, 
+        dificultad, 
+        tipo, 
+        cuota_inscripcion, 
+        maximo_participantes || null
+      ]
+    );
+
+    await client.query('COMMIT');
+    
+    console.log('Event created successfully:', newEvent.rows[0]);
+
+    res.status(201).json({
+      success: true,
+      message: 'Evento creado exitosamente',
+      data: newEvent.rows[0]
+    });
+
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error creando evento:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al crear el evento',
+      error: error.message
+    });
+  } finally {
+    client.release();
+  }
+};
+
 const getOrganizerData = async (req, res) => {
   try {
     console.log('=== ORGANIZER DASHBOARD ACCESS ===');
@@ -151,5 +230,6 @@ const getEventParticipants = async (req, res) => {
 module.exports = {
   getOrganizerData,
   getMyCreatedEvents,
-  getEventParticipants
+  getEventParticipants,
+  createEvent // Exportar la nueva función
 };

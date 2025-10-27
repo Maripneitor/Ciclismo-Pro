@@ -5,7 +5,6 @@ import Spinner from '../../components/Spinner';
 
 function CreateEventPage() {
   const navigate = useNavigate();
-  
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -18,10 +17,8 @@ function CreateEventPage() {
     cuota_inscripcion: '',
     maximo_participantes: ''
   });
-  
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -34,29 +31,29 @@ function CreateEventPage() {
     e.preventDefault();
     setIsLoading(true);
     setError('');
-
     try {
       const eventData = {
         ...formData,
         distancia_km: parseFloat(formData.distancia_km),
         cuota_inscripcion: parseFloat(formData.cuota_inscripcion),
-        maximo_participantes: formData.maximo_participantes ? parseInt(formData.maximo_participantes) : null
+        maximo_participantes: formData.maximo_participantes ?
+parseInt(formData.maximo_participantes) : null
       };
 
-      const response = await apiClient.post('/eventos', eventData);
+      const response = await apiClient.post('/organizer/my-events', eventData);
       
       alert('¡Evento creado exitosamente!');
       navigate('/organizer/events');
-
     } catch (error) {
       console.error('Error creating event:', error);
-      
       let errorMessage = 'Error al crear el evento';
       
       if (error.response) {
-        errorMessage = error.response.data?.message || `Error ${error.response.status}`;
+        errorMessage = error.response.data?.message ||
+`Error ${error.response.status}`;
       } else if (error.request) {
-        errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+        errorMessage = `No se pudo conectar con el servidor.
+Verifica tu conexión.`;
       }
       
       setError(errorMessage);
@@ -64,7 +61,14 @@ function CreateEventPage() {
       setIsLoading(false);
     }
   };
-
+  const categories = [
+    { value: 'ropa', label: 'Ropa' },
+    { value: 'accesorios', label: 'Accesorios' },
+    { value: 'equipamiento', label: 'Equipamiento' },
+    { value: 'nutricion', label: 'Nutrición' },
+    { value: 'electronica', label: 'Electrónica' },
+    { value: 'otros', label: 'Otros' }
+  ];
   return (
     <div className="container">
       <div style={{ 
@@ -332,16 +336,19 @@ function CreateEventPage() {
               disabled={isLoading}
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: isLoading ? 'var(--neutral-400)' : 'var(--primary-500)',
+                backgroundColor: isLoading ?
+'var(--neutral-400)' : 'var(--primary-500)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: isLoading ? 'not-allowed' : 'pointer',
+                cursor: isLoading ?
+'not-allowed' : 'pointer',
                 fontSize: '1rem',
                 fontWeight: 'bold'
               }}
             >
-              {isLoading ? <Spinner /> : 'Crear Evento'}
+              {isLoading ?
+<Spinner /> : 'Crear Evento'}
             </button>
           </div>
         </form>

@@ -1,13 +1,12 @@
+// frontend/src/pages/admin/AdminUserManagementPage.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../../services/api';
 import '../admin/AdminCommon.css';
-
 function AdminUserManagementPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -29,7 +28,6 @@ function AdminUserManagementPage() {
       const response = await apiClient.put(`/admin/users/${userId}/role`, {
         nuevoRol: newRole
       });
-      
       if (response.data.success) {
         setUsers(prevUsers =>
           prevUsers.map(user =>
@@ -44,11 +42,9 @@ function AdminUserManagementPage() {
       alert('Error al actualizar el rol del usuario');
     }
   };
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES');
   };
-
   const getRoleColor = (rol) => {
     switch (rol) {
       case 'administrador': return 'var(--color-warning)';
@@ -57,7 +53,6 @@ function AdminUserManagementPage() {
       default: return 'var(--color-gray-medium)';
     }
   };
-
   if (loading) {
     return (
       <div className="admin-page">
@@ -142,7 +137,8 @@ function AdminUserManagementPage() {
               color: 'var(--color-error)',
               marginBottom: 'var(--spacing-xs)'
             }}>
-              {users.filter(u => u.rol === 'administrador').length}
+              {users.filter(u => 
+u.rol === 'administrador').length}
             </div>
             <div style={{ color: 'var(--color-gray-medium)' }}>Administradores</div>
           </div>
@@ -154,11 +150,13 @@ function AdminUserManagementPage() {
         <div className="table-header">
           <h3 className="table-title">Lista de Usuarios</h3>
           <p className="table-subtitle">
-            {users.length} usuario{users.length !== 1 ? 's' : ''} registrado{users.length !== 1 ? 's' : ''}
+            {users.length} usuario{users.length !== 1 ?
+'s' : ''} registrado{users.length !== 1 ? 's' : ''}
           </p>
         </div>
 
-        {users.length === 0 ? (
+        {users.length === 0 ?
+(
           <div className="empty-state">
             <div className="empty-icon">👥</div>
             <h3 className="empty-title">No hay usuarios registrados</h3>

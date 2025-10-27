@@ -39,7 +39,7 @@ function OrganizerEventDetailPage() {
       setUpdatingInscription(inscriptionId);
       
       const response = await apiClient.put(
-        `/api/admin/inscripciones/${inscriptionId}/status`,
+        `/admin/inscripciones/${inscriptionId}/status`,
         { estado: newStatus }
       );
 

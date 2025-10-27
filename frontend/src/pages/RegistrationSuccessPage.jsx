@@ -11,7 +11,7 @@ function RegistrationSuccessPage() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const response = await apiClient.get(`/api/eventos/${id_evento}`);
+        const response = await apiClient.get(`/eventos/${id_evento}`);
         setEvent(response.data.data);
       } catch (error) {
         console.error('Error fetching event:', error);

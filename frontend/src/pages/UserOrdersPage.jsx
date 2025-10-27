@@ -1,17 +1,16 @@
+// frontend/src/pages/UserOrdersPage.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../services/api';
-
 function UserOrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-
   useEffect(() => {
     const fetchMyOrders = async () => {
       try {
         setLoading(true);
-        const response = await apiClient.get('/api/orders/my-orders');
+        const response = await apiClient.get('/orders/my-orders');
         setOrders(response.data.data.orders || []);
       } catch (error) {
         console.error('Error fetching orders:', error);
@@ -23,11 +22,9 @@ function UserOrdersPage() {
 
     fetchMyOrders();
   }, []);
-
   const formatCurrency = (amount) => {
     return `$${amount?.toLocaleString('es-ES', { minimumFractionDigits: 2 }) || '0.00'}`;
   };
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       year: 'numeric',
@@ -162,7 +159,8 @@ function UserOrdersPage() {
               Historial de Pedidos
             </h2>
             <p style={{ margin: '0.5rem 0 0 0', color: 'var(--neutral-600)' }}>
-              Mostrando {orders.length} pedido{orders.length !== 1 ? 's' : ''} en total
+              Mostrando {orders.length} pedido{orders.length !== 1 ?
+'s' : ''} en total
             </p>
           </div>
 
@@ -239,7 +237,8 @@ function UserOrdersPage() {
                   <tr 
                     key={order.id_pedido}
                     style={{ 
-                      borderBottom: index < orders.length - 1 ? '1px solid var(--neutral-100)' : 'none',
+                      borderBottom: index < orders.length - 1 ?
+'1px solid var(--neutral-100)' : 'none',
                       transition: 'background-color 0.2s ease'
                     }}
                     onMouseOver={(e) => {
@@ -314,7 +313,8 @@ function UserOrdersPage() {
                           fontSize: '0.8rem',
                           fontWeight: 'bold'
                         }}>
-                          {order.items?.length || 0} producto{order.items?.length !== 1 ? 's' : ''}
+                          {order.items?.length ||
+0} producto{order.items?.length !== 1 ? 's' : ''}
                         </span>
                         {order.items && (
                           <div style={{ marginTop: '0.5rem' }}>
@@ -339,7 +339,8 @@ function UserOrdersPage() {
                                     justifyContent: 'space-between',
                                     alignItems: 'center',
                                     padding: '0.25rem 0',
-                                    borderBottom: itemIndex < order.items.length - 1 ? '1px solid var(--neutral-200)' : 'none'
+                                    borderBottom: itemIndex < order.items.length - 1 ?
+'1px solid var(--neutral-200)' : 'none'
                                   }}>
                                     <span style={{ fontSize: '0.8rem' }}>
                                       {item.nombre_producto}

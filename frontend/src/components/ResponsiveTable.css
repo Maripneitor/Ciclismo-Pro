@@ -1,0 +1,79 @@
+/* ========== RESPONSIVE TABLE COMPONENT ========== */
+
+/* Estados de carga y vacío */
+.table-loading,
+.table-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+  color: var(--color-gray-medium);
+}
+
+.table-loading p,
+.table-empty p {
+  margin-top: var(--spacing-md);
+  font-size: clamp(1rem, 1.5vw + 0.5rem, 1.125rem);
+}
+
+/* Indicadores de ordenamiento */
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortable:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.th-content {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.sort-indicator {
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.sort-indicator.asc {
+  transform: rotate(180deg);
+}
+
+.sort-indicator.desc {
+  transform: rotate(0deg);
+}
+
+/* Responsive utilities */
+.desktop-only {
+  display: block;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-only {
+    display: none;
+  }
+  
+  .mobile-only {
+    display: block;
+  }
+}
+
+/* ========== ANIMACIONES DE TABLA ========== */
+.responsive-table tbody tr {
+  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+.responsive-table tbody tr:nth-child(1) { animation-delay: 0.05s; }
+.responsive-table tbody tr:nth-child(2) { animation-delay: 0.1s; }
+.responsive-table tbody tr:nth-child(3) { animation-delay: 0.15s; }
+.responsive-table tbody tr:nth-child(4) { animation-delay: 0.2s; }
+.responsive-table tbody tr:nth-child(5) { animation-delay: 0.25s; }

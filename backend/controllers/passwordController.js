@@ -1,7 +1,8 @@
 // backend/controllers/passwordController.js
 const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
-const pool = require('../config/database');
+//const pool = require('../config/database');
+const pool = require('../db');
 
 const forgotPassword = async (req, res) => {
   try {

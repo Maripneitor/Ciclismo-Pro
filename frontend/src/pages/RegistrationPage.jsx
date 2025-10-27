@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
+import Spinner from '../components/Spinner';
 
 function RegistrationPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // Estados para almacenar los datos
   const [event, setEvent] = useState(null);
   const [categories, setCategories] = useState([]);
   const [shirtSizes, setShirtSizes] = useState([]);
   const [userTeams, setUserTeams] = useState([]);
   
-  // Estado para el formulario
   const [formData, setFormData] = useState({
     id_categoria: '',
     id_talla_playera: '',
@@ -21,7 +20,7 @@ function RegistrationPage() {
   });
   
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -29,7 +28,6 @@ function RegistrationPage() {
       try {
         setLoading(true);
         
-        // Hacer todas las peticiones en paralelo
         const [
           eventResponse,
           categoriesResponse,
@@ -42,7 +40,6 @@ function RegistrationPage() {
           apiClient.get('/teams/my-teams')
         ]);
 
-        // Actualizar estados con los datos recibidos
         setEvent(eventResponse.data.data);
         setCategories(categoriesResponse.data.data);
         setShirtSizes(shirtSizesResponse.data.data);
@@ -69,18 +66,16 @@ function RegistrationPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitting(true);
+    setIsLoading(true);
     setError('');
 
-    // Validaciones básicas
     if (!formData.id_categoria || !formData.id_talla_playera) {
       setError('La categoría y la talla de playera son obligatorias');
-      setSubmitting(false);
+      setIsLoading(false);
       return;
     }
 
     try {
-      // Preparar datos para enviar
       const inscriptionData = {
         id_evento: parseInt(id),
         id_categoria: parseInt(formData.id_categoria),
@@ -89,14 +84,10 @@ function RegistrationPage() {
         id_equipo: formData.id_equipo ? parseInt(formData.id_equipo) : null
       };
 
-      console.log('Enviando datos de inscripción:', inscriptionData);
-
-      // Hacer la petición POST
       const response = await apiClient.post('/inscripciones', inscriptionData);
       
-      // Éxito
       alert('¡Inscripción exitosa!');
-     navigate(`/eventos/${id}/success`);
+      navigate(`/eventos/${id}/success`);
 
     } catch (error) {
       console.error('Error creating inscription:', error);
@@ -117,7 +108,7 @@ function RegistrationPage() {
       
       alert(`Error: ${errorMessage}`);
     } finally {
-      setSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -224,7 +215,6 @@ function RegistrationPage() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Campo: Categoría */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Categoría *
@@ -251,7 +241,6 @@ function RegistrationPage() {
             </select>
           </div>
 
-          {/* Campo: Talla de Playera */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Talla de Playera *
@@ -278,7 +267,6 @@ function RegistrationPage() {
             </select>
           </div>
 
-          {/* Campo: Equipo (Opcional) */}
           <div style={{ marginBottom: '1.5rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Equipo (Opcional)
@@ -307,7 +295,6 @@ function RegistrationPage() {
             </small>
           </div>
 
-          {/* Campo: Alias Dorsal */}
           <div style={{ marginBottom: '2rem' }}>
             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
               Alias Dorsal (Opcional)
@@ -365,19 +352,19 @@ function RegistrationPage() {
             </Link>
             <button 
               type="submit"
-              disabled={submitting}
+              disabled={isLoading}
               style={{
                 padding: '0.75rem 2rem',
-                backgroundColor: submitting ? 'var(--neutral-400)' : 'var(--primary-500)',
+                backgroundColor: isLoading ? 'var(--neutral-400)' : 'var(--primary-500)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
-                cursor: submitting ? 'not-allowed' : 'pointer',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
                 fontSize: '1rem',
                 fontWeight: 'bold'
               }}
             >
-              {submitting ? 'Procesando...' : 'Confirmar Inscripción'}
+              {isLoading ? <Spinner /> : 'Confirmar Inscripción'}
             </button>
           </div>
         </form>

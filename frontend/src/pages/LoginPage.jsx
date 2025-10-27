@@ -1,6 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import Spinner from '../components/Spinner';
 import './LoginPage.css';
 
 function LoginPage() {
@@ -9,7 +10,7 @@ function LoginPage() {
     contrasena: ''
   });
   const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { loginUser } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,41 +20,32 @@ function LoginPage() {
       ...formData,
       [e.target.name]: e.target.value
     });
-    // Limpiar error cuando el usuario empiece a escribir
     if (error) setError('');
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
     setError('');
 
-    // Validación básica
     if (!formData.correo_electronico || !formData.contrasena) {
       setError('Por favor completa todos los campos');
-      setLoading(false);
+      setIsLoading(false);
       return;
     }
 
-    console.log('Attempting login with:', {
-      email: formData.correo_electronico
-    });
-
     const result = await loginUser(formData.correo_electronico, formData.contrasena);
-    
-    console.log('Login result:', result);
     
     if (result.success) {
       navigate('/dashboard');
     } else {
       setError(result.message || 'Error desconocido en el login');
     }
-    setLoading(false);
+    setIsLoading(false);
   };
 
   return (
     <div className="auth-container">
-      {/* ========== VISUAL PANEL ========== */}
       <div className="visual-panel">
         <div className="visual-content">
           <span className="visual-icon">🚴‍♂️</span>
@@ -84,7 +76,6 @@ function LoginPage() {
         </div>
       </div>
 
-      {/* ========== FORM PANEL ========== */}
       <div className="form-panel">
         <div className="form-container">
           <div className="form-header">
@@ -114,7 +105,7 @@ function LoginPage() {
                 required
                 placeholder="tu@email.com"
                 className="form-input"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
@@ -131,46 +122,32 @@ function LoginPage() {
                 required
                 placeholder="••••••••"
                 className="form-input"
-                disabled={loading}
+                disabled={isLoading}
               />
             </div>
 
             <button 
               type="submit" 
-              disabled={loading}
+              disabled={isLoading}
               className="submit-button"
             >
-              {loading ? (
-                <span className="loading-text">
-                  <div style={{
-                    width: '16px',
-                    height: '16px',
-                    border: '2px solid transparent',
-                    borderTop: '2px solid currentColor',
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite'
-                  }}></div>
-                  Iniciando sesión...
-                </span>
-              ) : (
-                '🚀 Iniciar Sesión'
-              )}
+              {isLoading ? <Spinner /> : '🚀 Iniciar Sesión'}
             </button>
           </form>
 
           <div className="form-footer">
-  <p>
-    ¿No tienes cuenta?{' '}
-    <Link to="/register" className="form-link">
-      Regístrate aquí
-    </Link>
-  </p>
-  <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
-    <Link to="/forgot-password" className="form-link">
-      ¿Olvidaste tu contraseña?
-    </Link>
-  </p>
-</div>
+            <p>
+              ¿No tienes cuenta?{' '}
+              <Link to="/register" className="form-link">
+                Regístrate aquí
+              </Link>
+            </p>
+            <p style={{ fontSize: '0.9rem', marginTop: '0.5rem' }}>
+              <Link to="/forgot-password" className="form-link">
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>

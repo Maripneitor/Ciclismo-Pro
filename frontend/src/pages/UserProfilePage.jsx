@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../services/api';
-import './UserProfilePage.css'; // Crear este archivo CSS
+import Spinner from '../components/Spinner';
+import './UserProfilePage.css';
 
 function UserProfilePage() {
   const [profileData, setProfileData] = useState({
@@ -26,7 +27,7 @@ function UserProfilePage() {
     talla_bicicleta: ''
   });
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -56,7 +57,7 @@ function UserProfilePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSaving(true);
+    setIsLoading(true);
     setError('');
     setSuccess('');
 
@@ -67,7 +68,7 @@ function UserProfilePage() {
       console.error('Error updating profile:', error);
       setError('Error al actualizar el perfil');
     } finally {
-      setSaving(false);
+      setIsLoading(false);
     }
   };
 
@@ -108,7 +109,6 @@ function UserProfilePage() {
 
       <form onSubmit={handleSubmit} className="profile-form">
         <div className="form-sections">
-          {/* Sección Información Personal */}
           <section className="form-section">
             <h2 className="section-title">Información Personal</h2>
             <div className="form-grid">
@@ -173,7 +173,6 @@ function UserProfilePage() {
             </div>
           </section>
 
-          {/* Sección Datos de Ciclismo */}
           <section className="form-section">
             <h2 className="section-title">Datos de Ciclismo</h2>
             <div className="form-grid">
@@ -237,7 +236,6 @@ function UserProfilePage() {
             </div>
           </section>
 
-          {/* Sección Contacto de Emergencia */}
           <section className="form-section">
             <h2 className="section-title">Contacto de Emergencia</h2>
             <div className="form-grid">
@@ -269,7 +267,6 @@ function UserProfilePage() {
             </div>
           </section>
 
-          {/* Sección Información Médica */}
           <section className="form-section">
             <h2 className="section-title">Información Médica</h2>
             <div className="form-grid">
@@ -307,10 +304,10 @@ function UserProfilePage() {
         <div className="form-actions">
           <button 
             type="submit" 
-            disabled={saving}
+            disabled={isLoading}
             className="btn btn-primary"
           >
-            {saving ? 'Guardando...' : 'Guardar Cambios'}
+            {isLoading ? <Spinner /> : 'Guardar Cambios'}
           </button>
           
           <Link to="/dashboard" className="btn btn-outline">

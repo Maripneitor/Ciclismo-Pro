@@ -1,8 +1,11 @@
+// frontend/src/pages/HomePage.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Typewriter from 'typewriter-effect';
 import apiClient from '../services/api';
 import SkeletonCard from '../components/SkeletonCard';
 import EmptyState from '../components/EmptyState';
+import EventCarousel from '../components/EventCarousel';
 import './HomePage.css';
 
 function HomePage() {
@@ -15,15 +18,10 @@ function HomePage() {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        
-        // Obtener eventos normales
         const eventsResponse = await apiClient.get('/eventos');
         setEvents(eventsResponse.data.data || []);
-        
-        // Obtener eventos destacados
         const featuredResponse = await apiClient.get('/eventos/featured');
         setFeaturedEvents(featuredResponse.data.data || []);
-        
       } catch (error) {
         console.error('Error fetching data:', error);
         setError('Error al cargar los eventos');
@@ -75,7 +73,6 @@ function HomePage() {
     );
   };
 
-  // Renderizar skeleton cards para loading
   const renderSkeletonCards = (count = 3, featured = false) => {
     return Array.from({ length: count }, (_, index) => (
       <SkeletonCard key={index} featured={featured} />
@@ -84,7 +81,6 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      {/* ========== HERO SECTION ========== */}
       <section className="hero-section">
         <div className="hero-content">
           <h1 className="hero-title">
@@ -99,7 +95,7 @@ function HomePage() {
             <Link to="/eventos" className="btn btn-primary btn-large">
               Explorar Eventos
             </Link>
-            <Link to="/registro" className="btn btn-outline btn-large">
+            <Link to="/register" className="btn btn-outline btn-large">
               Crear Cuenta
             </Link>
           </div>
@@ -120,97 +116,41 @@ function HomePage() {
         </div>
       )}
 
-      {/* ========== FEATURED EVENTS SECTION ========== */}
       <section className="featured-section">
         <div className="section-header">
-          <div className="section-badge">
-            ⭐ Eventos Estelares
-          </div>
-          <h2 className="section-title">
-            Experiencias Destacadas
-          </h2>
+          <Typewriter
+            options={{
+              strings: ['Descubre tu próxima aventura', 'Eventos Estelares', 'Experiencias Destacadas'],
+              autoStart: true,
+              loop: true,
+            }}
+          />
           <p className="section-subtitle">
             Los eventos más esperados de la temporada, seleccionados especialmente para ti
           </p>
         </div>
 
-        <div className="featured-grid">
-          {isLoading ? (
-            renderSkeletonCards(3, true)
-          ) : featuredEvents.length > 0 ? (
-            featuredEvents.map(event => (
-              <div key={event.id_evento} className="featured-card">
-                <div className="card-header">
-                  <div className="event-type">
-                    {getEventTypeIcon(event.tipo)}
-                    <span>{event.tipo}</span>
-                  </div>
-                  <div className="featured-badge">
-                    ⭐ Destacado
-                  </div>
-                </div>
-                
-                <div className="card-content">
-                  <h3 className="event-title">{event.nombre}</h3>
-                  <p className="event-description">
-                    {event.descripcion || 'Una experiencia deportiva única te espera...'}
-                  </p>
-                  
-                  <div className="event-details">
-                    <div className="detail-item">
-                      <span className="detail-icon">📅</span>
-                      <span>{formatDate(event.fecha_inicio)}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-icon">📍</span>
-                      <span>{event.ubicacion}</span>
-                    </div>
-                    <div className="detail-item">
-                      <span className="detail-icon">📏</span>
-                      <span>{event.distancia_km} km</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="card-footer">
-                  <div className="event-meta">
-                    {getDifficultyBadge(event.dificultad)}
-                    {event.cuota_inscripcion > 0 ? (
-                      <span className="price-tag">
-                        ${event.cuota_inscripcion}
-                      </span>
-                    ) : (
-                      <span className="price-tag free">
-                        Gratis
-                      </span>
-                    )}
-                  </div>
-                  <Link 
-                    to={`/eventos/${event.id_evento}`}
-                    className="btn btn-primary btn-small"
-                  >
-                    Ver Detalles
-                  </Link>
-                </div>
-              </div>
-            ))
-          ) : (
-            <EmptyState
-              icon="⭐"
-              title="No hay eventos destacados"
-              message="Pronto tendremos eventos especiales destacados para ti. Mientras tanto, explora nuestros próximos eventos."
-              actionButton={
-                <Link to="/eventos" className="btn btn-primary">
-                  Explorar Todos los Eventos
-                </Link>
-              }
-              size="large"
-            />
-          )}
-        </div>
+        {isLoading ? (
+          <div className="featured-grid">
+            {renderSkeletonCards(3, true)}
+          </div>
+        ) : featuredEvents.length > 0 ? (
+          <EventCarousel events={featuredEvents} />
+        ) : (
+          <EmptyState
+            icon="⭐"
+            title="No hay eventos destacados"
+            message="Pronto tendremos eventos especiales destacados para ti. Mientras tanto, explora nuestros próximos eventos."
+            actionButton={
+              <Link to="/eventos" className="btn btn-primary">
+                Explorar Todos los Eventos
+              </Link>
+            }
+            size="large"
+          />
+        )}
       </section>
 
-      {/* ========== UPCOMING EVENTS SECTION ========== */}
       <section className="events-section">
         <div className="section-header">
           <h2 className="section-title">
@@ -307,7 +247,6 @@ function HomePage() {
         )}
       </section>
 
-      {/* ========== FEATURES SECTION ========== */}
       <section className="features-section">
         <div className="section-header">
           <h2 className="section-title">

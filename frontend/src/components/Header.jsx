@@ -121,19 +121,45 @@ function Header() {
                   </button>
                   {isProfileMenuOpen && (
                     <div className="profile-menu">
+                      <div className="profile-user-info">
+                        {user?.nombre_completo || user?.email}
+                      </div>
+                      
                       <Link to="/dashboard/profile" className="profile-menu-item">
                         👤 Mi Perfil
                       </Link>
+                      <Link to="/dashboard/inscripciones" className="profile-menu-item">
+                        📝 Mis Inscripciones
+                      </Link>
+                      <Link to="/dashboard/orders" className="profile-menu-item">
+                        🛍️ Mis Pedidos
+                      </Link>
+
+                      {(user?.rol === 'organizador' || user?.rol === 'administrador') && (
+                        <>
+                          <hr className="profile-menu-divider" />
+                          <Link to="/organizer/dashboard" className="profile-menu-item">
+                            🎯 Panel de Organizador
+                          </Link>
+                          <Link to="/organizer/events/create" className="profile-menu-item">
+                            ➕ Acceso Rápido: Crear Evento
+                          </Link>
+                        </>
+                      )}
+
                       {user?.rol === 'administrador' && (
-                        <Link to="/admin/users" className="profile-menu-item">
-                          ⚙️ Panel de Admin
-                        </Link>
+                        <>
+                          <hr className="profile-menu-divider" />
+                          <Link to="/admin/users" className="profile-menu-item">
+                            👥 Gestión de Usuarios
+                          </Link>
+                          <Link to="/admin/events" className="profile-menu-item">
+                            📅 Gestión de Eventos
+                          </Link>
+                        </>
                       )}
-                      {user?.rol === 'organizador' && (
-                        <Link to="/organizer/dashboard" className="profile-menu-item">
-                          🎯 Panel de Organizador
-                        </Link>
-                      )}
+
+                      <hr className="profile-menu-divider" />
                       <button onClick={handleLogout} className="profile-menu-item logout">
                         🚪 Cerrar Sesión
                       </button>

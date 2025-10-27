@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import Tabs from '../components/Tabs';
+import EventMap from '../components/EventMap';
 import './EventDetailPage.css';
 
 function EventDetailPage() {
@@ -12,6 +13,8 @@ function EventDetailPage() {
   const [error, setError] = useState(null);
   const [isStickyBarVisible, setIsStickyBarVisible] = useState(false);
   const { isAuthenticated } = useContext(AuthContext);
+
+  const mapPosition = [9.8585, -98.4745];
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -210,7 +213,7 @@ function EventDetailPage() {
             <div label="La Ruta">
               <section className="content-section">
                 <h2 className="section-title">Mapa de la Ruta</h2>
-                <div>¡Mapa de la ruta próximamente!</div>
+                <EventMap position={mapPosition} />
               </section>
             </div>
 

@@ -1,23 +1,19 @@
-/* ========== HEADER STYLES ========== */
 .header {
-  background-color: transparent;
+  background-color: var(--color-secondary);
   color: var(--color-white);
   padding: var(--spacing-md) 0;
-  position: fixed;
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   z-index: 1000;
-  transition: all var(--transition-normal);
-  backdrop-filter: blur(0px);
+  transition: top 0.3s ease-in-out;
+  backdrop-filter: blur(10px);
 }
 
-.header-scrolled {
-  background-color: var(--color-secondary);
-  box-shadow: var(--shadow-lg);
-  padding: var(--spacing-sm) 0;
-  backdrop-filter: blur(10px);
+.header--hidden {
+  top: -100px;
 }
 
 .header-container {
@@ -30,7 +26,6 @@
   gap: var(--spacing-md);
 }
 
-/* ========== LOGO ========== */
 .logo {
   color: var(--color-white);
   font-family: var(--font-primary);
@@ -47,16 +42,10 @@
   color: var(--color-accent2);
 }
 
-.header-scrolled .logo {
-  color: var(--color-white);
-}
-
-/* ========== NAVIGATION DESKTOP ========== */
 .nav-desktop {
   display: flex;
   gap: var(--spacing-lg);
   align-items: center;
-  transition: all var(--transition-normal);
 }
 
 .nav-link {
@@ -94,11 +83,6 @@
   transform: translateY(-1px);
 }
 
-.header-scrolled .nav-link {
-  color: var(--color-white);
-}
-
-/* ========== HEADER ACTIONS ========== */
 .header-actions {
   display: flex;
   align-items: center;
@@ -126,7 +110,6 @@
   transform: scale(1.1);
 }
 
-/* ========== CART LINK ========== */
 .cart-link {
   position: relative;
   display: flex;
@@ -179,26 +162,6 @@
   }
 }
 
-/* ========== PANEL LINKS ========== */
-.organizer-link {
-  color: var(--color-accent2);
-  font-weight: 600;
-}
-
-.organizer-link:hover {
-  color: var(--color-white);
-}
-
-.admin-link {
-  color: var(--color-warning);
-  font-weight: 600;
-}
-
-.admin-link:hover {
-  color: var(--color-white);
-}
-
-/* ========== AUTH BUTTONS ========== */
 .auth-buttons {
   display: flex;
   gap: var(--spacing-md);
@@ -222,21 +185,6 @@
   overflow: hidden;
   min-height: 44px;
   min-width: 44px;
-}
-
-.header-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s;
-}
-
-.header-btn:hover::before {
-  left: 100%;
 }
 
 .btn-login {
@@ -266,35 +214,80 @@
   box-shadow: var(--shadow-md);
 }
 
-.btn-dashboard {
-  background-color: transparent;
+.profile-menu-container {
+  position: relative;
+}
+
+.profile-toggle {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
   color: var(--color-white);
-  border: 1px solid var(--color-white);
-  margin-right: var(--spacing-sm);
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-dashboard:hover {
-  background-color: var(--color-white);
-  color: var(--color-secondary);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+.profile-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
 }
 
-.btn-logout {
-  background-color: transparent;
-  color: var(--color-white);
-  border: 1px solid var(--color-white);
+.profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--color-white);
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+  min-width: 200px;
+  z-index: 101;
+  margin-top: var(--spacing-sm);
+  border: 1px solid var(--color-gray-light);
 }
 
-.btn-logout:hover {
+.profile-menu-item {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-md);
+  text-decoration: none;
+  color: var(--color-gray-dark);
+  transition: all var(--transition-fast);
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border-bottom: 1px solid var(--color-gray-light);
+}
+
+.profile-menu-item:last-child {
+  border-bottom: none;
+}
+
+.profile-menu-item:hover {
+  background-color: var(--color-gray-light);
+  color: var(--color-primary);
+}
+
+.profile-menu-item.logout {
+  color: var(--color-error);
+}
+
+.profile-menu-item.logout:hover {
   background-color: var(--color-error);
   color: var(--color-white);
-  border-color: var(--color-error);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
 }
 
-/* ========== HAMBURGER BUTTON ========== */
 .hamburger-btn {
   display: none;
   flex-direction: column;
@@ -319,10 +312,6 @@
   transform-origin: center;
 }
 
-.header-scrolled .hamburger-btn span {
-  background-color: var(--color-white);
-}
-
 .menu-open .hamburger-btn span:nth-child(1) {
   transform: rotate(45deg) translate(6px, 6px);
 }
@@ -336,7 +325,6 @@
   transform: rotate(-45deg) translate(6px, -6px);
 }
 
-/* ========== MOBILE OVERLAY & MENU ========== */
 .mobile-overlay {
   position: fixed;
   top: 0;
@@ -437,9 +425,8 @@
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 992px) {
-  .nav-desktop, .header-actions {
+  .nav-desktop {
     display: none;
   }
   
@@ -483,7 +470,6 @@
   }
 }
 
-/* ========== ACCESSIBILITY IMPROVEMENTS ========== */
 @media (prefers-reduced-motion: reduce) {
   .header,
   .nav-link,
@@ -497,10 +483,6 @@
   .cart-badge {
     animation: none;
   }
-
-  .header-btn::before {
-    display: none;
-  }
 }
 
 .logo:focus-visible,
@@ -509,42 +491,9 @@
 .hamburger-btn:focus-visible,
 .theme-toggle:focus-visible,
 .mobile-link:focus-visible,
-.close-menu:focus-visible {
+.close-menu:focus-visible,
+.profile-toggle:focus-visible {
   outline: 2px solid var(--color-accent2);
   outline-offset: 2px;
   border-radius: var(--border-radius-sm);
-}
-
-@media (prefers-contrast: high) {
-  .nav-link::before {
-    height: 3px;
-    background-color: currentColor;
-  }
-
-  .cart-badge {
-    border: 2px solid var(--color-secondary);
-  }
-}
-
-/* ========== SCROLL BEHAVIOR ========== */
-@media (min-width: 769px) {
-  .nav-link {
-    position: relative;
-  }
-
-  .nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 50%;
-    width: 0;
-    height: 2px;
-    background: var(--color-accent2);
-    transition: all var(--transition-normal);
-    transform: translateX(-50%);
-  }
-
-  .nav-link:hover::after {
-    width: 80%;
-  }
 }

@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
@@ -10,116 +10,152 @@ function Header() {
   const { theme, toggleTheme } = useTheme();
   const { cartItems } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const profileMenuRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY && currentScrollY > 100) {
+        setIsVisible(false);
+      } else {
+        setIsVisible(true);
+      }
+      setLastScrollY(currentScrollY);
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScrollY]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setIsProfileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   useEffect(() => {
     setIsMenuOpen(false);
+    setIsProfileMenuOpen(false);
   }, [location.pathname]);
 
   useEffect(() => {
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') setIsMenuOpen(false);
-    };
     if (isMenuOpen) {
-      document.addEventListener('keydown', handleEscape);
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
     return () => {
-      document.removeEventListener('keydown', handleEscape);
       document.body.style.overflow = 'unset';
     };
   }, [isMenuOpen]);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
+  const toggleProfileMenu = () => setIsProfileMenuOpen(!isProfileMenuOpen);
 
   const handleLogout = () => {
     logoutUser();
+    setIsProfileMenuOpen(false);
     closeMenu();
   };
 
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <header className={`header ${isScrolled ? 'header-scrolled' : ''} ${isMenuOpen ? 'menu-open' : ''}`}>
-      <div className="header-container">
-        <Link to="/" className="logo" onClick={closeMenu}>
-          🚴 Ciclismo Pro
-        </Link>
-
-        <nav className="nav-desktop">
-          <Link to="/" className="nav-link">Inicio</Link>
-          <Link to="/eventos" className="nav-link">Eventos</Link>
-          <Link to="/store" className="nav-link">Tienda</Link>
-          {user?.rol === 'organizador' && (
-            <Link to="/organizer/dashboard" className="nav-link">Panel Organizador</Link>
-          )}
-          {user?.rol === 'administrador' && (
-            <Link to="/admin/users" className="nav-link">Panel Admin</Link>
-          )}
-        </nav>
-
-        <div className="header-actions">
-          <button onClick={toggleTheme} className="theme-toggle" aria-label="Cambiar tema">
-            {theme === 'light' ? '🌙' : '☀️'}
-          </button>
-          
-          <button className="notifications-btn" aria-label="Notificaciones">
-            🔔
-          </button>
-
-          <Link to="/cart" className="cart-link">
-            🛒
-            {totalCartItems > 0 && (
-              <span className="cart-badge">{totalCartItems}</span>
-            )}
+    <>
+      <header className={`header ${!isVisible ? 'header--hidden' : ''} ${isMenuOpen ? 'menu-open' : ''}`}>
+        <div className="header-container">
+          <Link to="/" className="logo">
+            🚴 Ciclismo Pro
           </Link>
 
-          <div className="auth-buttons">
-            {!isAuthenticated ? (
-              <>
-                <Link to="/login">
-                  <button className="header-btn btn-login">Iniciar Sesión</button>
-                </Link>
-                <Link to="/register">
-                  <button className="header-btn btn-register">Registrarse</button>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link to="/dashboard">
-                  <button className="header-btn btn-dashboard">Dashboard</button>
-                </Link>
-                <button onClick={handleLogout} className="header-btn btn-logout">
-                  Cerrar Sesión
-                </button>
-              </>
-            )}
-          </div>
-        </div>
+          <nav className="nav-desktop">
+            <Link to="/" className="nav-link">Inicio</Link>
+            <Link to="/eventos" className="nav-link">Eventos</Link>
+            <Link to="/store" className="nav-link">Tienda</Link>
+          </nav>
 
-        <button 
-          className="hamburger-btn"
-          onClick={toggleMenu}
-          aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={isMenuOpen}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
+          <div className="header-actions">
+            <button onClick={toggleTheme} className="theme-toggle" aria-label="Cambiar tema">
+              {theme === 'light' ? '🌙' : '☀️'}
+            </button>
+            
+            <button className="notifications-btn" aria-label="Notificaciones">
+              🔔
+            </button>
+
+            <Link to="/cart" className="cart-link">
+              🛒
+              {totalCartItems > 0 && (
+                <span className="cart-badge">{totalCartItems}</span>
+              )}
+            </Link>
+
+            <div className="auth-buttons">
+              {!isAuthenticated ? (
+                <>
+                  <Link to="/login">
+                    <button className="header-btn btn-login">Iniciar Sesión</button>
+                  </Link>
+                  <Link to="/register">
+                    <button className="header-btn btn-register">Registrarse</button>
+                  </Link>
+                </>
+              ) : (
+                <div className="profile-menu-container" ref={profileMenuRef}>
+                  <button 
+                    className="profile-toggle" 
+                    onClick={toggleProfileMenu}
+                    aria-label="Menú de perfil"
+                  >
+                    👤
+                  </button>
+                  {isProfileMenuOpen && (
+                    <div className="profile-menu">
+                      <Link to="/dashboard/profile" className="profile-menu-item">
+                        👤 Mi Perfil
+                      </Link>
+                      {user?.rol === 'administrador' && (
+                        <Link to="/admin/users" className="profile-menu-item">
+                          ⚙️ Panel de Admin
+                        </Link>
+                      )}
+                      {user?.rol === 'organizador' && (
+                        <Link to="/organizer/dashboard" className="profile-menu-item">
+                          🎯 Panel de Organizador
+                        </Link>
+                      )}
+                      <button onClick={handleLogout} className="profile-menu-item logout">
+                        🚪 Cerrar Sesión
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <button 
+            className="hamburger-btn"
+            onClick={toggleMenu}
+            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={isMenuOpen}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </header>
 
       {isMenuOpen && (
         <div className="mobile-overlay">
@@ -136,35 +172,34 @@ function Header() {
             <Link to="/cart" className="mobile-link" onClick={closeMenu}>
               Carrito {totalCartItems > 0 && `(${totalCartItems})`}
             </Link>
-            {user?.rol === 'organizador' && (
-              <Link to="/organizer/dashboard" className="mobile-link" onClick={closeMenu}>
-                Panel Organizador
-              </Link>
+            {isAuthenticated && (
+              <>
+                <Link to="/dashboard/profile" className="mobile-link" onClick={closeMenu}>Mi Perfil</Link>
+                {user?.rol === 'organizador' && (
+                  <Link to="/organizer/dashboard" className="mobile-link" onClick={closeMenu}>
+                    Panel Organizador
+                  </Link>
+                )}
+                {user?.rol === 'administrador' && (
+                  <Link to="/admin/users" className="mobile-link" onClick={closeMenu}>
+                    Panel Admin
+                  </Link>
+                )}
+                <button onClick={handleLogout} className="mobile-link logout-btn">
+                  Cerrar Sesión
+                </button>
+              </>
             )}
-            {user?.rol === 'administrador' && (
-              <Link to="/admin/users" className="mobile-link" onClick={closeMenu}>
-                Panel Admin
-              </Link>
+            {!isAuthenticated && (
+              <div className="mobile-auth">
+                <Link to="/login" className="mobile-link" onClick={closeMenu}>Iniciar Sesión</Link>
+                <Link to="/register" className="mobile-link" onClick={closeMenu}>Registrarse</Link>
+              </div>
             )}
-            <div className="mobile-auth">
-              {!isAuthenticated ? (
-                <>
-                  <Link to="/login" className="mobile-link" onClick={closeMenu}>Iniciar Sesión</Link>
-                  <Link to="/register" className="mobile-link" onClick={closeMenu}>Registrarse</Link>
-                </>
-              ) : (
-                <>
-                  <Link to="/dashboard" className="mobile-link" onClick={closeMenu}>Mi Dashboard</Link>
-                  <button onClick={handleLogout} className="mobile-link logout-btn">
-                    Cerrar Sesión
-                  </button>
-                </>
-              )}
-            </div>
           </div>
         </div>
       )}
-    </header>
+    </>
   );
 }
 

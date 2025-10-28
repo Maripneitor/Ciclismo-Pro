@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Racing+Sans+One&family=Poppins:wght@300;400;500;600;700&display=swap');
 
 :root {
-  /* ========== PALETA DE COLORES ========== */
-  
-  /* Colores de Marca */
   --color-primary: #FF6B35;
   --color-primary-dark: #e55a2b;
   --color-primary-light: #ff8c5a;
@@ -13,62 +10,62 @@
   --color-accent1: #00A896;
   --color-accent1-dark: #009080;
   --color-accent2: #FFE74C;
-  
-  /* Colores Neutros */
   --color-gray-dark: #212529;
   --color-gray-medium: #6C757D;
   --color-gray-light: #E9ECEF;
   --color-white: #FFFFFF;
   --color-black: #000000;
-  
-  /* Colores de Estado */
   --color-success: #28A745;
   --color-warning: #FFC107;
   --color-error: #DC3545;
   --color-info: #17A2B8;
-  
-  /* ========== TIPOGRAFÍA ========== */
   --font-primary: 'Racing Sans One', cursive;
   --font-secondary: 'Poppins', sans-serif;
-  
-  /* ========== ESPACIADO ========== */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
-  
-  /* ========== BORDES ========== */
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 16px;
-  
-  /* ========== SOMBRAS ========== */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.15);
-  
-  /* ========== TRANSICIONES ========== */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.5s ease;
+  --color-background-body-light: #F0F8FF;
+  --header-bg-light: #ffffff;
+  --header-shadow-light: rgba(0, 0, 0, 0.1);
+  --button-secondary-bg-light: #e0e0e0;
+  --button-secondary-text-light: #333333;
+  --button-primary-bg-light: #8bc34a;
+  --button-primary-text-light: #ffffff;
 }
 
-/* ========== MODO OSCURO ========== */
 body.dark {
-  --color-white: #1a1a1a;
-  --color-gray-light: #2d2d2d;
-  --color-gray-medium: #6d6d6d;
-  --color-gray-dark: #e9ecef;
-  --color-black: #ffffff;
-  --color-secondary: #3a3e5c;
-  --color-secondary-dark: #2d3047;
+  --color-white: #282c34;
+  --color-gray-light: #3a3f4a;
+  --color-gray-dark: #f0f0f0;
+  --color-background-body-light: #1a1a1a;
+  --header-bg-light: #3a3f4a;
+  --header-shadow-light: rgba(255, 255, 255, 0.1);
+  --button-secondary-bg-light: #5a5f6b;
+  --button-secondary-text-light: #f0f0f0;
+  --button-primary-bg-light: #689f38;
+  --button-primary-text-light: #ffffff;
+  --card-background: #374151;
+  --card-border: #4b5563;
+  --input-background: #4b5563;
+  --input-border: #6b7280;
+  --table-header-bg: #4b5563;
+  --table-row-hover: rgba(255, 255, 255, 0.05);
 }
 
-/* ========== RESET Y ESTILOS GLOBALES ========== */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -85,14 +82,13 @@ body {
   font-size: clamp(1rem, 1.5vw + 0.5rem, 1.125rem);
   line-height: 1.6;
   color: var(--color-gray-dark);
-  background-color: var(--color-white);
+  background-color: var(--color-background-body-light);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   transition: background-color var(--transition-normal), color var(--transition-normal);
 }
 
-/* ========== TIPOGRAFÍA FLUIDA ========== */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-primary);
   font-weight: 400;
@@ -132,7 +128,6 @@ p {
   line-height: 1.6;
 }
 
-/* ========== ENLACES ========== */
 a {
   color: var(--color-primary);
   text-decoration: none;
@@ -143,7 +138,6 @@ a:hover {
   color: var(--color-secondary);
 }
 
-/* ========== BOTONES MEJORADOS ========== */
 button {
   font-family: var(--font-secondary);
   cursor: pointer;
@@ -238,7 +232,6 @@ button {
   transform: translateY(-1px);
 }
 
-/* ========== FORMULARIOS ========== */
 .form-group {
   margin-bottom: var(--spacing-lg);
 }
@@ -282,7 +275,6 @@ input:focus, select:focus, textarea:focus {
   margin-top: var(--spacing-xs);
 }
 
-/* ========== TARJETAS CON EFECTOS MEJORADOS ========== */
 .card {
   background: var(--color-white);
   border-radius: var(--border-radius-md);
@@ -314,7 +306,6 @@ input:focus, select:focus, textarea:focus {
   transform: scaleX(1);
 }
 
-/* ========== TABLAS ========== */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -337,7 +328,6 @@ th {
   font-family: var(--font-primary);
 }
 
-/* ========== LAYOUT Y CONTENEDORES ========== */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -354,7 +344,6 @@ th {
 .text-left { text-align: left; }
 .text-right { text-align: right; }
 
-/* ========== UTILIDADES DE ESPACIADO ========== */
 .mb-0 { margin-bottom: 0; }
 .mb-1 { margin-bottom: var(--spacing-xs); }
 .mb-2 { margin-bottom: var(--spacing-sm); }
@@ -376,7 +365,6 @@ th {
 .p-4 { padding: var(--spacing-lg); }
 .p-5 { padding: var(--spacing-xl); }
 
-/* ========== UTILIDADES DE FLEX ========== */
 .flex { display: flex; }
 .flex-column { flex-direction: column; }
 .flex-row { flex-direction: row; }
@@ -393,7 +381,6 @@ th {
 .align-start { align-items: flex-start; }
 .align-end { align-items: flex-end; }
 
-/* ========== UTILIDADES DE GRID ========== */
 .grid { display: grid; }
 .grid-2 { grid-template-columns: repeat(2, 1fr); }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }
@@ -403,7 +390,6 @@ th {
 .gap-3 { gap: var(--spacing-md); }
 .gap-4 { gap: var(--spacing-lg); }
 
-/* ========== ESTADOS ========== */
 .text-success { color: var(--color-success); }
 .text-warning { color: var(--color-warning); }
 .text-error { color: var(--color-error); }
@@ -414,7 +400,6 @@ th {
 .bg-error { background-color: var(--color-error); }
 .bg-info { background-color: var(--color-info); }
 
-/* ========== UTILIDADES DE DISPLAY ========== */
 .text-wrap {
   overflow-wrap: break-word;
   word-wrap: break-word;
@@ -438,7 +423,6 @@ th {
 .d-inline { display: inline; }
 .d-inline-block { display: inline-block; }
 
-/* ========== ELEMENTOS MULTIMEDIA ========== */
 img {
   max-width: 100%;
   height: auto;
@@ -450,7 +434,6 @@ img {
   height: auto;
 }
 
-/* ========== ANIMACIONES ========== */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -478,7 +461,6 @@ img {
   animation: spin 1s linear infinite;
 }
 
-/* ========== ESTADOS DE CARGA ========== */
 .btn-loading {
   position: relative;
   color: transparent;
@@ -495,7 +477,6 @@ img {
   animation: spin 1s linear infinite;
 }
 
-/* ========== SCROLLBAR PERSONALIZADO ========== */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -513,7 +494,6 @@ img {
   background: var(--color-primary-dark);
 }
 
-/* ========== MEJORAS DE ACCESIBILIDAD ========== */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -525,7 +505,6 @@ img {
   }
 }
 
-/* Focus visible para mejor accesibilidad */
 button:focus-visible,
 a:focus-visible,
 input:focus-visible,
@@ -535,7 +514,6 @@ textarea:focus-visible {
   outline-offset: 2px;
 }
 
-/* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 768px) {
   .container {
     padding: 0 var(--spacing-sm);
@@ -555,7 +533,6 @@ textarea:focus-visible {
     grid-template-columns: 1fr;
   }
   
-  /* Fix para iOS input zoom */
   input,
   select,
   textarea {
@@ -582,7 +559,6 @@ textarea:focus-visible {
   }
 }
 
-/* ========== ESTILOS DE IMPRESIÓN ========== */
 @media print {
   .no-print { 
     display: none !important; 
@@ -604,7 +580,6 @@ textarea:focus-visible {
   }
 }
 
-/* ========== MEJORAS DE RENDIMIENTO ========== */
 .will-change-transform {
   will-change: transform;
 }

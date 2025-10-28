@@ -9,7 +9,7 @@ import './Header.css';
 function Header() {
   const { isAuthenticated, logoutUser, user } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
-  const { cartItems } = useCart();
+  const { cartItems, getTotalPrice } = useCart();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -70,14 +70,13 @@ function Header() {
   };
 
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalPrice = getTotalPrice();
 
   return (
     <>
       <header className={`header ${!isVisible ? 'header--hidden' : ''} ${isMenuOpen ? 'menu-open' : ''}`}>
         <div className="header-container">
-          <Link to="/" className="logo">
-            🚴 Ciclismo Pro
-          </Link>
+          <Link to="/" className="logo">SportNexus</Link>
 
           <nav className="nav-desktop">
             <Link to="/" className="nav-link">Inicio</Link>
@@ -95,93 +94,89 @@ function Header() {
             <Link to="/cart" className="cart-link">
               🛒
               {totalCartItems > 0 && (
-                <span className="cart-badge">{totalCartItems}</span>
+                <>
+                  <span className="cart-price">${totalPrice.toFixed(2)}</span>
+                  <span className="cart-badge">{totalCartItems}</span>
+                </>
               )}
             </Link>
 
-            <div className="auth-buttons">
-              {!isAuthenticated ? (
-                <>
-                  <Link to="/login">
-                    <button className="header-btn btn-login">Iniciar Sesión</button>
-                  </Link>
-                  <Link to="/register">
-                    <button className="header-btn btn-register">Registrarse</button>
-                  </Link>
-                </>
-              ) : (
-                <div className="profile-menu-container" ref={profileMenuRef}>
-                  <button 
-                    className="profile-toggle" 
-                    onClick={toggleProfileMenu}
-                    aria-label="Menú de perfil"
-                  >
-                    👤
-                  </button>
-                  {isProfileMenuOpen && (
-                    <div className="profile-menu">
-                      <div className="profile-user-info">
-                        {user?.nombre_completo || user?.email}
-                      </div>
-                      
-                      <Link to="/dashboard/profile" className="profile-menu-item">
-                        👤 Mi Perfil
-                      </Link>
-                      <Link to="/dashboard/inscripciones" className="profile-menu-item">
-                        📝 Mis Inscripciones
-                      </Link>
-                      <Link to="/dashboard/orders" className="profile-menu-item">
-                        🛍️ Mis Pedidos
-                      </Link>
-
-                      {(user?.rol === 'organizador' || user?.rol === 'administrador') && (
-                        <>
-                          <hr className="profile-menu-divider" />
-                          <Link to="/organizer/dashboard" className="profile-menu-item">
-                            🎯 Panel de Organizador
-                          </Link>
-                          <Link to="/organizer/events/create" className="profile-menu-item">
-                            ➕ Acceso Rápido: Crear Evento
-                          </Link>
-                        </>
-                      )}
-
-                      {user?.rol === 'administrador' && (
-                        <>
-                          <hr className="profile-menu-divider" />
-                          <Link to="/admin" className="profile-menu-item">
-                            👥 Panel de Admin
-                          </Link>
-                          <Link to="/admin/users" className="profile-menu-item">
-                            👤 Gestión de Usuarios
-                          </Link>
-                          <Link to="/admin/events" className="profile-menu-item">
-                            📅 Gestión de Eventos
-                          </Link>
-                        </>
-                      )}
-
-                      <hr className="profile-menu-divider" />
-                      <button onClick={handleLogout} className="profile-menu-item logout">
-                        🚪 Cerrar Sesión
-                      </button>
+            {isAuthenticated && user ? (
+              <div className="profile-menu-container" ref={profileMenuRef}>
+                <button className="profile-section" onClick={toggleProfileMenu}>
+                  <div className="profile-avatar">
+                    {user?.nombre_completo?.[0]?.toUpperCase() || '?'}
+                  </div>
+                  <span className="profile-user-name">{user?.nombre_completo}</span>
+                </button>
+                {isProfileMenuOpen && (
+                  <div className="profile-menu">
+                    <div className="profile-user-info">
+                      {user?.nombre_completo || user?.email}
                     </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
+                    
+                    <Link to="/dashboard/profile" className="profile-menu-item">
+                      👤 Mi Perfil
+                    </Link>
+                    <Link to="/dashboard/inscripciones" className="profile-menu-item">
+                      📝 Mis Inscripciones
+                    </Link>
+                    <Link to="/dashboard/orders" className="profile-menu-item">
+                      🛍️ Mis Pedidos
+                    </Link>
 
-          <button 
-            className="hamburger-btn"
-            onClick={toggleMenu}
-            aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
-            aria-expanded={isMenuOpen}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+                    {(user?.rol === 'organizador' || user?.rol === 'administrador') && (
+                      <>
+                        <hr className="profile-menu-divider" />
+                        <Link to="/organizer/dashboard" className="profile-menu-item">
+                          🎯 Panel de Organizador
+                        </Link>
+                        <Link to="/organizer/events/create" className="profile-menu-item">
+                          ➕ Acceso Rápido: Crear Evento
+                        </Link>
+                      </>
+                    )}
+
+                    {user?.rol === 'administrador' && (
+                      <>
+                        <hr className="profile-menu-divider" />
+                        <Link to="/admin" className="profile-menu-item">
+                          👥 Panel de Admin
+                        </Link>
+                        <Link to="/admin/users" className="profile-menu-item">
+                          👤 Gestión de Usuarios
+                        </Link>
+                        <Link to="/admin/events" className="profile-menu-item">
+                          📅 Gestión de Eventos
+                        </Link>
+                      </>
+                    )}
+
+                    <hr className="profile-menu-divider" />
+                    <button onClick={handleLogout} className="profile-menu-item logout">
+                      🚪 Cerrar Sesión
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="auth-buttons">
+                <Link to="/login" className="btn btn-login">Iniciar Sesión</Link>
+                <Link to="/register" className="btn btn-register">Registrarse</Link>
+              </div>
+            )}
+
+            <button 
+              className="hamburger-btn"
+              onClick={toggleMenu}
+              aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={isMenuOpen}
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
         </div>
       </header>
 

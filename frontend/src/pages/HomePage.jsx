@@ -1,7 +1,7 @@
-// frontend/src/pages/HomePage.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Typewriter from 'typewriter-effect';
+import HeroCarousel from '../components/HeroCarousel';
 import apiClient from '../services/api';
 import SkeletonCard from '../components/SkeletonCard';
 import EmptyState from '../components/EmptyState';
@@ -81,34 +81,7 @@ function HomePage() {
 
   return (
     <div className="home-page">
-      <section className="hero-section">
-        <div className="hero-content">
-          <h1 className="hero-title">
-            Descubre tu próxima 
-            <span className="highlight"> aventura deportiva</span>
-          </h1>
-          <p className="hero-subtitle">
-            Únete a eventos únicos, conecta con otros apasionados del deporte 
-            y supera tus límites. Desde carreras urbanas hasta expediciones en la naturaleza.
-          </p>
-          <div className="hero-actions">
-            <Link to="/eventos" className="btn btn-primary btn-large">
-              Explorar Eventos
-            </Link>
-            <Link to="/register" className="btn btn-outline btn-large">
-              Crear Cuenta
-            </Link>
-          </div>
-        </div>
-        <div className="hero-visual">
-          <div className="floating-cards">
-            <div className="floating-card card-1">🏃‍♂️</div>
-            <div className="floating-card card-2">🚴‍♀️</div>
-            <div className="floating-card card-3">🥾</div>
-            <div className="floating-card card-4">🏅</div>
-          </div>
-        </div>
-      </section>
+      <HeroCarousel />
 
       {error && (
         <div className="alert alert-error">

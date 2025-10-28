@@ -71,7 +71,7 @@ display: flex;
 align-items: center;
 gap: var(--spacing-md);
 padding: var(--spacing-md) var(--spacing-lg);
-color: var(--color-white);
+color: var(--color-black);
 text-decoration: none;
 transition: all 0.2s ease;
 border-left: 3px solid transparent;

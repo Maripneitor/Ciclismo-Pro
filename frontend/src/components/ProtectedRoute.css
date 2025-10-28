@@ -1,0 +1,64 @@
+.protected-route {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.access-denied {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  background-color: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-gray-light);
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.access-denied-icon {
+  font-size: 4rem;
+  color: var(--color-error);
+  margin-bottom: var(--spacing-lg);
+}
+
+.access-denied-title {
+  font-family: var(--font-primary);
+  color: var(--color-secondary);
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+}
+
+.access-denied-message {
+  color: var(--color-gray-medium);
+  margin-bottom: var(--spacing-xl);
+  line-height: 1.6;
+}
+
+.access-denied-actions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .access-denied {
+    padding: var(--spacing-xl);
+    margin: 0 var(--spacing-md);
+  }
+
+  .access-denied-icon {
+    font-size: 3rem;
+  }
+
+  .access-denied-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .access-denied-actions .btn {
+    width: 100%;
+    max-width: 200px;
+  }
+}

@@ -44,6 +44,7 @@ import { ThemeProvider } from './context/ThemeContext'
 import RegistrationSuccessPage from './pages/RegistrationSuccessPage'
 import UserDashboardLayout from './pages/UserDashboardLayout'
 import UserDashboardHomePage from './pages/UserDashboardHomePage'
+import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 
 const router = createBrowserRouter([
   {
@@ -104,6 +105,7 @@ const router = createBrowserRouter([
             path: "/admin",
             element: <AdminLayout />,
             children: [
+              { index: true, element: <AdminDashboardPage /> },
               { path: "users", element: <AdminUserManagementPage /> },
               { path: "events", element: <AdminEventManagementPage /> },
               { path: "products", element: <AdminProductManagementPage /> },

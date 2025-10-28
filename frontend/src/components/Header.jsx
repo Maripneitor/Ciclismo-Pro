@@ -150,8 +150,11 @@ function Header() {
                       {user?.rol === 'administrador' && (
                         <>
                           <hr className="profile-menu-divider" />
+                          <Link to="/admin" className="profile-menu-item">
+                            👥 Panel de Admin
+                          </Link>
                           <Link to="/admin/users" className="profile-menu-item">
-                            👥 Gestión de Usuarios
+                            👤 Gestión de Usuarios
                           </Link>
                           <Link to="/admin/events" className="profile-menu-item">
                             📅 Gestión de Eventos
@@ -207,7 +210,7 @@ function Header() {
                   </Link>
                 )}
                 {user?.rol === 'administrador' && (
-                  <Link to="/admin/users" className="mobile-link" onClick={closeMenu}>
+                  <Link to="/admin" className="mobile-link" onClick={closeMenu}>
                     Panel Admin
                   </Link>
                 )}

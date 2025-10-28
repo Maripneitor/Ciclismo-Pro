@@ -270,11 +270,7 @@ const updateEventStatus = async (req, res) => {
 // ========== GESTIÓN DE EVENTOS DESTACADOS ==========
 
 const toggleFeaturedEvent = async (req, res) => {
-  const client = await db.pool.connect();
-  
   try {
-    await client.query('BEGIN');
-    
     const eventId = req.params.id;
     const { es_destacado } = req.body;
     const adminId = req.user.id_usuario;
@@ -284,18 +280,27 @@ const toggleFeaturedEvent = async (req, res) => {
     console.log('Featured Status:', es_destacado);
     console.log('Admin ID:', adminId);
     console.log('Admin Role:', req.user.rol);
+    console.log('Request params:', req.params);
+    console.log('Request body:', req.body);
 
     // Validaciones básicas
     if (es_destacado === undefined || es_destacado === null) {
-      await client.query('ROLLBACK');
       return res.status(400).json({
         success: false,
         message: 'El estado destacado es requerido'
       });
     }
 
+    // Verificar que es_destacado es un booleano
+    if (typeof es_destacado !== 'boolean') {
+      return res.status(400).json({
+        success: false,
+        message: 'El estado destacado debe ser un valor booleano (true/false)'
+      });
+    }
+
     // Verificar que el evento existe
-    const eventCheck = await client.query(
+    const eventCheck = await db.query(
       `SELECT e.id_evento, e.nombre, e.es_destacado, u.nombre_completo as organizador 
        FROM eventos e 
        JOIN usuarios u ON e.id_organizador = u.id_usuario 
@@ -304,7 +309,6 @@ const toggleFeaturedEvent = async (req, res) => {
     );
 
     if (eventCheck.rows.length === 0) {
-      await client.query('ROLLBACK');
       return res.status(404).json({
         success: false,
         message: 'Evento no encontrado'
@@ -312,9 +316,11 @@ const toggleFeaturedEvent = async (req, res) => {
     }
 
     const event = eventCheck.rows[0];
+    console.log('Evento existente encontrado:', event);
 
     // Actualizar el estado destacado del evento
-    const updatedEvent = await client.query(
+    console.log('Ejecutando consulta UPDATE...');
+    const updatedEvent = await db.query(
       `UPDATE eventos 
        SET es_destacado = $1 
        WHERE id_evento = $2 
@@ -322,9 +328,7 @@ const toggleFeaturedEvent = async (req, res) => {
       [es_destacado, eventId]
     );
 
-    await client.query('COMMIT');
-
-    console.log('Event featured status updated successfully:', updatedEvent.rows[0]);
+    console.log('Resultado de la actualización:', updatedEvent.rows[0]);
 
     res.json({
       success: true,
@@ -333,15 +337,21 @@ const toggleFeaturedEvent = async (req, res) => {
     });
 
   } catch (error) {
-    await client.query('ROLLBACK');
     console.error('Error actualizando estado destacado del evento:', error);
+    console.error('Stack trace del error:', error.stack);
+    console.error('Detalles del error:', {
+      message: error.message,
+      code: error.code,
+      detail: error.detail,
+      table: error.table,
+      constraint: error.constraint
+    });
+    
     res.status(500).json({
       success: false,
       message: 'Error interno del servidor al actualizar el estado destacado del evento',
       error: error.message
     });
-  } finally {
-    client.release();
   }
 };
 

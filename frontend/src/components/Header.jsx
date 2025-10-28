@@ -3,6 +3,7 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
+import ThemeToggleButton from './ThemeToggleButton';
 import './Header.css';
 
 function Header() {
@@ -85,9 +86,7 @@ function Header() {
           </nav>
 
           <div className="header-actions">
-            <button onClick={toggleTheme} className="theme-toggle" aria-label="Cambiar tema">
-              {theme === 'light' ? '🌙' : '☀️'}
-            </button>
+            <ThemeToggleButton />
             
             <button className="notifications-btn" aria-label="Notificaciones">
               🔔

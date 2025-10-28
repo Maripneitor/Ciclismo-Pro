@@ -5,7 +5,6 @@ import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import ThemeToggleButton from './ThemeToggleButton';
 import './Header.css';
-
 function Header() {
   const { isAuthenticated, logoutUser, user } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
@@ -13,10 +12,10 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
   const profileMenuRef = useRef(null);
   const location = useLocation();
-
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -26,28 +25,24 @@ function Header() {
         setIsVisible(true);
       }
       setLastScrollY(currentScrollY);
+      setIsScrolled(currentScrollY > 50);
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
-
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
         setIsProfileMenuOpen(false);
       }
     };
-
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-
   useEffect(() => {
     setIsMenuOpen(false);
     setIsProfileMenuOpen(false);
   }, [location.pathname]);
-
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -58,39 +53,31 @@ function Header() {
       document.body.style.overflow = 'unset';
     };
   }, [isMenuOpen]);
-
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   const closeMenu = () => setIsMenuOpen(false);
   const toggleProfileMenu = () => setIsProfileMenuOpen(!isProfileMenuOpen);
-
   const handleLogout = () => {
     logoutUser();
     setIsProfileMenuOpen(false);
     closeMenu();
   };
-
   const totalCartItems = cartItems.reduce((total, item) => total + item.quantity, 0);
   const totalPrice = getTotalPrice();
-
   return (
     <>
-      <header className={`header ${!isVisible ? 'header--hidden' : ''} ${isMenuOpen ? 'menu-open' : ''}`}>
+      <header className={`header ${!isVisible ? 'header--hidden' : ''} ${isScrolled ? 'header--scrolled' : ''}`}>
         <div className="header-container">
           <Link to="/" className="logo">SportNexus</Link>
-
           <nav className="nav-desktop">
             <Link to="/" className="nav-link">Inicio</Link>
             <Link to="/eventos" className="nav-link">Eventos</Link>
             <Link to="/store" className="nav-link">Tienda</Link>
           </nav>
-
           <div className="header-actions">
             <ThemeToggleButton />
-            
             <button className="notifications-btn" aria-label="Notificaciones">
               🔔
             </button>
-
             <Link to="/cart" className="cart-link">
               🛒
               {totalCartItems > 0 && (
@@ -100,7 +87,6 @@ function Header() {
                 </>
               )}
             </Link>
-
             {isAuthenticated && user ? (
               <div className="profile-menu-container" ref={profileMenuRef}>
                 <button className="profile-section" onClick={toggleProfileMenu}>
@@ -114,7 +100,6 @@ function Header() {
                     <div className="profile-user-info">
                       {user?.nombre_completo || user?.email}
                     </div>
-                    
                     <Link to="/dashboard/profile" className="profile-menu-item">
                       👤 Mi Perfil
                     </Link>
@@ -124,7 +109,6 @@ function Header() {
                     <Link to="/dashboard/orders" className="profile-menu-item">
                       🛍️ Mis Pedidos
                     </Link>
-
                     {(user?.rol === 'organizador' || user?.rol === 'administrador') && (
                       <>
                         <hr className="profile-menu-divider" />
@@ -136,7 +120,6 @@ function Header() {
                         </Link>
                       </>
                     )}
-
                     {user?.rol === 'administrador' && (
                       <>
                         <hr className="profile-menu-divider" />
@@ -151,7 +134,6 @@ function Header() {
                         </Link>
                       </>
                     )}
-
                     <hr className="profile-menu-divider" />
                     <button onClick={handleLogout} className="profile-menu-item logout">
                       🚪 Cerrar Sesión
@@ -165,7 +147,6 @@ function Header() {
                 <Link to="/register" className="btn btn-register">Registrarse</Link>
               </div>
             )}
-
             <button 
               className="hamburger-btn"
               onClick={toggleMenu}
@@ -179,7 +160,6 @@ function Header() {
           </div>
         </div>
       </header>
-
       {isMenuOpen && (
         <div className="mobile-overlay">
           <div className="mobile-menu">
@@ -225,5 +205,4 @@ function Header() {
     </>
   );
 }
-
 export default Header;

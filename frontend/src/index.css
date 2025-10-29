@@ -47,6 +47,14 @@
   --button-secondary-text-light: #333333;
   --button-primary-bg-light: #8bc34a;
   --button-primary-text-light: #ffffff;
+  --header-bg-floating: rgba(255, 255, 255, 0.95);
+  --header-shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --nav-link-text: var(--color-secondary);
+  --nav-link-hover-bg: var(--color-gray-light);
+  --nav-link-hover-text: var(--color-primary);
+  --header-button-bg: var(--color-gray-light);
+  --header-button-text: var(--color-secondary);
+  --header-divider-color: var(--color-gray-light);
 }
 
 body.dark {
@@ -67,6 +75,14 @@ body.dark {
   --input-border: #6b7280;
   --table-header-bg: #4b5563;
   --table-row-hover: rgba(255, 255, 255, 0.05);
+  --header-bg-floating: rgba(55, 65, 81, 0.95);
+  --header-shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --nav-link-text: var(--color-gray-dark);
+  --nav-link-hover-bg: var(--button-secondary-bg-light);
+  --nav-link-hover-text: var(--color-primary);
+  --header-button-bg: var(--button-secondary-bg-light);
+  --header-button-text: var(--color-gray-dark);
+  --header-divider-color: var(--card-border);
 }
 
 @keyframes fadeInScale {

@@ -450,7 +450,10 @@ body.dark .profile-menu-item:focus-visible {
 body.dark .hamburger-btn span {
   background-color: var(--header-text-light);
 }
-
+.menu-open .hamburger-btn {
+  color: var(--color-primary);
+  transform: scale(1.1);
+}
 .menu-open .hamburger-btn span:nth-child(1) {
   transform: rotate(45deg) translate(6px, 6px);
 }
@@ -497,12 +500,12 @@ body.dark .mobile-menu {
   align-self: flex-end;
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   cursor: pointer;
   color: var(--header-text-light);
   margin-bottom: 1rem;
-  min-width: 44px;
-  min-height: 44px;
+  min-width: 40px;
+  min-height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -671,7 +674,8 @@ body.dark .mobile-auth {
   }
 
   .mobile-menu {
-    width: 90%;
+     width: 85%;
+    max-width: 300px;
     padding: 80px var(--spacing-md) var(--spacing-lg);
   }
   
@@ -689,6 +693,25 @@ body.dark .mobile-auth {
     font-size: 0.9rem;
   }
 }
+@media (max-width: 393px) {
+  .mobile-menu {
+    width: 90%;
+    padding: 70px var(--spacing-sm) var(--spacing-md);
+  }
+  
+  .mobile-link, .logout-btn {
+    font-size: 0.95rem;
+    padding: 0.6rem 0;
+  }
+  
+  .close-menu {
+    font-size: 1.3rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+
 
 @media (min-width: 993px) {
   .mobile-overlay {

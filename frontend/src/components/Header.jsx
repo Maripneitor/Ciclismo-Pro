@@ -186,12 +186,12 @@ function Header() {
             )}
             <button 
               className="hamburger-btn"
-              onClick={toggleMenu}
-              aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
+                onClick={toggleMenu}
+               aria-label={isMenuOpen ? "Cerrar menú" : "Abrir menú"}
               aria-expanded={isMenuOpen}
-            >
+              > 
               {isMenuOpen ? <FaTimes /> : <FaBars />}
-            </button>
+              </button>
           </div>
         </div>
       </header>

@@ -2,9 +2,11 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../../services/api';
 import Spinner from '../../components/Spinner';
+import { useToast } from '../../context/ToastContext';
 
 function CreateEventPage() {
   const navigate = useNavigate();
+  const { addToast } = useToast();
   const [formData, setFormData] = useState({
     nombre: '',
     descripcion: '',
@@ -42,7 +44,7 @@ parseInt(formData.maximo_participantes) : null
 
       const response = await apiClient.post('/organizer/my-events', eventData);
       
-      alert('¡Evento creado exitosamente!');
+      addToast('¡Evento creado exitosamente!', 'success');
       navigate('/organizer/events');
     } catch (error) {
       console.error('Error creating event:', error);
@@ -57,6 +59,7 @@ Verifica tu conexión.`;
       }
       
       setError(errorMessage);
+      addToast(errorMessage, 'error');
     } finally {
       setIsLoading(false);
     }

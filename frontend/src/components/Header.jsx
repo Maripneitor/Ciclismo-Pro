@@ -3,6 +3,7 @@ import { useContext, useState, useEffect, useRef } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
+import { useToast } from '../context/ToastContext';
 import ThemeToggleButton from './ThemeToggleButton';
 import './Header.css';
 
@@ -30,6 +31,7 @@ function Header() {
   const { isAuthenticated, logoutUser, user } = useContext(AuthContext);
   const { theme, toggleTheme } = useTheme();
   const { cartItems, getTotalPrice } = useCart();
+  const { addToast } = useToast();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -87,6 +89,7 @@ function Header() {
 
   const handleLogout = () => {
     logoutUser();
+    addToast('Has cerrado sesión exitosamente.', 'info');
     setIsProfileMenuOpen(false);
     closeMenu();
   };

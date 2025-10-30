@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ToastContainer from './components/ToastContainer';
 import './App.css';
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
         <Outlet />
       </main>
       <Footer />
+      <ToastContainer />
     </div>
   );
 }

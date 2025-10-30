@@ -41,6 +41,7 @@ import AdminEditProductPage from './pages/admin/AdminEditProductPage'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ThemeProvider } from './context/ThemeContext'
+import { ToastProvider } from './context/ToastContext'
 import RegistrationSuccessPage from './pages/RegistrationSuccessPage'
 import UserDashboardLayout from './pages/UserDashboardLayout'
 import UserDashboardHomePage from './pages/UserDashboardHomePage'
@@ -125,7 +126,9 @@ createRoot(document.getElementById('root')).render(
     <ThemeProvider>
       <AuthProvider>
         <CartProvider>
-          <RouterProvider router={router} />
+          <ToastProvider>
+            <RouterProvider router={router} />
+          </ToastProvider>
         </CartProvider>
       </AuthProvider>
     </ThemeProvider>

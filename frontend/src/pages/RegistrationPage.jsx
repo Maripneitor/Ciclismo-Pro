@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import Spinner from '../components/Spinner';
+import { useToast } from '../context/ToastContext';
 
 function RegistrationPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { addToast } = useToast();
   
   const [event, setEvent] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -48,13 +50,14 @@ function RegistrationPage() {
       } catch (error) {
         console.error('Error fetching registration data:', error);
         setError('Error al cargar los datos de inscripción');
+        addToast('Error al cargar los datos de inscripción', 'error');
       } finally {
         setLoading(false);
       }
     };
 
     fetchRegistrationData();
-  }, [id]);
+  }, [id, addToast]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -70,7 +73,9 @@ function RegistrationPage() {
     setError('');
 
     if (!formData.id_categoria || !formData.id_talla_playera) {
-      setError('La categoría y la talla de playera son obligatorias');
+      const errorMessage = 'La categoría y la talla de playera son obligatorias';
+      setError(errorMessage);
+      addToast(errorMessage, 'error');
       setIsLoading(false);
       return;
     }
@@ -86,7 +91,7 @@ function RegistrationPage() {
 
       const response = await apiClient.post('/inscripciones', inscriptionData);
       
-      alert('¡Inscripción exitosa!');
+      addToast('¡Inscripción exitosa!', 'success');
       navigate(`/eventos/${id}/success`);
 
     } catch (error) {
@@ -106,7 +111,7 @@ function RegistrationPage() {
         errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
       }
       
-      alert(`Error: ${errorMessage}`);
+      addToast(errorMessage, 'error');
     } finally {
       setIsLoading(false);
     }

@@ -31,6 +31,9 @@ import OrganizerDashboardPage from './pages/organizer/OrganizerDashboardPage'
 import OrganizerEventsPage from './pages/organizer/OrganizerEventsPage'
 import CreateEventPage from './pages/organizer/CreateEventPage'
 import OrganizerEventDetailPage from './pages/organizer/OrganizerEventDetailPage'
+// Importar los componentes faltantes
+import OrganizerParticipantsPage from './pages/organizer/OrganizerParticipantsPage'
+import OrganizerReportsPage from './pages/organizer/OrganizerReportsPage'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminUserManagementPage from './pages/admin/AdminUserManagementPage'
 import AdminEventManagementPage from './pages/admin/AdminEventManagementPage'
@@ -94,7 +97,10 @@ const router = createBrowserRouter([
               { path: "dashboard", element: <OrganizerDashboardPage /> },
               { path: "events", element: <OrganizerEventsPage /> },
               { path: "events/create", element: <CreateEventPage /> },
-              { path: "events/:id", element: <OrganizerEventDetailPage /> }
+              { path: "events/:id", element: <OrganizerEventDetailPage /> },
+              // AGREGAR RUTAS FALTANTES
+              { path: "participants", element: <OrganizerParticipantsPage /> },
+              { path: "reports", element: <OrganizerReportsPage /> }
             ]
           }
         ]
@@ -106,13 +112,14 @@ const router = createBrowserRouter([
             path: "/admin",
             element: <AdminLayout />,
             children: [
-              { index: true, element: <AdminDashboardPage /> },
+              { path: "dashboard", element: <AdminDashboardPage /> },
               { path: "users", element: <AdminUserManagementPage /> },
               { path: "events", element: <AdminEventManagementPage /> },
               { path: "products", element: <AdminProductManagementPage /> },
               { path: "orders", element: <AdminOrderManagementPage /> },
               { path: "products/create", element: <AdminCreateProductPage /> },
-              { path: "products/edit/:id", element: <AdminEditProductPage /> }
+              { path: "products/edit/:id", element: <AdminEditProductPage /> },
+              { path: "settings", element: <div>Configuración del Administrador</div> }
             ]
           }
         ]

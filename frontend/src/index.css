@@ -13,7 +13,7 @@
   --color-accent1-dark: #009080;
   --color-accent2: #FFE74C;
   --color-gray-dark: #212529;
-  --color-gray-medium: #6C757D;
+  --color-gray-medium: #335674;
   --color-gray-light: #E9ECEF;
   --color-white: #FFFFFF;
   --color-black: #000000;
@@ -64,7 +64,7 @@ body.dark {
   --color-white: #282c34;
   --color-gray-light: #3a3f4a;
   --color-gray-dark: #f0f0f0;
-  --color-background-body-light: #1a1a1a;
+    --color-background-body-light: linear-gradient(180deg, #1a1a1a 0%, var(--color-secondary-dark) 100%);
   --header-bg-light: rgba(55, 65, 81, 0.85);
   --header-text-light: var(--color-gray-dark);
   --header-shadow-light: rgba(255, 255, 255, 0.1);
@@ -129,11 +129,11 @@ body {
   font-size: clamp(1rem, 1.5vw + 0.5rem, 1.125rem);
   line-height: 1.6;
   color: var(--color-gray-dark);
-  background-color: var(--color-background-body-light);
+  background: var(--color-background-body-light); /* Changed from background-color */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
-  transition: background-color var(--transition-normal), color var(--transition-normal);
+  transition: background var(--transition-normal), color var(--transition-normal);
 }
 
 h1, h2, h3, h4, h5, h6 {

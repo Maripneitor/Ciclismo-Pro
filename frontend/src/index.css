@@ -55,6 +55,9 @@
   --header-button-bg: var(--color-gray-light);
   --header-button-text: var(--color-secondary);
   --header-divider-color: var(--color-gray-light);
+    --card-bg-light: var(--color-white);
+  --card-border-light: var(--color-gray-light);
+  --card-shadow-hover: var(--shadow-lg);
 }
 
 body.dark {
@@ -83,6 +86,9 @@ body.dark {
   --header-button-bg: var(--button-secondary-bg-light);
   --header-button-text: var(--color-gray-dark);
   --header-divider-color: var(--card-border);
+    --card-bg-dark: var(--color-secondary-light);
+  --card-border-dark: var(--color-gray-medium);
+  --card-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 @keyframes fadeInScale {

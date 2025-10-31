@@ -1,0 +1,432 @@
+/* ========== COMPONENTES INTERACTIVOS ========== */
+
+/* Controles de estilo de tabla */
+.table-style-controls {
+  display: flex;
+  gap: var(--spacing-md);
+  background-color: rgba(0,0,0, 0.05);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.control-group {
+  display: flex;
+  gap: 2px;
+  background: rgba(255,255,255,0.5);
+  border-radius: var(--border-radius-sm);
+  padding: 2px;
+  align-items: center;
+}
+
+.control-group span {
+  white-space: nowrap;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: var(--color-gray-medium);
+  padding: 0 var(--spacing-sm);
+}
+
+.control-btn {
+  background: none;
+  border: none;
+  padding: var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+  cursor: pointer;
+  color: var(--color-gray-medium);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.control-btn:hover {
+  background: var(--color-primary);
+  color: var(--color-white);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.control-btn.active {
+  background: var(--color-primary);
+  color: var(--color-white);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ========== VISTAS DE TABLA DINÁMICAS ========== */
+
+/* Densidad Compacta */
+.admin-table-container.view-compact .admin-table th,
+.admin-table-container.view-compact .admin-table td {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.admin-table-container.view-compact .admin-table {
+  font-size: 0.85rem;
+}
+
+/* Estilo Rayado */
+.admin-table-container.view-striped .admin-table tbody tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+/* Vista Grid */
+.admin-grid-view {
+  display: none;
+}
+
+.admin-table-container.view-grid .admin-table {
+  display: none;
+}
+
+.admin-table-container.view-grid .admin-grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+}
+
+.admin-grid-card {
+  background: var(--color-white);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-light);
+  transition: all var(--transition-normal);
+  opacity: 0;
+  animation: fadeInRow 0.4s ease-out forwards;
+}
+
+.admin-grid-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+.grid-card-title {
+  font-family: var(--font-primary);
+  color: var(--color-secondary);
+  font-size: 1.1rem;
+  margin-top: 0;
+  margin-bottom: var(--spacing-xs);
+  font-weight: 600;
+}
+
+.grid-card-email {
+  font-size: 0.9rem;
+  color: var(--color-gray-medium);
+  margin-bottom: var(--spacing-md);
+  word-break: break-all;
+}
+
+.grid-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-sm);
+}
+
+.grid-card-id {
+  font-size: 0.75rem;
+  color: var(--color-gray-medium);
+  background: rgba(0,0,0,0.05);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius-sm);
+}
+
+.grid-card-date {
+  font-size: 0.8rem;
+  color: var(--color-gray-medium);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-lg);
+}
+
+.grid-card-actions {
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--color-gray-light);
+}
+
+.grid-card-actions .filter-select {
+  width: 100%;
+}
+
+/* ========== BOTONES DE EXPORTACIÓN MEJORADOS ========== */
+.export-button {
+  position: relative;
+  border-width: 0;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: var(--border-radius-sm);
+  z-index: 1;
+  overflow: hidden;
+  min-width: 120px;
+  height: 40px;
+}
+
+.export-button .docs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: var(--border-radius-sm);
+  z-index: 1;
+  background-color: var(--color-secondary);
+  border: solid 1px rgba(255, 255, 255, 0.1);
+  transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.export-button:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+.export-button .download {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 90%;
+  margin: 0 auto;
+  z-index: -1;
+  border-radius: var(--border-radius-sm);
+  transform: translateY(0%);
+  background-color: var(--color-success);
+  border: solid 1px rgba(1, 224, 86, 0.1);
+  transition: all 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+}
+
+.export-button:hover .download {
+  transform: translateY(100%);
+}
+
+.export-button .download svg polyline,
+.export-button .download svg line {
+  animation: docs 1s infinite;
+}
+
+/* Variantes de colores para exportación */
+.export-button.csv .docs {
+  background-color: #10b981;
+}
+
+.export-button.csv .download {
+  background-color: #059669;
+}
+
+.export-button.excel .docs {
+  background-color: #059669;
+}
+
+.export-button.excel .download {
+  background-color: #047857;
+}
+
+.export-button.pdf .docs {
+  background-color: #ef4444;
+}
+
+.export-button.pdf .download {
+  background-color: #dc2626;
+}
+
+/* Versiones de botones */
+.export-button-sm {
+  min-width: 40px;
+  width: 40px;
+  height: 40px;
+}
+
+.export-button-sm .docs {
+  min-height: 40px;
+  padding: 0;
+  gap: 0;
+}
+
+.export-button-sm .docs span {
+  display: none;
+}
+
+.export-button.with-text .docs {
+  justify-content: space-between;
+  padding: 0 12px;
+}
+
+.export-button.with-text .docs span {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Grupos de exportación */
+.export-buttons-group {
+  display: flex;
+  gap: var(--spacing-sm);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.export-buttons-group.compact {
+  gap: 2px;
+}
+
+.export-buttons-group.compact .export-button {
+  min-width: 40px;
+}
+
+/* ========== DISEÑO RESPONSIVE ========== */
+@media (max-width: 968px) {
+  .admin-page {
+    padding: var(--spacing-xl);
+  }
+  
+  .filters-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-page {
+    padding: var(--spacing-lg);
+  }
+  
+  .admin-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: center;
+  }
+  
+  .header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .card-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: flex-start;
+  }
+  
+  .card-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+  
+  .table-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .action-btn {
+    justify-content: center;
+    flex: 1;
+  }
+
+  .table-header {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .table-style-controls {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .admin-grid-view {
+    grid-template-columns: 1fr;
+  }
+
+  .export-buttons-group {
+    justify-content: center;
+  }
+  
+  .export-button {
+    min-width: 100px;
+    font-size: 12px;
+  }
+  
+  .export-button .docs {
+    padding: 0 8px;
+    gap: 6px;
+  }
+
+  /* Mostrar cards en móvil y ocultar tabla */
+  .responsive-table-container,
+  .admin-table-container {
+    display: none;
+  }
+  
+  .table-mobile-card {
+    display: block;
+  }
+}
+
+@media (max-width: 480px) {
+  .admin-page {
+    padding: var(--spacing-md);
+  }
+  
+  .admin-card {
+    padding: var(--spacing-lg);
+  }
+  
+  .filters-section {
+    padding: var(--spacing-lg);
+  }
+  
+  .empty-state {
+    padding: var(--spacing-xl);
+  }
+  
+  .pagination {
+    gap: var(--spacing-xs);
+  }
+  
+  .pagination-btn {
+    padding: var(--spacing-sm);
+    min-width: 40px;
+  }
+}
+
+/* ========== ACCESIBILIDAD ========== */
+@media (prefers-reduced-motion: reduce) {
+  .admin-card,
+  .action-btn,
+  .pagination-btn,
+  .control-btn,
+  .export-button {
+    transition: none;
+  }
+  
+  .loading-spinner {
+    animation: none;
+  }
+  
+  .admin-table tbody tr,
+  .admin-grid-card {
+    animation: none;
+    opacity: 1;
+  }
+  
+  .export-button .download svg polyline,
+  .export-button .download svg line {
+    animation: none;
+  }
+}
+
+.action-btn:focus-visible,
+.pagination-btn:focus-visible,
+.filter-input:focus-visible,
+.filter-select:focus-visible,
+.control-btn:focus-visible,
+.export-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}

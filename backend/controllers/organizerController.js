@@ -80,10 +80,60 @@ const createEvent = async (req, res) => {
 };
 
 const getOrganizerData = async (req, res) => {
+  const client = await db.pool.connect();
   try {
     console.log('=== ORGANIZER DASHBOARD ACCESS ===');
     console.log('User ID:', req.user.id_usuario);
     console.log('User Role:', req.user.rol);
+
+    const organizerId = req.user.id_usuario;
+
+    // Obtener estadísticas reales
+    const eventsStats = await client.query(
+      `SELECT 
+        COUNT(*) as total_events,
+        COUNT(CASE WHEN estado = 'proximo' THEN 1 END) as upcoming_events,
+        COUNT(CASE WHEN estado = 'activo' THEN 1 END) as active_events,
+        COUNT(CASE WHEN estado = 'finalizado' THEN 1 END) as completed_events
+       FROM eventos 
+       WHERE id_organizador = $1`,
+      [organizerId]
+    );
+
+    const participantsStats = await client.query(
+      `SELECT 
+        COUNT(DISTINCT i.id_usuario) as total_participants,
+        COUNT(CASE WHEN i.estado = 'pendiente' THEN 1 END) as pending_registrations,
+        COUNT(CASE WHEN i.estado = 'confirmada' THEN 1 END) as confirmed_participants
+       FROM inscripciones i
+       JOIN eventos e ON i.id_evento = e.id_evento
+       WHERE e.id_organizador = $1`,
+      [organizerId]
+    );
+
+    const revenueStats = await client.query(
+      `SELECT 
+        COALESCE(SUM(i.cuota_pagada), 0) as total_revenue,
+        COUNT(CASE WHEN i.estado_pago = 'pendiente' THEN 1 END) as pending_payments
+       FROM inscripciones i
+       JOIN eventos e ON i.id_evento = e.id_evento
+       WHERE e.id_organizador = $1`,
+      [organizerId]
+    );
+
+    // Próximos eventos (para la sección de tareas pendientes)
+    const upcomingEvents = await client.query(
+      `SELECT id_evento, nombre, fecha_inicio, ubicacion
+       FROM eventos 
+       WHERE id_organizador = $1 AND estado = 'proximo' 
+       ORDER BY fecha_inicio ASC 
+       LIMIT 3`,
+      [organizerId]
+    );
+
+    const stats = eventsStats.rows[0];
+    const participantStats = participantsStats.rows[0];
+    const revenue = revenueStats.rows[0];
 
     res.json({
       success: true,
@@ -91,21 +141,37 @@ const getOrganizerData = async (req, res) => {
       data: {
         user: {
           id: req.user.id_usuario,
-          rol: req.user.rol
+          rol: req.user.rol,
+          nombre: req.user.nombre_completo || req.user.correo_electronico
         },
         stats: {
-          totalEvents: 0,
-          pendingRegistrations: 0,
-          activeParticipants: 0
+          totalEvents: parseInt(stats.total_events) || 0,
+          upcomingEvents: parseInt(stats.upcoming_events) || 0,
+          activeEvents: parseInt(stats.active_events) || 0,
+          completedEvents: parseInt(stats.completed_events) || 0,
+          totalParticipants: parseInt(participantStats.total_participants) || 0,
+          pendingRegistrations: parseInt(participantStats.pending_registrations) || 0,
+          confirmedParticipants: parseInt(participantStats.confirmed_participants) || 0,
+          totalRevenue: parseFloat(revenue.total_revenue) || 0,
+          pendingPayments: parseInt(revenue.pending_payments) || 0
         },
+        upcomingEvents: upcomingEvents.rows,
         features: [
           'Gestión de eventos',
           'Aprobación de inscripciones',
           'Estadísticas de participación',
-          'Gestión de equipos'
+          'Gestión de equipos',
+          'Reportes financieros',
+          'Comunicación con participantes'
+        ],
+        quickActions: [
+          { label: 'Crear Evento', path: '/organizer/events/create', icon: 'FiPlus' },
+          { label: 'Ver Inscripciones Pendientes', path: '/organizer/participants', icon: 'FiUsers' },
+          { label: 'Generar Reporte', path: '/organizer/reports', icon: 'FiTrendingUp' }
         ]
       }
     });
+
   } catch (error) {
     console.error('Error en panel de organizador:', error);
     res.status(500).json({
@@ -113,6 +179,8 @@ const getOrganizerData = async (req, res) => {
       message: 'Error interno del servidor',
       error: error.message
     });
+  } finally {
+    client.release();
   }
 };
 

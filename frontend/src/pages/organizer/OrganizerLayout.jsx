@@ -1,27 +1,45 @@
 import { Outlet } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
+import apiClient from '../../services/api';
 
 function OrganizerLayout() {
   const { user } = useContext(AuthContext);
+  const [stats, setStats] = useState({ totalEvents: 0, totalParticipants: 0 });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await apiClient.get('/organizer/dashboard-data');
+        setStats({
+          totalEvents: response.data.data.stats.totalEvents,
+          totalParticipants: response.data.data.stats.totalParticipants
+        });
+      } catch (error) {
+        console.error('Error fetching organizer stats:', error);
+      }
+    };
+
+    fetchStats();
+  }, []);
 
   const organizerNavLinks = [
-    { to: '/organizer/dashboard', icon: 'FiBarChart2', text: 'Dashboard' },
-    { to: '/organizer/events', icon: 'FiCalendar', text: 'Mis Eventos' },
-    { to: '/organizer/events/create', icon: 'FiPlus', text: 'Crear Evento' },
-    { to: '/organizer/participants', icon: 'FiUsers', text: 'Participantes' }, // CORREGIDO: ruta correcta
-    { to: '/organizer/reports', icon: 'FiTrendingUp', text: 'Reportes' } // CORREGIDO: ruta correcta
+    { to: '/organizer/dashboard', icon: '📊', text: 'Dashboard' },
+    { to: '/organizer/events', icon: '📅', text: 'Mis Eventos' },
+    { to: '/organizer/events/create', icon: '➕', text: 'Crear Evento' },
+    { to: '/organizer/participants', icon: '👥', text: 'Participantes' },
+    { to: '/organizer/reports', icon: '📈', text: 'Reportes' }
   ];
 
   const organizerQuickLinks = [
-    { to: '/eventos', icon: 'FiMap', text: 'Explorar Eventos' },
-    { to: '/store', icon: 'FiShoppingCart', text: 'Ir a la Tienda' }
+    { to: '/eventos', icon: '🗺️', text: 'Explorar Eventos' },
+    { to: '/store', icon: '🛒', text: 'Ir a la Tienda' }
   ];
 
   const organizerStats = [
-    { number: '0', label: 'Eventos Activos' },
-    { number: '0', label: 'Total Participantes' }
+    { number: stats.totalEvents.toString(), label: 'Eventos Activos' },
+    { number: stats.totalParticipants.toString(), label: 'Total Participantes' }
   ];
 
   return (

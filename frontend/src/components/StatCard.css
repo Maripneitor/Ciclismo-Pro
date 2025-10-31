@@ -1,0 +1,112 @@
+.stat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--neutral-200);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card__content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.stat-card__info {
+  flex: 1;
+}
+
+.stat-card__value {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1;
+}
+
+.stat-card--primary .stat-card__value {
+  color: var(--primary-600);
+}
+
+.stat-card--success .stat-card__value {
+  color: var(--success);
+}
+
+.stat-card--warning .stat-card__value {
+  color: var(--warning);
+}
+
+.stat-card--error .stat-card__value {
+  color: var(--error);
+}
+
+.stat-card--info .stat-card__value {
+  color: var(--info);
+}
+
+.stat-card__title {
+  font-size: 0.9rem;
+  color: var(--neutral-600);
+  margin: 0 0 0.25rem 0;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-card__subtitle {
+  font-size: 0.8rem;
+  color: var(--neutral-500);
+  margin: 0;
+}
+
+.stat-card__icon {
+  font-size: 2rem;
+  opacity: 0.8;
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.stat-card__trend {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 0.5rem;
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+}
+
+.stat-card__trend--up {
+  background: var(--success-light);
+  color: var(--success-dark);
+}
+
+.stat-card__trend--down {
+  background: var(--error-light);
+  color: var(--error-dark);
+}
+
+/* Modo oscuro */
+body.dark .stat-card {
+  background: var(--color-gray-dark);
+  border-color: var(--color-border-dark);
+}
+
+body.dark .stat-card__icon {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark .stat-card__title {
+  color: var(--color-text-light-dark);
+}
+
+body.dark .stat-card__subtitle {
+  color: var(--color-text-lighter-dark);
+}

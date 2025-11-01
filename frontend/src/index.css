@@ -1,93 +1,141 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@300;400;500;600;700&display=swap');
 
 :root {
+  /* Fuentes (sin cambios) */
   --font-heading: 'Montserrat', sans-serif;
   --font-body: 'Open Sans', sans-serif;
-  --color-primary: #FF6B35;
-  --color-primary-dark: #e55a2b;
-  --color-primary-light: #ff8c5a;
-  --color-secondary: #2D3047;
-  --color-secondary-dark: #25283d;
-  --color-secondary-light: #3a3e5c;
-  --color-accent1: #00A896;
-  --color-accent1-dark: #009080;
-  --color-accent2: #FFE74C;
-  --color-gray-dark: #212529;
-  --color-gray-medium: #335674;
-  --color-gray-light: #E9ECEF;
+  
+  /* NUEVA PALETA DE COLORES - TEMÁTICA CICLISMO */
+  --color-primary: #27AE60;        /* Verde energético - naturaleza, deporte */
+  --color-primary-dark: #219653;   /* Verde más oscuro */
+  --color-primary-light: #58D68D;  /* Verde más claro */
+  
+  --color-secondary: #2C3E50;      /* Azul oscuro - profesionalismo */
+  --color-secondary-dark: #1C2833; /* Azul más oscuro */
+  --color-secondary-light: #34495E; /* Azul más claro */
+  
+  --color-accent1: #E74C3C;        /* Rojo - energía, pasión */
+  --color-accent1-dark: #C0392B;   /* Rojo más oscuro */
+  
+  --color-accent2: #F39C12;        /* Naranja - vitalidad, acción */
+  --color-accent2-dark: #D68910;   /* Naranja más oscuro */
+  
+  /* Colores neutros */
+  --color-gray-dark: #2C3E50;      /* Azul oscuro */
+  --color-gray-medium: #7F8C8D;    /* Gris medio */
+  --color-gray-light: #ECF0F1;     /* Gris muy claro */
   --color-white: #FFFFFF;
   --color-black: #000000;
-  --color-success: #28A745;
-  --color-warning: #FFC107;
-  --color-error: #DC3545;
-  --color-info: #17A2B8;
+  
+  /* Estados (sin cambios) */
+  --color-success: #27AE60;
+  --color-warning: #F39C12;
+  --color-error: #E74C3C;
+  --color-info: #3498DB;
+  
+  /* Variables específicas para componentes */
+  --color-background-body-light: #F8F9FA;
+  --header-bg-light: rgba(255, 255, 255, 0.95);
+  --header-text-light: var(--color-secondary);
+  --header-shadow-light: rgba(44, 62, 80, 0.1);
+  
+  --button-primary-bg-light: var(--color-primary);
+  --button-primary-text-light: var(--color-white);
+  
+  --button-secondary-bg-light: var(--color-gray-light);
+  --button-secondary-text-light: var(--color-secondary);
+  
+  --header-bg-floating: rgba(255, 255, 255, 0.98);
+  --header-shadow-floating: 0 8px 32px rgba(44, 62, 80, 0.1);
+  
+  --nav-link-text: var(--color-secondary);
+  --nav-link-hover-bg: var(--color-gray-light);
+  --nav-link-hover-text: var(--color-primary);
+  
+  --header-button-bg: var(--color-gray-light);
+  --header-button-text: var(--color-secondary);
+  --header-divider-color: #D5DBDB;
+  
+  --card-bg-light: var(--color-white);
+  --card-border-light: var(--color-gray-light);
+  --card-shadow-hover: var(--shadow-lg);
+  
+  /* Espaciado, bordes, sombras y transiciones (sin cambios) */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
+  
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 16px;
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 12px 24px rgba(0, 0, 0, 0.15);
+  
+  --shadow-sm: 0 2px 4px rgba(44, 62, 80, 0.1);
+  --shadow-md: 0 4px 8px rgba(44, 62, 80, 0.1);
+  --shadow-lg: 0 8px 16px rgba(44, 62, 80, 0.1);
+  --shadow-xl: 0 12px 24px rgba(44, 62, 80, 0.15);
+  
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-slow: 0.5s ease;
-  --color-background-body-light: #F0F8FF;
-  --header-bg-light: rgba(255, 255, 255, 0.85);
-  --header-text-light: var(--color-secondary);
-  --header-height: 70px;
-  --header-shadow-light: rgba(0, 0, 0, 0.1);
-  --button-secondary-bg-light: #e0e0e0;
-  --button-secondary-text-light: #333333;
-  --button-primary-bg-light: #8bc34a;
-  --button-primary-text-light: #ffffff;
-  --header-bg-floating: rgba(255, 255, 255, 0.95);
-  --header-shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.1);
-    --nav-link-text: var(--color-secondary);
-  --nav-link-hover-bg: var(--color-gray-light);
-  --nav-link-hover-text: var(--color-primary);
-  --header-button-bg: var(--color-gray-light);
-  --header-button-text: var(--color-secondary);
-  --header-divider-color: var(--color-gray-light);
-    --card-bg-light: var(--color-white);
-  --card-border-light: var(--color-gray-light);
-  --card-shadow-hover: var(--shadow-lg);
 }
 
 body.dark {
-  --color-white: #282c34;
-  --color-gray-light: #3a3f4a;
-  --color-gray-dark: #f0f0f0;
-    --color-background-body-light: linear-gradient(180deg, #1a1a1a 0%, var(--color-secondary-dark) 100%);
-  --header-bg-light: rgba(55, 65, 81, 0.85);
-  --header-text-light: var(--color-gray-dark);
-  --header-shadow-light: rgba(255, 255, 255, 0.1);
-  --button-secondary-bg-light: #5a5f6b;
-  --button-secondary-text-light: #f0f0f0;
-  --button-primary-bg-light: #689f38;
-  --button-primary-text-light: #ffffff;
-  --card-background: #374151;
-  --card-border: #4b5563;
-  --input-background: #4b5563;
-  --input-border: #6b7280;
-  --table-header-bg: #4b5563;
-  --table-row-hover: rgba(255, 255, 255, 0.05);
-  --header-bg-floating: rgba(55, 65, 81, 0.95);
+  --color-primary: #27AE60;        /* Mismo verde energético */
+  --color-primary-dark: #219653;   /* Mismo verde oscuro */
+  --color-primary-light: #58D68D;  /* Mismo verde claro */
+  
+  --color-secondary: #BDC3C7;      /* Gris claro para texto */
+  --color-secondary-dark: #ECF0F1; /* Gris muy claro para títulos */
+  --color-secondary-light: #95A5A6; /* Gris medio */
+  
+  --color-accent1: #E74C3C;        /* Mismo rojo */
+  --color-accent1-dark: #C0392B;   /* Mismo rojo oscuro */
+  
+  --color-accent2: #F39C12;        /* Mismo naranja */
+  --color-accent2-dark: #D68910;   /* Mismo naranja oscuro */
+  
+  /* Colores neutros invertidos */
+  --color-gray-dark: #ECF0F1;      /* Gris claro para texto */
+  --color-gray-medium: #95A5A6;    /* Gris medio */
+  --color-gray-light: #34495E;     /* Azul grisáceo oscuro */
+  --color-white: #2C3E50;          /* Azul oscuro como fondo */
+  --color-black: #ECF0F1;          /* Gris claro para texto */
+  
+  /* Estados (sin cambios) */
+  --color-success: #27AE60;
+  --color-warning: #F39C12;
+  --color-error: #E74C3C;
+  --color-info: #3498DB;
+  
+  /* Variables específicas para componentes en modo oscuro */
+  --color-background-body-light: #1C2833; /* Fondo más oscuro */
+  --header-bg-light: rgba(28, 40, 51, 0.95);
+  --header-text-light: var(--color-secondary-dark);
+  --header-shadow-light: rgba(0, 0, 0, 0.2);
+  
+  --button-primary-bg-light: var(--color-primary);
+  --button-primary-text-light: var(--color-white);
+  
+  --button-secondary-bg-light: var(--color-gray-light);
+  --button-secondary-text-light: var(--color-secondary-dark);
+  
+  --header-bg-floating: rgba(28, 40, 51, 0.98);
   --header-shadow-floating: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --nav-link-text: var(--color-gray-dark);
-  --nav-link-hover-bg: var(--button-secondary-bg-light);
+  
+  --nav-link-text: var(--color-secondary-dark);
+  --nav-link-hover-bg: var(--color-gray-light);
   --nav-link-hover-text: var(--color-primary);
-  --header-button-bg: var(--button-secondary-bg-light);
-  --header-button-text: var(--color-gray-dark);
-  --header-divider-color: var(--card-border);
-    --card-bg-dark: var(--color-secondary-light);
-  --card-border-dark: var(--color-gray-medium);
+  
+  --header-button-bg: var(--color-gray-light);
+  --header-button-text: var(--color-secondary-dark);
+  --header-divider-color: #34495E;
+  
+  --card-bg-light: var(--color-white);
+  --card-border-light: var(--color-gray-light);
   --card-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 

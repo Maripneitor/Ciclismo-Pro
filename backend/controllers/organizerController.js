@@ -1,6 +1,6 @@
 const db = require('../db');
 
-// Función de utilidad para crear eventos (Nueva)
+// Función de utilidad para crear eventos
 const createEvent = async (req, res) => {
   const client = await db.pool.connect();
   try {
@@ -88,18 +88,19 @@ const getOrganizerData = async (req, res) => {
 
     const organizerId = req.user.id_usuario;
 
-    // Obtener estadísticas reales
+    // 1. Estadísticas de Eventos (CORREGIDO: 'activo' por 'en_curso')
     const eventsStats = await client.query(
       `SELECT 
         COUNT(*) as total_events,
         COUNT(CASE WHEN estado = 'proximo' THEN 1 END) as upcoming_events,
-        COUNT(CASE WHEN estado = 'activo' THEN 1 END) as active_events,
+        COUNT(CASE WHEN estado = 'en_curso' THEN 1 END) as active_events,
         COUNT(CASE WHEN estado = 'finalizado' THEN 1 END) as completed_events
        FROM eventos 
        WHERE id_organizador = $1`,
       [organizerId]
     );
 
+    // 2. Estadísticas de Participantes (Esta consulta estaba bien)
     const participantsStats = await client.query(
       `SELECT 
         COUNT(DISTINCT i.id_usuario) as total_participants,
@@ -111,17 +112,19 @@ const getOrganizerData = async (req, res) => {
       [organizerId]
     );
 
+    // 3. Estadísticas de Ingresos (CORREGIDO: Se obtiene 'cuota_inscripcion' de 'eventos' y se une con 'pagos')
     const revenueStats = await client.query(
       `SELECT 
-        COALESCE(SUM(i.cuota_pagada), 0) as total_revenue,
-        COUNT(CASE WHEN i.estado_pago = 'pendiente' THEN 1 END) as pending_payments
+        COALESCE(SUM(CASE WHEN p.estado = 'aprobado' THEN e.cuota_inscripcion ELSE 0 END), 0) as total_revenue,
+        COUNT(CASE WHEN p.estado = 'pendiente' THEN 1 END) as pending_payments
        FROM inscripciones i
        JOIN eventos e ON i.id_evento = e.id_evento
+       LEFT JOIN pagos p ON i.id_inscripcion = p.id_inscripcion
        WHERE e.id_organizador = $1`,
       [organizerId]
     );
 
-    // Próximos eventos (para la sección de tareas pendientes)
+    // 4. Próximos eventos (Esta consulta estaba bien)
     const upcomingEvents = await client.query(
       `SELECT id_evento, nombre, fecha_inicio, ubicacion
        FROM eventos 
@@ -159,19 +162,15 @@ const getOrganizerData = async (req, res) => {
         features: [
           'Gestión de eventos',
           'Aprobación de inscripciones',
-          'Estadísticas de participación',
-          'Gestión de equipos',
-          'Reportes financieros',
-          'Comunicación con participantes'
+          'Estadísticas de participación'
         ],
         quickActions: [
           { label: 'Crear Evento', path: '/organizer/events/create', icon: 'FiPlus' },
-          { label: 'Ver Inscripciones Pendientes', path: '/organizer/participants', icon: 'FiUsers' },
+          { label: 'Ver Inscripciones', path: '/organizer/participants', icon: 'FiUsers' },
           { label: 'Generar Reporte', path: '/organizer/reports', icon: 'FiTrendingUp' }
         ]
       }
     });
-
   } catch (error) {
     console.error('Error en panel de organizador:', error);
     res.status(500).json({
@@ -299,5 +298,5 @@ module.exports = {
   getOrganizerData,
   getMyCreatedEvents,
   getEventParticipants,
-  createEvent // Exportar la nueva función
+  createEvent 
 };

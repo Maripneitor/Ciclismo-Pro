@@ -206,13 +206,13 @@ const updateEventStatus = async (req, res) => {
       });
     }
 
-    // Validar que el estado sea uno de los permitidos
-    const allowedStatuses = ['proximo', 'activo', 'finalizado', 'cancelado'];
+    // CORRECCIÓN: Cambiar 'activo' por 'en_curso' para coincidir con el esquema de la base de datos
+    const allowedStatuses = ['proximo', 'en_curso', 'finalizado', 'cancelado'];
     if (!allowedStatuses.includes(nuevoEstado)) {
       await client.query('ROLLBACK');
       return res.status(400).json({
         success: false,
-        message: 'Estado no válido. Los estados permitidos son: proximo, activo, finalizado, cancelado'
+        message: 'Estado no válido. Los estados permitidos son: proximo, en_curso, finalizado, cancelado'
       });
     }
 
@@ -742,7 +742,169 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
+const getDashboardData = async (req, res) => {
+  const client = await db.pool.connect();
+  try {
+    console.log('=== GET ADMIN DASHBOARD DATA ===');
+    console.log('Admin ID:', req.user.id_usuario);
+    console.log('Admin Role:', req.user.rol);
+    
+    // 1. Estadísticas principales (en paralelo para mejor rendimiento)
+    const statsPromises = [
+      // Usuarios
+      client.query("SELECT COUNT(*) as total_usuarios FROM usuarios"),
+      client.query("SELECT COUNT(*) as usuarios_activos_hoy FROM usuarios WHERE fecha_creacion >= CURRENT_DATE"),
+      client.query("SELECT rol, COUNT(*) as count FROM usuarios GROUP BY rol"),
+      
+      // Eventos
+      client.query("SELECT COUNT(*) as eventos_proximos FROM eventos WHERE estado = 'proximo'"),
+      client.query("SELECT COUNT(*) as eventos_en_curso FROM eventos WHERE estado = 'en_curso'"),
+      client.query("SELECT COUNT(*) as eventos_finalizados FROM eventos WHERE estado = 'finalizado'"),
+      client.query("SELECT COUNT(*) as eventos_cancelados FROM eventos WHERE estado = 'cancelado'"),
+      client.query("SELECT AVG(cuota_inscripcion) as cuota_promedio FROM eventos WHERE cuota_inscripcion > 0"),
+      
+      // Pedidos
+      client.query("SELECT COUNT(*) as pedidos_pendientes FROM pedidos_tienda WHERE estado = 'pendiente'"),
+      client.query("SELECT COUNT(*) as pedidos_totales FROM pedidos_tienda"),
+      client.query("SELECT COUNT(*) as pedidos_entregados FROM pedidos_tienda WHERE estado = 'entregado'"),
+      client.query("SELECT COALESCE(SUM(total), 0) as ingresos_totales FROM pedidos_tienda WHERE estado = 'entregado' OR estado = 'confirmado'"),
+      client.query("SELECT COALESCE(AVG(total), 0) as ticket_promedio FROM pedidos_tienda WHERE estado = 'entregado'"),
+      
+      // Productos
+      client.query("SELECT COUNT(*) as productos_activos FROM productos_tienda WHERE activo = true"),
+      client.query("SELECT COUNT(*) as productos_stock_bajo FROM productos_tienda WHERE inventario < 10 AND inventario > 0"),
+      client.query("SELECT COUNT(*) as productos_sin_stock FROM productos_tienda WHERE inventario = 0"),
+      
+      // Inscripciones (con manejo de errores si la tabla no existe)
+      client.query("SELECT COUNT(*) as total_inscripciones FROM inscripciones").catch(() => ({ rows: [{ total_inscripciones: 0 }] })),
+      client.query("SELECT COUNT(*) as inscripciones_confirmadas FROM inscripciones WHERE estado = 'confirmada'").catch(() => ({ rows: [{ inscripciones_confirmadas: 0 }] }))
+    ];
+    
+    console.log('Ejecutando consultas de estadísticas...');
+    
+    // 2. Actividad reciente (en paralelo)
+    const recentUsersPromise = client.query(
+      `SELECT id_usuario, nombre_completo, correo_electronico, fecha_creacion, rol
+       FROM usuarios 
+       ORDER BY fecha_creacion DESC 
+       LIMIT 6`
+    );
+    
+    const recentOrdersPromise = client.query(
+      `SELECT p.id_pedido, p.total, p.estado, u.nombre_completo as cliente, p.fecha_pedido
+       FROM pedidos_tienda p
+       JOIN usuarios u ON p.id_usuario = u.id_usuario
+       ORDER BY p.fecha_pedido DESC
+       LIMIT 6`
+    );
+
+    const recentEventsPromise = client.query(
+      `SELECT id_evento, nombre, estado, fecha_inicio, ubicacion, cuota_inscripcion
+       FROM eventos 
+       ORDER BY fecha_creacion DESC 
+       LIMIT 6`
+    );
+
+    // Esperar todas las consultas
+    const [statsResults, recentUsers, recentOrders, recentEvents] = await Promise.all([
+      Promise.all(statsPromises),
+      recentUsersPromise,
+      recentOrdersPromise,
+      recentEventsPromise
+    ]);
+
+    console.log('Consultas completadas exitosamente');
+
+    // Procesar roles de usuarios
+    const roles = statsResults[2].rows.reduce((acc, row) => {
+      acc[row.rol] = parseInt(row.count, 10);
+      return acc;
+    }, { usuario: 0, organizador: 0, administrador: 0 });
+
+    // Calcular totales y porcentajes
+    const totalUsuarios = parseInt(statsResults[0].rows[0].total_usuarios, 10);
+    const totalEventos = parseInt(statsResults[3].rows[0].eventos_proximos, 10) + 
+                        parseInt(statsResults[4].rows[0].eventos_en_curso, 10) + 
+                        parseInt(statsResults[5].rows[0].eventos_finalizados, 10) +
+                        parseInt(statsResults[6].rows[0].eventos_cancelados, 10);
+    
+    const totalPedidos = parseInt(statsResults[9].rows[0].pedidos_totales, 10);
+    const pedidosEntregados = parseInt(statsResults[10].rows[0].pedidos_entregados, 10);
+
+    const stats = {
+      // Usuarios
+      usuarios: {
+        total: totalUsuarios,
+        activos_hoy: parseInt(statsResults[1].rows[0].usuarios_activos_hoy, 10),
+        roles: roles,
+        crecimiento: totalUsuarios > 0 ? Math.round((parseInt(statsResults[1].rows[0].usuarios_activos_hoy, 10) / totalUsuarios) * 100) : 0
+      },
+      
+      // Eventos
+      eventos: {
+        total: totalEventos,
+        proximos: parseInt(statsResults[3].rows[0].eventos_proximos, 10),
+        en_curso: parseInt(statsResults[4].rows[0].eventos_en_curso, 10),
+        finalizados: parseInt(statsResults[5].rows[0].eventos_finalizados, 10),
+        cancelados: parseInt(statsResults[6].rows[0].eventos_cancelados, 10),
+        cuota_promedio: parseFloat(statsResults[7].rows[0].cuota_promedio) || 0
+      },
+      
+      // Pedidos
+      pedidos: {
+        total: totalPedidos,
+        pendientes: parseInt(statsResults[8].rows[0].pedidos_pendientes, 10),
+        entregados: pedidosEntregados,
+        ingresos_totales: parseFloat(statsResults[11].rows[0].ingresos_totales),
+        ticket_promedio: parseFloat(statsResults[12].rows[0].ticket_promedio) || 0,
+        tasa_entrega: totalPedidos > 0 ? Math.round((pedidosEntregados / totalPedidos) * 100) : 0
+      },
+      
+      // Productos
+      productos: {
+        activos: parseInt(statsResults[13].rows[0].productos_activos, 10),
+        stock_bajo: parseInt(statsResults[14].rows[0].productos_stock_bajo, 10),
+        sin_stock: parseInt(statsResults[15].rows[0].productos_sin_stock, 10)
+      },
+      
+      // Inscripciones
+      inscripciones: {
+        total: parseInt(statsResults[16].rows[0].total_inscripciones, 10),
+        confirmadas: parseInt(statsResults[17].rows[0].inscripciones_confirmadas, 10),
+        tasa_confirmacion: parseInt(statsResults[16].rows[0].total_inscripciones, 10) > 0 ? 
+          Math.round((parseInt(statsResults[17].rows[0].inscripciones_confirmadas, 10) / parseInt(statsResults[16].rows[0].total_inscripciones, 10)) * 100) : 0
+      }
+    };
+
+    console.log('✅ Admin Dashboard Stats procesados:', stats);
+
+    res.json({
+      success: true,
+      data: {
+        stats: stats,
+        recentUsers: recentUsers.rows,
+        recentOrders: recentOrders.rows,
+        recentEvents: recentEvents.rows,
+        lastUpdated: new Date().toISOString()
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ ERROR en getDashboardData:', error);
+    console.error('Stack trace completo:', error.stack);
+    
+    res.status(500).json({
+      success: false,
+      message: 'Error interno del servidor al obtener datos del dashboard',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Error interno del servidor'
+    });
+  } finally {
+    client.release();
+    console.log('🔓 Cliente de base de datos liberado');
+  }
+};
 module.exports = {
+  getDashboardData,
   getAllUsers,
   getAllEvents,
   updateUserRole,

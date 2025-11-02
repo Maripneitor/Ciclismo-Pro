@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { 
+  getDashboardData, // <-- AÑADE ESTA LÍNEA
   getAllUsers, 
   getAllEvents, 
   updateUserRole, 
@@ -14,6 +15,10 @@ const {
   updateOrderStatus
 } = require('../controllers/adminController');
 const { protect, isAdmin } = require('../middleware/authMiddleware');
+
+// --- AÑADE ESTA NUEVA RUTA ---
+router.get('/dashboard-data', protect, isAdmin, getDashboardData);
+// -----------------------------
 
 // Rutas protegidas solo para administradores
 router.get('/users', protect, isAdmin, getAllUsers);

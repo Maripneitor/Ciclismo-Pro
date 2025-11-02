@@ -882,3 +882,123 @@
   outline: 2px solid var(--input-border-focus); /* <-- MODIFICADO */
   outline-offset: 2px;
 }
+
+/* Estadísticas Grid */
+.stats-grid {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-icon {
+  margin-bottom: 1rem;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  color: var(--app-text-secondary);
+  font-weight: 700;
+  margin: 0.5rem 0;
+}
+
+/* Charts Grid */
+.charts-grid {
+  grid-template-columns: 1fr 2fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.chart-container {
+  height: 300px;
+  position: relative;
+}
+
+.card-header {
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* Tables Grid */
+.tables-grid {
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.table-header {
+  display: flex;
+  justify-content: between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.table-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.table-count {
+  background: var(--color-primary);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+/* Mejoras para tablas */
+.user-name {
+  font-weight: 600;
+}
+
+.user-email {
+  color: var(--app-text-muted);
+}
+
+.user-date {
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+}
+
+.order-customer {
+  font-weight: 600;
+}
+
+.order-total {
+  font-weight: 700;
+  color: var(--color-success);
+}
+
+/* Estados de pedidos */
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-pendiente { background: var(--color-warning); color: white; }
+.status-confirmado { background: var(--color-info); color: white; }
+.status-procesando { background: var(--color-primary); color: white; }
+.status-enviado { background: var(--color-secondary); color: white; }
+.status-entregado { background: var(--color-success); color: white; }
+.status-cancelado { background: var(--color-error); color: white; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .charts-grid,
+  .tables-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}

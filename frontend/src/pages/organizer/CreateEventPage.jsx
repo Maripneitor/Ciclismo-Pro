@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../../services/api';
 import Spinner from '../../components/Spinner';
 import { useToast } from '../../context/ToastContext';
+// Los estilos vienen de OrganizerCommon.css (cargado por el Layout) y index.css
 
 function CreateEventPage() {
   const navigate = useNavigate();
@@ -14,13 +15,14 @@ function CreateEventPage() {
     fecha_fin: '',
     ubicacion: '',
     distancia_km: '',
-    dificultad: '',
-    tipo: '',
+    dificultad: 'Moderado', // Valor predeterminado
+    tipo: 'Carretera',   // Valor predeterminado
     cuota_inscripcion: '',
     maximo_participantes: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -37,10 +39,15 @@ function CreateEventPage() {
       const eventData = {
         ...formData,
         distancia_km: parseFloat(formData.distancia_km),
-        cuota_inscripcion: parseFloat(formData.cuota_inscripcion),
+        cuota_inscripcion: parseFloat(formData.cuota_inscripcion) || 0, // Asegurar que sea un número
         maximo_participantes: formData.maximo_participantes ?
-parseInt(formData.maximo_participantes) : null
+          parseInt(formData.maximo_participantes) : null
       };
+
+      // Validación simple
+      if (!eventData.nombre || !eventData.fecha_inicio || !eventData.ubicacion || !eventData.distancia_km) {
+        throw new Error("Por favor completa todos los campos obligatorios (*)");
+      }
 
       const response = await apiClient.post('/organizer/my-events', eventData);
       
@@ -48,14 +55,12 @@ parseInt(formData.maximo_participantes) : null
       navigate('/organizer/events');
     } catch (error) {
       console.error('Error creating event:', error);
-      let errorMessage = 'Error al crear el evento';
+      let errorMessage = error.message || 'Error al crear el evento';
       
       if (error.response) {
-        errorMessage = error.response.data?.message ||
-`Error ${error.response.status}`;
+        errorMessage = error.response.data?.message || `Error ${error.response.status}`;
       } else if (error.request) {
-        errorMessage = `No se pudo conectar con el servidor.
-Verifica tu conexión.`;
+        errorMessage = `No se pudo conectar con el servidor. Verifica tu conexión.`;
       }
       
       setError(errorMessage);
@@ -64,208 +69,127 @@ Verifica tu conexión.`;
       setIsLoading(false);
     }
   };
-  const categories = [
-    { value: 'ropa', label: 'Ropa' },
-    { value: 'accesorios', label: 'Accesorios' },
-    { value: 'equipamiento', label: 'Equipamiento' },
-    { value: 'nutricion', label: 'Nutrición' },
-    { value: 'electronica', label: 'Electrónica' },
-    { value: 'otros', label: 'Otros' }
-  ];
+
   return (
-    <div className="container">
-      <div style={{ 
-        maxWidth: '800px', 
-        margin: '0 auto',
-        border: '1px solid #ccc', 
-        padding: '2rem', 
-        borderRadius: '8px',
-        backgroundColor: 'white'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h1>Crear Nuevo Evento</h1>
-          <Link to="/organizer/events" style={{ color: 'var(--primary-500)' }}>
-            ← Volver a Mis Eventos
-          </Link>
+    <div className="organizer-page"> {/* Clase de OrganizerCommon.css */}
+      <div className="content-section"> {/* Clase de OrganizerCommon.css */}
+        
+        <div className="admin-header"> {/* Clase de AdminCommon.css (reutilizada) */}
+          <div className="header-content">
+            <h1 className="page-title">Crear Nuevo Evento</h1>
+          </div>
+          <div className="header-actions">
+            <Link to="/organizer/events" className="btn btn-outline">
+              ← Volver a Mis Eventos
+            </Link>
+          </div>
         </div>
 
         {error && (
-          <div style={{ 
-            backgroundColor: 'rgba(220, 53, 69, 0.1)',
-            border: '1px solid var(--error)',
-            color: 'var(--error)',
-            padding: '1rem',
-            borderRadius: '4px',
-            marginBottom: '1.5rem'
-          }}>
+          <div className="alert-error" role="alert" style={{ marginBottom: '1.5rem' }}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Nombre del Evento *
-            </label>
+          
+          <div className="form-group">
+            <label className="form-label" htmlFor="nombre">Nombre del Evento *</label>
             <input
               type="text"
               name="nombre"
+              id="nombre"
               value={formData.nombre}
               onChange={handleChange}
               required
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
             />
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Descripción
-            </label>
+          <div className="form-group">
+            <label className="form-label" htmlFor="descripcion">Descripción</label>
             <textarea
               name="descripcion"
+              id="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
               rows="4"
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Fecha de Inicio *
-              </label>
+          <div className="grid grid-2 gap-4 mb-3"> {/* Clases de index.css */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="fecha_inicio">Fecha de Inicio *</label>
               <input
                 type="datetime-local"
                 name="fecha_inicio"
+                id="fecha_inicio"
                 value={formData.fecha_inicio}
                 onChange={handleChange}
                 required
-                style={{ 
-                  width: '100%', 
-                  padding: '0.75rem', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontSize: '1rem'
-                }}
               />
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Fecha de Fin
-              </label>
+            <div className="form-group">
+              <label className="form-label" htmlFor="fecha_fin">Fecha de Fin</label>
               <input
                 type="datetime-local"
                 name="fecha_fin"
+                id="fecha_fin"
                 value={formData.fecha_fin}
                 onChange={handleChange}
-                style={{ 
-                  width: '100%', 
-                  padding: '0.75rem', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontSize: '1rem'
-                }}
               />
             </div>
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Ubicación *
-            </label>
+          <div className="form-group">
+            <label className="form-label" htmlFor="ubicacion">Ubicación *</label>
             <input
               type="text"
               name="ubicacion"
+              id="ubicacion"
               value={formData.ubicacion}
               onChange={handleChange}
               required
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem', marginBottom: '1.5rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Distancia (km) *
-              </label>
+          <div className="grid grid-3 gap-4 mb-3"> {/* Clases de index.css */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="distancia_km">Distancia (km) *</label>
               <input
                 type="number"
                 name="distancia_km"
+                id="distancia_km"
                 value={formData.distancia_km}
                 onChange={handleChange}
                 required
                 min="0"
                 step="0.1"
-                style={{ 
-                  width: '100%', 
-                  padding: '0.75rem', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontSize: '1rem'
-                }}
               />
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Dificultad *
-              </label>
+            <div className="form-group">
+              <label className="form-label" htmlFor="dificultad">Dificultad *</label>
               <select
                 name="dificultad"
+                id="dificultad"
                 value={formData.dificultad}
                 onChange={handleChange}
                 required
-                style={{ 
-                  width: '100%', 
-                  padding: '0.75rem', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontSize: '1rem'
-                }}
               >
-                <option value="">Seleccionar</option>
                 <option value="Fácil">Fácil</option>
                 <option value="Moderado">Moderado</option>
                 <option value="Difícil">Difícil</option>
                 <option value="Extremo">Extremo</option>
               </select>
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Tipo *
-              </label>
+            <div className="form-group">
+              <label className="form-label" htmlFor="tipo">Tipo *</label>
               <select
                 name="tipo"
+                id="tipo"
                 value={formData.tipo}
                 onChange={handleChange}
                 required
-                style={{ 
-                  width: '100%', 
-                  padding: '0.75rem', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontSize: '1rem'
-                }}
               >
-                <option value="">Seleccionar</option>
                 <option value="Carretera">Carretera</option>
                 <option value="Montaña">Montaña</option>
                 <option value="Gravel">Gravel</option>
@@ -276,82 +200,44 @@ Verifica tu conexión.`;
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Cuota de Inscripción ($)
-              </label>
+          <div className="grid grid-2 gap-4 mb-4"> {/* Clases de index.css */}
+            <div className="form-group">
+              <label className="form-label" htmlFor="cuota_inscripcion">Cuota de Inscripción ($)</label>
               <input
                 type="number"
                 name="cuota_inscripcion"
+                id="cuota_inscripcion"
                 value={formData.cuota_inscripcion}
                 onChange={handleChange}
                 min="0"
                 step="0.01"
-                style={{ 
-                  width: '100%', 
-                  padding: '0.75rem', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontSize: '1rem'
-                }}
+                placeholder="0.00"
               />
             </div>
-            <div>
-              <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-                Máximo de Participantes
-              </label>
+            <div className="form-group">
+              <label className="form-label" htmlFor="maximo_participantes">Máximo de Participantes</label>
               <input
                 type="number"
                 name="maximo_participantes"
+                id="maximo_participantes"
                 value={formData.maximo_participantes}
                 onChange={handleChange}
                 min="0"
-                style={{ 
-                  width: '100%', 
-                  padding: '0.75rem', 
-                  border: '1px solid #ccc', 
-                  borderRadius: '4px',
-                  fontSize: '1rem'
-                }}
+                placeholder="Sin límite"
               />
             </div>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-            <Link to="/organizer/events">
-              <button 
-                type="button"
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: 'transparent',
-                  color: 'var(--neutral-600)',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Cancelar
-              </button>
+          <div className="flex justify-end gap-3"> {/* Clases de index.css */}
+            <Link to="/organizer/events" className="btn btn-outline">
+              Cancelar
             </Link>
             <button 
               type="submit"
               disabled={isLoading}
-              style={{
-                padding: '0.75rem 2rem',
-                backgroundColor: isLoading ?
-'var(--neutral-400)' : 'var(--primary-500)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isLoading ?
-'not-allowed' : 'pointer',
-                fontSize: '1rem',
-                fontWeight: 'bold'
-              }}
+              className="btn btn-primary"
             >
-              {isLoading ?
-<Spinner /> : 'Crear Evento'}
+              {isLoading ? <Spinner /> : 'Crear Evento'}
             </button>
           </div>
         </form>

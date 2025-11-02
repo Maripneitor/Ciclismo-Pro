@@ -1,10 +1,10 @@
 /* ========== SEARCH FORM STYLES ========== */
 .search-form {
-  background: var(--color-white);
+  background: var(--app-bg-secondary); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
 }
 
 .search-grid {
@@ -22,7 +22,7 @@
 .search-label {
   margin-bottom: var(--spacing-sm);
   font-weight: 600;
-  color: var(--color-gray-dark);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -31,18 +31,19 @@
 .search-input,
 .search-select {
   padding: 0.75rem;
-  border: 1px solid var(--color-gray-medium);
+  border: 1px solid var(--input-border); /* <-- MODIFICADO */
   border-radius: var(--border-radius-sm);
   font-family: var(--font-secondary);
   font-size: 1rem;
   transition: all 0.2s ease;
-  background-color: var(--color-white);
+  background-color: var(--input-bg); /* <-- MODIFICADO */
+  color: var(--input-text); /* <-- MODIFICADO */
 }
 
 .search-input:focus,
 .search-select:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--input-border-focus); /* <-- MODIFICADO */
   box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
@@ -66,24 +67,24 @@
 }
 
 .search-button-primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
+  background-color: var(--button-primary-bg); /* <-- MODIFICADO */
+  color: var(--button-primary-text); /* <-- MODIFICADO */
 }
 
 .search-button-primary:hover {
-  background-color: #e55a2b;
+  background-color: var(--button-primary-bg-hover); /* <-- MODIFICADO */
   transform: translateY(-1px);
 }
 
 .search-button-secondary {
-  background-color: var(--color-gray-light);
-  color: var(--color-gray-dark);
-  border: 1px solid var(--color-gray-medium);
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  border: 1px solid var(--input-border); /* <-- MODIFICADO */
 }
 
 .search-button-secondary:hover {
-  background-color: var(--color-gray-medium);
-  color: var(--color-white);
+  background-color: var(--input-border); /* <-- MODIFICADO */
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
 }
 
 /* ========== RESPONSIVE DESIGN ========== */

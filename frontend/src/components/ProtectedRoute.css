@@ -8,10 +8,10 @@
 .access-denied {
   text-align: center;
   padding: var(--spacing-2xl);
-  background-color: var(--color-white);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
   max-width: 500px;
   margin: 0 auto;
 }
@@ -24,13 +24,13 @@
 
 .access-denied-title {
   font-family: var(--font-primary);
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-md);
   font-size: 1.5rem;
 }
 
 .access-denied-message {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-xl);
   line-height: 1.6;
 }

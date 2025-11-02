@@ -11,9 +11,9 @@
 }
 
 .toast {
-  background-color: var(--color-white);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--card-shadow-hover); /* <-- MODIFICADO */
   border-left: 4px solid;
   padding: var(--spacing-md);
   display: flex;
@@ -68,13 +68,13 @@
 
 .toast-title {
   font-weight: 600;
-  color: var(--color-gray-dark);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-xs);
   font-size: 1rem;
 }
 
 .toast-message {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   font-size: 0.9rem;
   line-height: 1.4;
   margin: 0;
@@ -83,7 +83,7 @@
 .toast-close {
   background: none;
   border: none;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   cursor: pointer;
   padding: var(--spacing-xs);
   border-radius: var(--border-radius-sm);
@@ -95,8 +95,8 @@
 }
 
 .toast-close:hover {
-  color: var(--color-gray-dark);
-  background-color: var(--color-gray-light);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
 }
 
 .toast-progress {

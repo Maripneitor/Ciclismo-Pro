@@ -6,7 +6,7 @@
   background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
   padding: var(--spacing-md);
   text-align: center;
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
 }
 
 .not-found-content {
@@ -57,8 +57,8 @@
   align-items: center;
   gap: var(--spacing-sm);
   padding: var(--spacing-md) var(--spacing-xl);
-  background-color: var(--color-white);
-  color: var(--color-primary);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
+  color: var(--app-text-accent); /* <-- MODIFICADO */
   text-decoration: none;
   border-radius: var(--border-radius-lg);
   font-weight: 600;
@@ -70,18 +70,19 @@
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
   background-color: transparent;
-  color: var(--color-white);
-  border-color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
+  border-color: var(--app-text-on-primary); /* <-- MODIFICADO */
 }
 
 .not-found-button--primary {
-  background-color: var(--color-primary);
-  color: var(--color-white);
+  background-color: var(--button-primary-bg); /* <-- MODIFICADO */
+  color: var(--button-primary-text); /* <-- MODIFICADO */
 }
 
 .not-found-button--primary:hover {
-  background-color: var(--color-primary-dark);
-  border-color: var(--color-primary-dark);
+  background-color: var(--button-primary-bg-hover); /* <-- MODIFICADO */
+  border-color: var(--button-primary-bg-hover); /* <-- MODIFICADO */
+  color: var(--button-primary-text); /* <-- MODIFICADO (ya estaba) */
 }
 
 @keyframes bounce {

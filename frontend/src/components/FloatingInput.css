@@ -11,17 +11,18 @@
 .floating-input {
   width: 100%;
   padding: 1.5rem 1rem 0.5rem;
-  border: 2px solid var(--color-gray-medium);
+  border: 2px solid var(--input-border); /* <-- MODIFICADO */
   border-radius: var(--border-radius-sm);
   font-family: var(--font-secondary);
   font-size: 1rem;
-  background-color: var(--color-white);
+  background-color: var(--input-bg); /* <-- MODIFICADO */
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
+  color: var(--input-text); /* <-- MODIFICADO */
 }
 
 .floating-input:focus {
-  border-color: var(--color-primary);
+  border-color: var(--input-border-focus); /* <-- MODIFICADO */
   box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
   transform: translateY(-1px);
 }
@@ -34,13 +35,13 @@
   position: absolute;
   top: 1rem;
   left: 1rem;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   font-size: 1rem;
   font-weight: 400;
   pointer-events: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   transform-origin: left top;
-  background-color: var(--color-white);
+  background-color: var(--input-bg); /* <-- MODIFICADO */
   padding: 0 0.25rem;
   margin-left: -0.25rem;
 }
@@ -49,7 +50,7 @@
   top: 0.5rem;
   left: 0.75rem;
   font-size: 0.75rem;
-  color: var(--color-primary);
+  color: var(--input-border-focus); /* <-- MODIFICADO */
   font-weight: 600;
   transform: translateY(-50%);
 }
@@ -82,15 +83,15 @@
 
 /* ========== DISABLED STATE ========== */
 .floating-input:disabled {
-  background-color: var(--color-gray-light);
-  border-color: var(--color-gray-light);
-  color: var(--color-gray-medium);
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
+  border-color: var(--card-border); /* <-- MODIFICADO */
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   cursor: not-allowed;
 }
 
 .floating-input:disabled + .floating-label {
-  color: var(--color-gray-medium);
-  background-color: var(--color-gray-light);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
 }
 
 /* ========== RESPONSIVE DESIGN ========== */

@@ -25,7 +25,7 @@
 .dashboard-layout {
   min-height: 100vh;
   display: flex;
-  background-color: var(--color-gray-light);
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
   transition: var(--sidebar-transition);
 }
 
@@ -34,10 +34,10 @@
   width: var(--sidebar-collapsed-width);
   background-color: var(--sidebar-bg-user);
   background-image: var(--sidebar-gradient-user);
-  color: var(--color-white);
+  color: var(--panel-sidebar-text); /* <-- MODIFICADO */
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
   position: fixed;
   height: 100vh;
   overflow-y: auto;
@@ -93,7 +93,7 @@
   font-family: var(--font-primary);
   font-size: 1.1rem;
   margin-bottom: var(--spacing-sm);
-  color: var(--color-white);
+  color: var(--panel-sidebar-text); /* <-- MODIFICADO */
   white-space: nowrap;
   opacity: 0;
   transition: opacity 0.2s ease-out;
@@ -370,13 +370,13 @@
   top: 1rem;
   left: 1rem;
   z-index: 1100;
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   border: none;
   border-radius: var(--border-radius-sm);
   padding: 0.75rem 1rem;
   font-size: 1.25rem;
   cursor: pointer;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
 }
 
 .mobile-menu-btn.theme-user {
@@ -455,7 +455,7 @@
     right: 1rem;
     background: none;
     border: none;
-    color: var(--color-white);
+    color: var(--panel-sidebar-text); /* <-- MODIFICADO */
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0.5rem;
@@ -468,7 +468,8 @@
   display: none;
 }
 
-/* Modo oscuro */
+/* Modo oscuro (YA NO ES NECESARIO, se maneja en index.css) */
+/*
 body.dark .dashboard-layout {
   background-color: var(--color-gray-dark);
 }
@@ -476,6 +477,7 @@ body.dark .dashboard-layout {
 body.dark .dashboard-main {
   background-color: var(--color-gray-dark);
 }
+*/
 
 /* Scrollbar personalizado */
 .dashboard-sidebar::-webkit-scrollbar {

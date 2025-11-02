@@ -41,7 +41,7 @@ body.dark .overlay {
 .hero-text {
   position: relative;
   z-index: 10;
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   max-width: 800px;
   padding: 20px;
 }
@@ -78,7 +78,7 @@ body.dark .overlay {
   top: 50%;
   transform: translateY(-50%);
   background: rgba(255, 255, 255, 0.2);
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   border: none;
   width: 50px;
   height: 50px;
@@ -124,7 +124,7 @@ body.dark .overlay {
 }
 
 .indicator.active {
-  background: var(--color-primary);
+  background: var(--app-text-accent); /* <-- MODIFICADO */
   transform: scale(1.2);
 }
 

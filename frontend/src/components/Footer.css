@@ -1,7 +1,7 @@
 /* ========== FOOTER STYLES ========== */
 .footer {
-  background-color: var(--color-gray-dark);
-  color: var(--color-gray-light);
+  background-color: var(--panel-sidebar-bg); /* <-- MODIFICADO */
+  color: var(--panel-sidebar-text); /* <-- MODIFICADO */
   padding: var(--spacing-2xl) 0 var(--spacing-xl);
   margin-top: auto;
 }
@@ -22,7 +22,7 @@
 
 /* ========== FOOTER SECTIONS ========== */
 .footer-section h4 {
-  color: var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-md);
   font-family: var(--font-primary);
   font-size: 1.25rem;
@@ -37,18 +37,18 @@
 
 /* ========== FOOTER LINKS ========== */
 .footer-link {
-  color: var(--color-gray-light);
+  color: var(--panel-sidebar-text); /* <-- MODIFICADO */
   text-decoration: none;
   transition: color 0.2s ease;
   padding: var(--spacing-xs) 0;
 }
 
 .footer-link:hover {
-  color: var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
 }
 
 .footer-text {
-  color: var(--color-gray-light);
+  color: var(--panel-sidebar-text); /* <-- MODIFICADO */
   cursor: pointer;
   transition: color 0.2s ease;
   padding: var(--spacing-xs) 0;
@@ -56,7 +56,7 @@
 }
 
 .footer-text:hover {
-  color: var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
 }
 
 /* ========== NEWSLETTER FORM ========== */
@@ -68,10 +68,10 @@
 
 .newsletter-input {
   padding: 0.75rem;
-  border: 1px solid var(--color-gray-medium);
+  border: 1px solid var(--input-border); /* <-- MODIFICADO */
   border-radius: var(--border-radius-sm);
-  background-color: var(--color-white);
-  color: var(--color-gray-dark);
+  background-color: var(--input-bg); /* <-- MODIFICADO */
+  color: var(--input-text); /* <-- MODIFICADO */
   font-family: var(--font-secondary);
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -79,18 +79,18 @@
 
 .newsletter-input:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--input-border-focus); /* <-- MODIFICADO */
   box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
 }
 
 .newsletter-input::placeholder {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
 }
 
 .newsletter-btn {
   padding: 0.75rem;
-  background-color: var(--color-primary);
-  color: var(--color-white);
+  background-color: var(--button-primary-bg); /* <-- MODIFICADO */
+  color: var(--button-primary-text); /* <-- MODIFICADO */
   border: none;
   border-radius: var(--border-radius-sm);
   cursor: pointer;
@@ -101,16 +101,16 @@
 }
 
 .newsletter-btn:hover {
-  background-color: #e55a2b;
+  background-color: var(--button-primary-bg-hover); /* <-- MODIFICADO */
   transform: translateY(-1px);
 }
 
 /* ========== FOOTER BOTTOM ========== */
 .footer-bottom {
-  border-top: 1px solid var(--color-gray-medium);
+  border-top: 1px solid var(--input-border); /* <-- MODIFICADO */
   padding-top: var(--spacing-md);
   text-align: center;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
 }
 
 .footer-bottom p {

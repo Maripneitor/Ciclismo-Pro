@@ -2,10 +2,10 @@
 .empty-state {
   text-align: center;
   padding: var(--spacing-2xl);
-  background-color: var(--color-white);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
   max-width: 500px;
   margin: 0 auto;
 }
@@ -46,12 +46,12 @@
 
 /* Contenido del empty state */
 .empty-state__content {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
 }
 
 .empty-state__title {
   font-family: var(--font-primary);
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-md);
   font-size: 1.5rem;
 }
@@ -68,7 +68,7 @@
   font-size: 1rem;
   line-height: 1.6;
   margin-bottom: var(--spacing-xl);
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
 }
 
 .empty-state--small .empty-state__message {
@@ -102,11 +102,11 @@
 
 /* Estados específicos para diferentes tipos de contenido */
 .empty-state--events {
-  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-white) 100%);
+  background: linear-gradient(135deg, var(--app-bg-primary) 0%, var(--app-bg-secondary) 100%); /* <-- MODIFICADO */
 }
 
 .empty-state--search {
-  border: 2px dashed var(--color-gray-light);
+  border: 2px dashed var(--card-border); /* <-- MODIFICADO */
 }
 
 .empty-state--error {

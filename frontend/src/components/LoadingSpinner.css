@@ -28,19 +28,19 @@
 }
 
 .spinner--primary {
-  border-color: var(--color-primary) transparent transparent transparent;
+  border-color: var(--app-text-accent) transparent transparent transparent; /* <-- MODIFICADO */
 }
 
 .spinner--secondary {
-  border-color: var(--color-secondary) transparent transparent transparent;
+  border-color: var(--app-text-secondary) transparent transparent transparent; /* <-- MODIFICADO */
 }
 
 .spinner--white {
-  border-color: var(--color-white) transparent transparent transparent;
+  border-color: var(--app-bg-secondary) transparent transparent transparent; /* <-- MODIFICADO */
 }
 
 .spinner--dark {
-  border-color: var(--color-gray-dark) transparent transparent transparent;
+  border-color: var(--app-text-primary) transparent transparent transparent; /* <-- MODIFICADO */
 }
 
 .loading-overlay {
@@ -61,14 +61,14 @@
   flex-direction: column;
   align-items: center;
   gap: var(--spacing-md);
-  background-color: var(--color-white);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
   padding: var(--spacing-2xl);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--card-shadow-hover); /* <-- MODIFICADO */
 }
 
 .loading-text {
-  color: var(--color-gray-dark);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   font-weight: 500;
   margin: 0;
 }
@@ -103,7 +103,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: var(--color-primary);
+  background-color: var(--app-text-accent); /* <-- MODIFICADO */
   animation: bounce 1.4s ease-in-out infinite both;
 }
 

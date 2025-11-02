@@ -1,11 +1,11 @@
 .event-detail-page {
   min-height: 100vh;
-  background-color: var(--color-white);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
 }
 
 .event-hero {
   background: linear-gradient(135deg, var(--color-secondary) 0%, var(--color-primary) 100%);
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   padding: var(--spacing-2xl) 0;
   position: relative;
   overflow: hidden;
@@ -68,8 +68,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: var(--color-white);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -95,7 +95,7 @@
 .sticky-content h3 {
   margin: 0;
   font-size: 1.2rem;
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
 }
 
 .event-content {
@@ -114,25 +114,25 @@
 }
 
 .content-section {
-  background: var(--color-white);
+  background: var(--card-bg); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
 }
 
 .section-title {
   font-family: var(--font-primary);
   font-size: 2rem;
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-lg);
   padding-bottom: var(--spacing-sm);
-  border-bottom: 3px solid var(--color-primary);
+  border-bottom: 3px solid var(--app-text-accent); /* <-- MODIFICADO */
 }
 
 .event-description {
   line-height: 1.7;
-  color: var(--color-gray-dark);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   font-size: 1.1rem;
 }
 
@@ -143,7 +143,7 @@
 }
 
 .detail-card {
-  background: var(--color-gray-light);
+  background: var(--app-bg-primary); /* <-- MODIFICADO */
   padding: var(--spacing-lg);
   border-radius: var(--border-radius-md);
   text-align: center;
@@ -163,13 +163,14 @@
 .detail-value {
   font-family: var(--font-primary);
   font-size: 1.5rem;
-  color: var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
   display: block;
   margin-bottom: var(--spacing-xs);
 }
 
 .detail-label {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -183,16 +184,16 @@
 }
 
 .sidebar-card {
-  background: var(--color-white);
+  background: var(--card-bg); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-xl);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
 }
 
 .registration-card {
   background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-accent1) 100%);
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   text-align: center;
 }
 
@@ -234,7 +235,7 @@
   justify-content: space-between;
   align-items: center;
   padding: var(--spacing-sm) 0;
-  border-bottom: 1px solid var(--color-gray-light);
+  border-bottom: 1px solid var(--card-border); /* <-- MODIFICADO */
 }
 
 .info-item:last-child {
@@ -243,11 +244,12 @@
 
 .info-label {
   font-weight: 600;
-  color: var(--color-gray-dark);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
 }
 
 .info-value {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   text-align: right;
 }
 
@@ -260,23 +262,24 @@
 .organizer-avatar {
   width: 60px;
   height: 60px;
-  background: var(--color-primary);
+  background: var(--app-text-accent); /* <-- MODIFICADO */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.5rem;
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
 }
 
 .organizer-details h4 {
   margin: 0 0 var(--spacing-xs) 0;
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
 }
 
 .organizer-details p {
   margin: 0;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   font-size: 0.9rem;
 }
 
@@ -284,9 +287,9 @@
 .event-error {
   text-align: center;
   padding: var(--spacing-2xl);
-  background-color: var(--color-white);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
   max-width: 600px;
   margin: var(--spacing-2xl) auto;
 }

@@ -1,10 +1,10 @@
 /* ========== SKELETON CARD STYLES ========== */
 .skeleton-card {
-  background: var(--color-white);
+  background: var(--card-bg); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
   padding: var(--spacing-lg);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
   height: 100%;
   overflow: hidden;
   position: relative;
@@ -17,13 +17,13 @@
 
 @keyframes skeleton-pulse {
   0% {
-    background-color: var(--color-gray-light);
+    background-color: var(--card-border); /* <-- MODIFICADO */
   }
   50% {
-    background-color: var(--color-gray-medium);
+    background-color: var(--input-border); /* <-- MODIFICADO */
   }
   100% {
-    background-color: var(--color-gray-light);
+    background-color: var(--card-border); /* <-- MODIFICADO */
   }
 }
 
@@ -32,7 +32,7 @@
   height: 160px;
   border-radius: var(--border-radius-md);
   margin-bottom: var(--spacing-md);
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
 /* ========== SKELETON HEADER ========== */
@@ -47,13 +47,13 @@
   width: 60px;
   height: 24px;
   border-radius: var(--border-radius-sm);
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
 .skeleton-title {
   height: 28px;
   border-radius: var(--border-radius-sm);
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
   flex: 1;
   margin-left: var(--spacing-md);
 }
@@ -75,14 +75,14 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
   flex-shrink: 0;
 }
 
 .skeleton-text {
   height: 16px;
   border-radius: var(--border-radius-sm);
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
 .skeleton-text.short {
@@ -103,28 +103,28 @@
   justify-content: space-between;
   align-items: center;
   padding-top: var(--spacing-md);
-  border-top: 1px solid var(--color-gray-light);
+  border-top: 1px solid var(--card-border); /* <-- MODIFICADO */
 }
 
 .skeleton-price {
   width: 80px;
   height: 24px;
   border-radius: var(--border-radius-sm);
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
 .skeleton-button {
   width: 100px;
   height: 36px;
   border-radius: var(--border-radius-sm);
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
 /* ========== VARIANTES DE SKELETON ========== */
 
 /* Skeleton para tarjetas destacadas */
 .skeleton-card.featured {
-  border: 2px solid var(--color-gray-light);
+  border: 2px solid var(--card-border); /* <-- MODIFICADO */
   position: relative;
 }
 
@@ -135,7 +135,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
 /* Skeleton para lista de eventos */
@@ -186,12 +186,12 @@
 }
 
 .skeleton-shine {
-  background: var(--color-gray-light);
+  background: var(--card-border); /* <-- MODIFICADO */
   background-image: linear-gradient(
     90deg,
-    var(--color-gray-light) 0px,
-    var(--color-gray-lighter) 40px,
-    var(--color-gray-light) 80px
+    var(--card-border) 0px,
+    var(--color-gray-lighter) 40px, /* Asumiendo que esta variable existe o es un placeholder */
+    var(--card-border) 80px
   );
   background-size: 200px 100%;
   animation: skeleton-shine 1.5s infinite linear;

@@ -17,14 +17,15 @@
 .welcome-title {
   font-family: var(--font-primary);
   font-size: 3rem;
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-sm);
   line-height: 1.1;
 }
 
 .welcome-subtitle {
   font-size: 1.2rem;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   max-width: 600px;
   line-height: 1.6;
 }
@@ -36,11 +37,11 @@
 }
 
 .stat-card {
-  background: var(--color-white);
+  background: var(--card-bg); /* <-- MODIFICADO */
   padding: var(--spacing-lg);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
@@ -49,7 +50,7 @@
 
 .stat-card:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--card-shadow-hover); /* <-- MODIFICADO */
 }
 
 .stat-icon {
@@ -64,13 +65,14 @@
 .stat-number {
   font-family: var(--font-primary);
   font-size: 2rem;
-  color: var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
   line-height: 1;
   margin-bottom: var(--spacing-xs);
 }
 
 .stat-label {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -79,7 +81,7 @@
 .section-title {
   font-family: var(--font-primary);
   font-size: 2rem;
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-lg);
   position: relative;
 }
@@ -89,7 +91,7 @@
   display: block;
   width: 60px;
   height: 3px;
-  background: var(--color-primary);
+  background: var(--app-text-accent); /* <-- MODIFICADO */
   margin-top: var(--spacing-xs);
   border-radius: 2px;
 }
@@ -106,11 +108,11 @@
 }
 
 .action-card {
-  background: var(--color-white);
+  background: var(--card-bg); /* <-- MODIFICADO */
   padding: var(--spacing-xl);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
   text-decoration: none;
   color: inherit;
   transition: all 0.3s ease;
@@ -119,7 +121,7 @@
 
 .action-card:hover {
   transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--card-shadow-hover); /* <-- MODIFICADO */
   text-decoration: none;
   color: inherit;
 }
@@ -133,26 +135,27 @@
 .action-title {
   font-family: var(--font-primary);
   font-size: 1.5rem;
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-sm);
 }
 
 .action-description {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   line-height: 1.6;
   margin-bottom: var(--spacing-lg);
   flex: 1;
 }
 
 .action-link {
-  color: var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
   font-weight: 600;
   font-size: 0.95rem;
   transition: color 0.2s ease;
 }
 
 .action-card:hover .action-link {
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
 }
 
 /* ========== EMPTY STATES ========== */
@@ -163,11 +166,11 @@
 
 .activity-empty,
 .events-empty {
-  background: var(--color-white);
+  background: var(--card-bg); /* <-- MODIFICADO */
   padding: var(--spacing-2xl);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--color-gray-light);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
   text-align: center;
 }
 
@@ -180,13 +183,15 @@
 .activity-empty h3,
 .events-empty h3 {
   font-family: var(--font-primary);
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   margin-bottom: var(--spacing-sm);
 }
 
 .activity-empty p,
 .events-empty p {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  opacity: 0.8;
   margin-bottom: var(--spacing-lg);
   max-width: 400px;
   margin-left: auto;
@@ -212,7 +217,7 @@
   .dashboard-home {
     padding: var(--spacing-lg);
   }
-  
+
   .welcome-title {
     font-size: 2rem;
   }

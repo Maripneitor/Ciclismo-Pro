@@ -8,7 +8,7 @@
 }
 
 .pagination-info {
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   font-size: 0.9rem;
   margin: 0 var(--spacing-md);
 }
@@ -18,9 +18,9 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-sm) var(--spacing-md);
-  border: 1px solid var(--color-gray-medium);
-  background-color: var(--color-white);
-  color: var(--color-gray-dark);
+  border: 1px solid var(--input-border); /* <-- MODIFICADO */
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   text-decoration: none;
   border-radius: var(--border-radius-sm);
   font-weight: 500;
@@ -30,28 +30,28 @@
 }
 
 .pagination-button:hover:not(.pagination-button--disabled) {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  border-color: var(--color-primary);
+  background-color: var(--button-primary-bg); /* <-- MODIFICADO */
+  color: var(--button-primary-text); /* <-- MODIFICADO */
+  border-color: var(--button-primary-bg); /* <-- MODIFICADO */
   transform: translateY(-1px);
 }
 
 .pagination-button--active {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  border-color: var(--color-primary);
+  background-color: var(--button-primary-bg); /* <-- MODIFICADO */
+  color: var(--button-primary-text); /* <-- MODIFICADO */
+  border-color: var(--button-primary-bg); /* <-- MODIFICADO */
 }
 
 .pagination-button--disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: var(--color-gray-light);
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
 }
 
 .pagination-button--disabled:hover {
-  background-color: var(--color-gray-light);
-  color: var(--color-gray-dark);
-  border-color: var(--color-gray-medium);
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
+  color: var(--app-text-primary); /* <-- MODIFICADO */
+  border-color: var(--input-border); /* <-- MODIFICADO */
   transform: none;
 }
 
@@ -60,7 +60,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--spacing-sm);
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   min-width: 44px;
   height: 44px;
 }
@@ -68,7 +68,7 @@
 .pagination-mobile-info {
   display: none;
   text-align: center;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   font-size: 0.9rem;
   margin-top: var(--spacing-sm);
 }

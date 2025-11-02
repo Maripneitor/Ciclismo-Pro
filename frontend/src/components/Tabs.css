@@ -4,7 +4,7 @@
 
 .tab-list {
   display: flex;
-  border-bottom: 1px solid var(--color-gray-light);
+  border-bottom: 1px solid var(--card-border); /* <-- MODIFICADO */
   margin-bottom: var(--spacing-xl);
 }
 
@@ -14,19 +14,19 @@
   padding: var(--spacing-md) var(--spacing-lg);
   font-size: 1rem;
   font-weight: 600;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   cursor: pointer;
   transition: all 0.2s ease;
   border-bottom: 2px solid transparent;
 }
 
 .tab-button:hover {
-  color: var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
 }
 
 .tab-button.active {
-  color: var(--color-primary);
-  border-bottom: 2px solid var(--color-primary);
+  color: var(--app-text-accent); /* <-- MODIFICADO */
+  border-bottom: 2px solid var(--app-text-accent); /* <-- MODIFICADO */
 }
 
 .tab-content {

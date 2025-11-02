@@ -1,79 +1,198 @@
-/* ========== RESPONSIVE TABLE COMPONENT ========== */
+/* ========== SKELETON CARD STYLES ========== */
+.skeleton-card {
+  background: var(--card-bg); /* <-- MODIFICADO */
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-lg);
+  box-shadow: var(--card-shadow); /* <-- MODIFICADO */
+  border: 1px solid var(--card-border); /* <-- MODIFICADO */
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
 
-/* Estados de carga y vacío */
-.table-loading,
-.table-empty {
+/* Animación de pulso para todos los elementos skeleton */
+.skeleton-card * {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes skeleton-pulse {
+  0% {
+    background-color: var(--card-border); /* <-- MODIFICADO */
+  }
+  50% {
+    background-color: var(--input-border); /* <-- MODIFICADO */
+  }
+  100% {
+    background-color: var(--card-border); /* <-- MODIFICADO */
+  }
+}
+
+/* ========== SKELETON IMAGE ========== */
+.skeleton-image {
+  height: 160px;
+  border-radius: var(--border-radius-md);
+  margin-bottom: var(--spacing-md);
+  background: var(--card-border); /* <-- MODIFICADO */
+}
+
+/* ========== SKELETON HEADER ========== */
+.skeleton-header {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-2xl);
-  text-align: center;
-  color: var(--color-gray-medium);
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
 }
 
-.table-loading p,
-.table-empty p {
-  margin-top: var(--spacing-md);
-  font-size: clamp(1rem, 1.5vw + 0.5rem, 1.125rem);
+.skeleton-badge {
+  width: 60px;
+  height: 24px;
+  border-radius: var(--border-radius-sm);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
-/* Indicadores de ordenamiento */
-.sortable {
-  cursor: pointer;
-  user-select: none;
-  transition: background-color 0.2s ease;
+.skeleton-title {
+  height: 28px;
+  border-radius: var(--border-radius-sm);
+  background: var(--card-border); /* <-- MODIFICADO */
+  flex: 1;
+  margin-left: var(--spacing-md);
 }
 
-.sortable:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+/* ========== SKELETON DETAILS ========== */
+.skeleton-details {
+  margin-bottom: var(--spacing-lg);
 }
 
-.th-content {
+.skeleton-detail {
   display: flex;
   align-items: center;
-  gap: var(--spacing-xs);
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  padding: var(--spacing-xs) 0;
 }
 
-.sort-indicator {
-  font-size: 0.75rem;
-  transition: transform 0.2s ease;
+.skeleton-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--card-border); /* <-- MODIFICADO */
+  flex-shrink: 0;
 }
 
-.sort-indicator.asc {
-  transform: rotate(180deg);
+.skeleton-text {
+  height: 16px;
+  border-radius: var(--border-radius-sm);
+  background: var(--card-border); /* <-- MODIFICADO */
 }
 
-.sort-indicator.desc {
-  transform: rotate(0deg);
+.skeleton-text.short {
+  width: 40%;
 }
 
-/* Responsive utilities */
-.desktop-only {
-  display: block;
+.skeleton-text.medium {
+  width: 60%;
 }
 
-.mobile-only {
-  display: none;
+.skeleton-text.long {
+  width: 80%;
 }
 
+/* ========== SKELETON FOOTER ========== */
+.skeleton-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: var(--spacing-md);
+  border-top: 1px solid var(--card-border); /* <-- MODIFICADO */
+}
+
+.skeleton-price {
+  width: 80px;
+  height: 24px;
+  border-radius: var(--border-radius-sm);
+  background: var(--card-border); /* <-- MODIFICADO */
+}
+
+.skeleton-button {
+  width: 100px;
+  height: 36px;
+  border-radius: var(--border-radius-sm);
+  background: var(--card-border); /* <-- MODIFICADO */
+}
+
+/* ========== VARIANTES DE SKELETON ========== */
+
+/* Skeleton para tarjetas destacadas */
+.skeleton-card.featured {
+  border: 2px solid var(--card-border); /* <-- MODIFICADO */
+  position: relative;
+}
+
+.skeleton-card.featured::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--card-border); /* <-- MODIFICADO */
+}
+
+/* Skeleton para lista de eventos */
+.skeleton-card.list {
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.skeleton-card.list .skeleton-image {
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  margin-bottom: 0;
+}
+
+.skeleton-card.list .skeleton-content {
+  flex: 1;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
 @media (max-width: 768px) {
-  .desktop-only {
-    display: none;
+  .skeleton-card {
+    padding: var(--spacing-md);
   }
   
-  .mobile-only {
-    display: block;
+  .skeleton-image {
+    height: 120px;
+  }
+  
+  .skeleton-card.list {
+    flex-direction: column;
+  }
+  
+  .skeleton-card.list .skeleton-image {
+    width: 100%;
+    height: 140px;
   }
 }
 
-/* ========== ANIMACIONES DE TABLA ========== */
-.responsive-table tbody tr {
-  animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+/* Animación alternativa de brillo */
+@keyframes skeleton-shine {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
 }
 
-.responsive-table tbody tr:nth-child(1) { animation-delay: 0.05s; }
-.responsive-table tbody tr:nth-child(2) { animation-delay: 0.1s; }
-.responsive-table tbody tr:nth-child(3) { animation-delay: 0.15s; }
-.responsive-table tbody tr:nth-child(4) { animation-delay: 0.2s; }
-.responsive-table tbody tr:nth-child(5) { animation-delay: 0.25s; }
+.skeleton-shine {
+  background: var(--card-border); /* <-- MODIFICADO */
+  background-image: linear-gradient(
+    90deg,
+    var(--card-border) 0px,
+    var(--color-gray-lighter) 40px, /* Asumiendo que esta variable existe o es un placeholder */
+    var(--card-border) 80px
+  );
+  background-size: 200px 100%;
+  animation: skeleton-shine 1.5s infinite linear;
+}

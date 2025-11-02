@@ -2,117 +2,208 @@
 
 :root {
   /* Fuentes (sin cambios) */
-  --font-heading: 'Montserrat', sans-serif;
-  --font-body: 'Open Sans', sans-serif;
+     --font-heading: 'Montserrat', sans-serif;   
+     --font-body: 'Open Sans', sans-serif;   
   
   /* NUEVA PALETA DE COLORES - TEMÁTICA CICLISMO */
-  --color-primary: #27AE60;        /* Verde energético - naturaleza, deporte */
-  --color-primary-dark: #219653;   /* Verde más oscuro */
-  --color-primary-light: #58D68D;  /* Verde más claro */
+  --color-primary: #27AE60;           /* Verde energético - naturaleza, deporte */   
+  --color-primary-dark: #219653;      /* Verde más oscuro */   
+  --color-primary-light: #58D68D;     /* Verde más claro */   
   
-  --color-secondary: #2C3E50;      /* Azul oscuro - profesionalismo */
-  --color-secondary-dark: #1C2833; /* Azul más oscuro */
-  --color-secondary-light: #34495E; /* Azul más claro */
+  --color-secondary: #2C3E50;         /* Azul oscuro - profesionalismo */   
+  --color-secondary-dark: #1C2833;    /* Azul más oscuro */   
+  --color-secondary-light: #34495E;    /* Azul más claro */   
   
-  --color-accent1: #E74C3C;        /* Rojo - energía, pasión */
-  --color-accent1-dark: #C0392B;   /* Rojo más oscuro */
+  --color-accent1: #E74C3C;           /* Rojo - energía, pasión */ 
+  --color-accent1-dark: #C0392B;      /* Rojo más oscuro */  
   
-  --color-accent2: #F39C12;        /* Naranja - vitalidad, acción */
-  --color-accent2-dark: #D68910;   /* Naranja más oscuro */
+  --color-accent2: #F39C12;           /* Naranja - vitalidad, acción */  
+  --color-accent2-dark: #D68910;      /* Naranja más oscuro */  
   
   /* Colores neutros */
-  --color-gray-dark: #2C3E50;      /* Azul oscuro */
-  --color-gray-medium: #7F8C8D;    /* Gris medio */
-  --color-gray-light: #ECF0F1;     /* Gris muy claro */
-  --color-white: #FFFFFF;
-  --color-black: #000000;
+  --color-gray-dark: #2C3E50;         /* Azul oscuro */  
+  --color-gray-medium: #7F8C8D;       /* Gris medio */  
+  --color-gray-light: #ECF0F1;        /* Gris muy claro */  
+     --color-white: #FFFFFF;  
+     --color-black: #000000;  
   
   /* Estados (sin cambios) */
-  --color-success: #27AE60;
-  --color-warning: #F39C12;
-  --color-error: #E74C3C;
-  --color-info: #3498DB;
+     --color-success: #27AE60;  
+     --color-warning: #F39C12;  
+     --color-error: #E74C3C;  
+     --color-info: #df741c;  
   
-  /* Variables específicas para componentes */
-  --color-background-body-light: #F8F9FA;
-  --header-bg-light: rgba(255, 255, 255, 0.95);
-  --header-text-light: var(--color-secondary);
-  --header-shadow-light: rgba(44, 62, 80, 0.1);
-  
-  --button-primary-bg-light: var(--color-primary);
-  --button-primary-text-light: var(--color-white);
-  
-  --button-secondary-bg-light: var(--color-gray-light);
-  --button-secondary-text-light: var(--color-secondary);
-  
-  --header-bg-floating: rgba(255, 255, 255, 0.98);
-  --header-shadow-floating: 0 8px 32px rgba(44, 62, 80, 0.1);
-  
-  --nav-link-text: var(--color-secondary);
-  --nav-link-hover-bg: var(--color-gray-light);
-  --nav-link-hover-text: var(--color-primary);
-  
-  --header-button-bg: var(--color-gray-light);
-  --header-button-text: var(--color-secondary);
-  --header-divider-color: #D5DBDB;
-  
-  --card-bg-light: var(--color-white);
-  --card-border-light: var(--color-gray-light);
+  /* ========== NUEVOS TOKENS SEMÁNTICOS (AGREGADOS) ========== */
+
+  /* -- Fondos de Aplicación -- */
+  --app-bg-primary: var(--color-background-body-light);
+  --app-bg-secondary: var(--color-white);
+
+  /* -- Texto -- */
+  --app-text-primary: var(--color-gray-dark);
+  --app-text-secondary: var(--color-secondary);
+  --app-text-accent: var(--color-primary);
+  --app-text-on-primary: var(--color-white); /* Texto sobre un botón primario */
+  --app-text-on-secondary: var(--color-white); /* Texto sobre un botón secundario */
+
+  /* -- Botones Primarios -- */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-bg-hover: var(--color-primary-dark);
+  --button-primary-text: var(--color-white);
+
+  /* -- Botones Secundarios -- */
+  --button-secondary-bg: var(--color-secondary);
+  --button-secondary-bg-hover: var(--color-secondary-dark);
+  --button-secondary-text: var(--color-white);
+
+  /* -- Botones de Contorno (Outline) -- */
+  --button-outline-border: var(--color-primary);
+  --button-outline-text: var(--color-primary);
+  --button-outline-bg-hover: var(--color-primary);
+  --button-outline-text-hover: var(--color-white);
+
+  /* -- Tarjetas (Cards) -- */
+  --card-bg: var(--color-white);
+  --card-border: var(--color-gray-light);
+  --card-shadow: var(--shadow-sm);
   --card-shadow-hover: var(--shadow-lg);
+  --card-header-bg: var(--color-gray-light);
+
+  /* -- Formularios (Inputs) -- */
+  --input-bg: var(--color-white);
+  --input-border: var(--color-gray-medium);
+  --input-border-focus: var(--color-primary);
+  --input-text: var(--color-gray-dark);
+
+  /* -- Paneles (Admin/Organizer) -- */
+  --panel-sidebar-bg: var(--color-secondary);
+  --panel-sidebar-text: var(--color-white);
+  --panel-sidebar-link-active-border: var(--color-primary);
+  
+  /* Variables específicas para componentes (Antiguas) */
+     --color-background-body-light: #F8F9FA; 
+     --header-bg-light: rgba(255, 255, 255, 0.95);     
+     --header-text-light: var(--color-secondary);     
+     --header-shadow-light: rgba(44, 62, 80, 0.1);     
+  
+     --button-primary-bg-light: var(--color-primary);     
+     --button-primary-text-light: var(--color-white);     
+  
+     --button-secondary-bg-light: var(--color-gray-light);     
+     --button-secondary-text-light: var(--color-secondary);     
+  
+     --header-bg-floating: rgba(255, 255, 255, 0.98);     
+     --header-shadow-floating: 0 8px 32px rgba(44, 62, 80, 0.1);     
+  
+     --nav-link-text: var(--color-secondary);     
+     --nav-link-hover-bg: var(--color-gray-light);     
+     --nav-link-hover-text: var(--color-primary);     
+  
+     --header-button-bg: var(--color-gray-light);     
+     --header-button-text: var(--color-secondary);     
+     --header-divider-color: #D5DBDB;     
+  
+     --card-bg-light: var(--color-white);     
+     --card-border-light: var(--color-gray-light);     
+     --card-shadow-hover: var(--shadow-lg);     
   
   /* Espaciado, bordes, sombras y transiciones (sin cambios) */
-  --spacing-xs: 0.25rem;
-  --spacing-sm: 0.5rem;
-  --spacing-md: 1rem;
-  --spacing-lg: 1.5rem;
-  --spacing-xl: 2rem;
-  --spacing-2xl: 3rem;
+     --spacing-xs: 0.25rem;     
+     --spacing-sm: 0.5rem;     
+     --spacing-md: 1rem;     
+     --spacing-lg: 1.5rem;     
+     --spacing-xl: 2rem;     
+     --spacing-2xl: 3rem;     
   
-  --border-radius-sm: 4px;
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  --border-radius-xl: 16px;
+     --border-radius-sm: 4px;     
+     --border-radius-md: 8px;     
+     --border-radius-lg: 12px;     
+     --border-radius-xl: 16px;     
   
-  --shadow-sm: 0 2px 4px rgba(44, 62, 80, 0.1);
-  --shadow-md: 0 4px 8px rgba(44, 62, 80, 0.1);
-  --shadow-lg: 0 8px 16px rgba(44, 62, 80, 0.1);
-  --shadow-xl: 0 12px 24px rgba(44, 62, 80, 0.15);
+     --shadow-sm: 0 2px 4px rgba(44, 62, 80, 0.1);     
+     --shadow-md: 0 4px 8px rgba(44, 62, 80, 0.1);     
+     --shadow-lg: 0 8px 16px rgba(44, 62, 80, 0.1);     
+     --shadow-xl: 0 12px 24px rgba(44, 62, 80, 0.15);     
   
-  --transition-fast: 0.2s ease;
-  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-slow: 0.5s ease;
+     --transition-fast: 0.2s ease;     
+     --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);     
+     --transition-slow: 0.5s ease;     
 }
 
 body.dark {
-  --color-primary: #27AE60;        /* Mismo verde energético */
-  --color-primary-dark: #219653;   /* Mismo verde oscuro */
-  --color-primary-light: #58D68D;  /* Mismo verde claro */
+  /* -- Fondos de Aplicación -- */
+  --app-bg-primary: #1C2833;
+  --app-bg-secondary: #2C3E50;
+
+  /* -- Texto -- */
+  --app-text-primary: #ECF0F1;
+  --app-text-secondary: #BDC3C7;
+  --app-text-accent: var(--color-primary);
+  --app-text-on-primary: var(--color-white);
+  --app-text-on-secondary: #ECF0F1;
+
+  /* -- Botones Primarios -- */
+  --button-primary-bg: var(--color-primary);
+  --button-primary-bg-hover: var(--color-primary-light);
+  --button-primary-text: var(--color-white);
+
+  /* -- Botones Secundarios -- */
+  --button-secondary-bg: var(--color-gray-light);
+  --button-secondary-bg-hover: #3E5369;
+  --button-secondary-text: var(--color-secondary-dark);
+
+  /* -- Botones de Contorno (Outline) -- */
+  --button-outline-border: var(--color-primary);
+  --button-outline-text: var(--color-primary);
+  --button-outline-bg-hover: var(--color-primary);
+  --button-outline-text-hover: var(--color-white);
+
+  /* -- Tarjetas (Cards) -- */
+  --card-bg: #2C3E50;
+  --card-border: #34495E;
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  --card-shadow-hover: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --card-header-bg: #34495E;
+
+  /* -- Formularios (Inputs) -- */
+  --input-bg: #34495E;
+  --input-border: #7F8C8D;
+  --input-border-focus: var(--color-primary);
+  --input-text: #ECF0F1;
+
+  /* -- Paneles (Admin/Organizer) -- */
+  --panel-sidebar-bg: #1C2833;
+  --panel-sidebar-text: var(--color-white);
+  --panel-sidebar-link-active-border: var(--color-primary);
   
-  --color-secondary: #BDC3C7;      /* Gris claro para texto */
-  --color-secondary-dark: #ECF0F1; /* Gris muy claro para títulos */
-  --color-secondary-light: #95A5A6; /* Gris medio */
+  /* ============================================== */
+  /* Variables Antiguas (se mantienen por ahora) */
+  --color-primary: #ae5827;
+  --color-primary-dark: #219653;
+  --color-primary-light: #58D68D;
   
-  --color-accent1: #E74C3C;        /* Mismo rojo */
-  --color-accent1-dark: #C0392B;   /* Mismo rojo oscuro */
+  --color-secondary: #BDC3C7;
+  --color-secondary-dark: #ECF0F1;
+  --color-secondary-light: #95A5A6;
   
-  --color-accent2: #F39C12;        /* Mismo naranja */
-  --color-accent2-dark: #D68910;   /* Mismo naranja oscuro */
+  --color-accent1: #E74C3C;
+  --color-accent1-dark: #C0392B;
   
-  /* Colores neutros invertidos */
-  --color-gray-dark: #ECF0F1;      /* Gris claro para texto */
-  --color-gray-medium: #95A5A6;    /* Gris medio */
-  --color-gray-light: #34495E;     /* Azul grisáceo oscuro */
-  --color-white: #2C3E50;          /* Azul oscuro como fondo */
-  --color-black: #ECF0F1;          /* Gris claro para texto */
+  --color-accent2: #F39C12;
+  --color-accent2-dark: #D68910;
   
-  /* Estados (sin cambios) */
+  --color-gray-dark: #ECF0F1;
+  --color-gray-medium: #95A5A6;
+  --color-gray-light: #34495E;
+  --color-white: #2C3E50;
+  --color-black: #ECF0F1;
+  
   --color-success: #27AE60;
   --color-warning: #F39C12;
   --color-error: #E74C3C;
   --color-info: #3498DB;
   
-  /* Variables específicas para componentes en modo oscuro */
-  --color-background-body-light: #1C2833; /* Fondo más oscuro */
+  --color-background-body-light: #1C2833;
   --header-bg-light: rgba(28, 40, 51, 0.95);
   --header-text-light: var(--color-secondary-dark);
   --header-shadow-light: rgba(0, 0, 0, 0.2);

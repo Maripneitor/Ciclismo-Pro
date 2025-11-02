@@ -14,9 +14,9 @@
 }
 
 .modal {
-  background-color: var(--color-white);
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-xl);
+  box-shadow: var(--card-shadow-hover); /* <-- MODIFICADO */
   width: 100%;
   max-width: 500px;
   max-height: 90vh;
@@ -48,13 +48,13 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--color-gray-light);
-  background-color: var(--color-white);
+  border-bottom: 1px solid var(--card-border); /* <-- MODIFICADO */
+  background-color: var(--app-bg-secondary); /* <-- MODIFICADO */
 }
 
 .modal-title {
   margin: 0;
-  color: var(--color-secondary);
+  color: var(--app-text-secondary); /* <-- MODIFICADO */
   font-family: var(--font-primary);
   font-size: 1.5rem;
   font-weight: 400;
@@ -64,7 +64,7 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: var(--color-gray-medium);
+  color: var(--app-text-primary); /* <-- MODIFICADO */
   cursor: pointer;
   padding: var(--spacing-xs);
   border-radius: var(--border-radius-sm);
@@ -76,7 +76,7 @@
 
 .modal-close:hover {
   color: var(--color-error);
-  background-color: var(--color-gray-light);
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
 }
 
 .modal-body {
@@ -91,8 +91,8 @@
   justify-content: flex-end;
   gap: var(--spacing-md);
   padding: var(--spacing-lg);
-  border-top: 1px solid var(--color-gray-light);
-  background-color: var(--color-gray-light);
+  border-top: 1px solid var(--card-border); /* <-- MODIFICADO */
+  background-color: var(--app-bg-primary); /* <-- MODIFICADO */
 }
 
 .modal-footer--center {

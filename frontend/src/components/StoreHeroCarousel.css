@@ -38,7 +38,7 @@
 .slide-content {
   position: relative;
   z-index: 2;
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   padding: 0 var(--spacing-xl);
   max-width: 1200px;
   margin: 0 auto;
@@ -50,7 +50,7 @@
   font-size: clamp(2.5rem, 4vw + 1rem, 4rem);
   margin-bottom: var(--spacing-md);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   font-weight: 700;
   line-height: 1.1;
 }
@@ -75,7 +75,7 @@
 /* Estilos de Navegación y Paginación de Swiper */
 .store-hero-swiper .swiper-button-next,
 .store-hero-swiper .swiper-button-prev {
-  color: var(--color-white);
+  color: var(--app-text-on-primary); /* <-- MODIFICADO */
   opacity: 0.7;
   transition: opacity var(--transition-fast);
   background: rgba(255, 255, 255, 0.1);
@@ -105,7 +105,7 @@
 }
 
 .store-hero-swiper .swiper-pagination-bullet-active {
-  background: var(--color-primary);
+  background: var(--app-text-accent); /* <-- MODIFICADO */
   opacity: 1;
   transform: scale(1.2);
 }

@@ -3,6 +3,7 @@ import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../../context/AuthContext';
 import DashboardLayout from '../../components/DashboardLayout';
 import apiClient from '../../services/api';
+import './OrganizerCommon.css';
 
 function OrganizerLayout() {
   const { user } = useContext(AuthContext);
@@ -25,12 +26,12 @@ function OrganizerLayout() {
   }, []);
 
   const organizerNavLinks = [
-    { to: '/organizer/dashboard', icon: '📊', text: 'Dashboard' },
-    { to: '/organizer/events', icon: '📅', text: 'Mis Eventos' },
-    { to: '/organizer/events/create', icon: '➕', text: 'Crear Evento' },
-    { to: '/organizer/participants', icon: '👥', text: 'Participantes' },
-    { to: '/organizer/reports', icon: '📈', text: 'Reportes' }
-  ];
+  { to: '/organizer/dashboard', icon: 'FiBarChart2', text: 'Dashboard' },
+  { to: '/organizer/events', icon: 'FiCalendar', text: 'Mis Eventos' },
+  { to: '/organizer/events/create', icon: 'FiPlus', text: 'Crear Evento' },
+  { to: '/organizer/participants', icon: 'FiUsers', text: 'Participantes' },
+  { to: '/organizer/reports', icon: 'FiTrendingUp', text: 'Reportes' }
+];
 
   const organizerQuickLinks = [
     { to: '/eventos', icon: '🗺️', text: 'Explorar Eventos' },

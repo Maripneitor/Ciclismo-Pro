@@ -46,6 +46,8 @@ body.dark .overlay {
   padding: 20px;
 }
 
+/* ... después del bloque .hero-text ... */
+
 .hero-title {
   font-family: var(--font-heading);
   font-size: clamp(2.5rem, 5vw, 4rem);
@@ -53,7 +55,10 @@ body.dark .overlay {
   text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
   margin-bottom: var(--spacing-lg);
   animation: fadeInScale 1s ease-out forwards;
+  color: inherit; /* <-- AÑADIR ESTA LÍNEA */
 }
+
+/* ... resto del archivo ... */
 
 .hero-description {
   font-family: var(--font-body);

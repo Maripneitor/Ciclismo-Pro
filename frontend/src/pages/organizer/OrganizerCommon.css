@@ -52,4 +52,158 @@
   opacity: 0.8;
 }
 
-/* Modo oscuro eliminado, se gestiona en index.css */
+/* ... (estilos existentes de .organizer-page, .content-section, etc.) ... */
+
+/* Estilos para el Dashboard del Organizador */
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  color: var(--app-text-secondary);
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 2px solid var(--app-text-accent);
+}
+
+.task-card {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--card-border);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+}
+.task-card.task-card-warning {
+  background-color: rgba(243, 156, 18, 0.1);
+  border-color: var(--app-text-warning);
+}
+.task-card.task-card-error {
+  background-color: rgba(231, 76, 60, 0.1);
+  border-color: var(--app-text-error);
+}
+.task-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--app-text-on-primary);
+}
+.task-card-warning .task-icon { background-color: var(--app-text-warning); }
+.task-card-error .task-icon { background-color: var(--app-text-error); }
+.task-info {
+  flex-grow: 1;
+}
+.task-info strong {
+  color: var(--app-text-secondary);
+  display: block;
+}
+.task-info small {
+  color: var(--app-text-muted);
+}
+.task-arrow {
+  font-size: 1.5rem;
+  color: var(--app-text-muted);
+}
+
+.list-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  background-color: var(--app-bg-primary);
+  border: 1px solid var(--card-border);
+  border-radius: var(--border-radius-md);
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+.list-item-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow);
+  border-color: var(--app-text-accent);
+}
+.list-item-title {
+  color: var(--app-text-secondary);
+  font-weight: 600;
+  display: block;
+}
+.list-item-subtitle {
+  color: var(--app-text-muted);
+  font-size: 0.875rem;
+}
+.list-item-arrow {
+  font-size: 1.5rem;
+  color: var(--app-text-muted);
+}
+
+.stat-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+.stat-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  color: var(--app-text-primary);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--card-border);
+}
+.stat-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.stat-list li strong {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--app-text-secondary);
+}
+
+
+/* ... (al final de OrganizerCommon.css) ... */
+
+/* Estilos para la tabla de eventos */
+.link-table-title {
+  color: var(--app-text-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.link-table-title:hover {
+  color: var(--app-text-accent);
+  text-decoration: underline;
+}
+
+.status-badge {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--app-text-on-primary);
+}
+
+.status-badge.status-active {
+  background-color: var(--app-text-success);
+}
+.status-badge.status-completed {
+  background-color: var(--app-text-info);
+}
+.status-badge.status-pending {
+  background-color: var(--app-text-warning);
+  color: var(--app-text-primary);
+}
+.status-badge.status-inactive {
+  background-color: var(--app-text-error);
+}

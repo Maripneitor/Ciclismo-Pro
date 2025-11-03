@@ -112,7 +112,13 @@ const router = createBrowserRouter([
             path: "/admin",
             element: <AdminLayout />,
             children: [
+              // --- INICIO DE LA CORRECCIÓN ---
+              // 1. Esto hace que /admin muestre el dashboard
+              { index: true, element: <AdminDashboardPage /> },
+              // 2. Esto hace que /admin/dashboard también muestre el dashboard
               { path: "dashboard", element: <AdminDashboardPage /> },
+              // --- FIN DE LA CORRECCIÓN ---
+              
               { path: "users", element: <AdminUserManagementPage /> },
               { path: "events", element: <AdminEventManagementPage /> },
               { path: "products", element: <AdminProductManagementPage /> },

@@ -1,28 +1,33 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode'; // NUEVA IMPORTACIÓN
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem('token'));
-  const [user, setUser] = useState(null); // NUEVO ESTADO para user
+  const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // <-- 1. AÑADIR ESTADO DE CARGA
 
   useEffect(() => {
-    if (token) {
-      try {
-        localStorage.setItem('token', token);
-        const userData = jwtDecode(token); // NUEVO: usar jwtDecode
+    // Esta función se ejecuta solo una vez al cargar la app
+    try {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        setToken(storedToken); // Sincroniza el estado
+        const userData = jwtDecode(storedToken);
         setUser(userData);
         setIsAuthenticated(true);
-        console.log('User authenticated:', userData);
-      } catch (error) {
-        console.error('Error parsing token:', error);
-        logoutUser();
+        console.log('User authenticated from storage:', userData);
       }
+    } catch (error) {
+      console.error('Invalid token in storage:', error);
+      localStorage.removeItem('token'); // Limpia token inválido
+    } finally {
+      setIsLoading(false); // <-- 2. TERMINAR LA CARGA (SIEMPRE)
     }
-  }, [token]);
+  }, []); // <-- 3. DEJAR EL ARRAY DE DEPENDENCIAS VACÍO
 
   const registerUser = async (nombre_completo, correo_electronico, contrasena) => {
     try {
@@ -37,8 +42,10 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.success) {
         setToken(response.data.token);
-        const userData = jwtDecode(response.data.token); // NUEVO: decodificar token
+        const userData = jwtDecode(response.data.token); 
         setUser(userData);
+        setIsAuthenticated(true); // Autenticar
+        localStorage.setItem('token', response.data.token); // Guardar token
         return { success: true };
       } else {
         return { 
@@ -67,8 +74,10 @@ export const AuthProvider = ({ children }) => {
       
       if (response.data.success) {
         setToken(response.data.token);
-        const userData = jwtDecode(response.data.token); // NUEVO: decodificar token
+        const userData = jwtDecode(response.data.token); 
         setUser(userData);
+        setIsAuthenticated(true); // Autenticar
+        localStorage.setItem('token', response.data.token); // Guardar token
         return { success: true };
       } else {
         return { 
@@ -104,7 +113,7 @@ export const AuthProvider = ({ children }) => {
   const logoutUser = () => {
     console.log('Logging out user');
     setToken(null);
-    setUser(null); // NUEVO: limpiar user
+    setUser(null); 
     setIsAuthenticated(false);
     localStorage.removeItem('token');
   };
@@ -112,8 +121,9 @@ export const AuthProvider = ({ children }) => {
   return (
     <AuthContext.Provider value={{
       token,
-      user, // NUEVO: exportar user
+      user,
       isAuthenticated,
+      isLoading, // <-- 4. EXPORTAR EL ESTADO DE CARGA
       registerUser,
       loginUser,
       logoutUser

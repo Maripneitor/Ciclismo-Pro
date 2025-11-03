@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import apiClient from '../../services/api';
+import Spinner from '../../components/Spinner';
+import './OrganizerCommon.css'; // Asegúrate de que esto esté importado en el Layout o aquí
 
 function OrganizerEventDetailPage() {
   const { id } = useParams();
@@ -14,13 +16,11 @@ function OrganizerEventDetailPage() {
     const fetchEventData = async () => {
       try {
         setLoading(true);
-        
-        // Hacer ambas peticiones en paralelo
+        setError('');
         const [eventResponse, participantsResponse] = await Promise.all([
           apiClient.get(`/eventos/${id}`),
           apiClient.get(`/organizer/my-events/${id}/participants`)
         ]);
-
         setEventDetails(eventResponse.data.data);
         setParticipants(participantsResponse.data.data.participants || []);
       } catch (error) {
@@ -30,21 +30,17 @@ function OrganizerEventDetailPage() {
         setLoading(false);
       }
     };
-
     fetchEventData();
   }, [id]);
 
   const handleUpdateStatus = async (inscriptionId, newStatus) => {
     try {
       setUpdatingInscription(inscriptionId);
-      
       const response = await apiClient.put(
         `/admin/inscripciones/${inscriptionId}/status`,
         { estado: newStatus }
       );
-
       if (response.data.success) {
-        // Actualizar el estado local del participante
         setParticipants(prevParticipants =>
           prevParticipants.map(participant =>
             participant.id_inscripcion === inscriptionId
@@ -52,8 +48,6 @@ function OrganizerEventDetailPage() {
               : participant
           )
         );
-        
-        console.log(`Estado actualizado a: ${newStatus}`);
       }
     } catch (error) {
       console.error('Error updating inscription status:', error);
@@ -63,13 +57,13 @@ function OrganizerEventDetailPage() {
     }
   };
 
-  const getStatusColor = (status) => {
+  const getStatusClass = (status) => {
     switch (status) {
-      case 'confirmada': return 'var(--success)';
-      case 'pendiente': return 'var(--warning)';
-      case 'cancelada': return 'var(--error)';
-      case 'completada': return 'var(--primary-500)';
-      default: return 'var(--neutral-400)';
+      case 'confirmada': return 'status-active';
+      case 'pendiente': return 'status-pending';
+      case 'cancelada': return 'status-inactive';
+      case 'completada': return 'status-completed';
+      default: return '';
     }
   };
 
@@ -85,134 +79,84 @@ function OrganizerEventDetailPage() {
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric', month: 'long', day: 'numeric',
+      hour: '2-digit', minute: '2-digit'
     });
   };
 
   if (loading) {
     return (
-      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <h2>Cargando evento...</h2>
-        <p>Obteniendo detalles y lista de participantes...</p>
+      <div className="organizer-page">
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <h2>Cargando evento...</h2>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-        <h2 style={{ color: 'var(--error)' }}>Error</h2>
-        <p>{error}</p>
-        <Link to="/organizer/events">
-          <button style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: 'var(--primary-500)',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            marginTop: '1rem'
-          }}>
+      <div className="organizer-page">
+        <div className="empty-state">
+          <div className="empty-icon">⚠️</div>
+          <h2 className="empty-title text-error">Error al Cargar</h2>
+          <p className="empty-description">{error}</p>
+          <Link to="/organizer/events" className="btn btn-primary" style={{ marginTop: '1rem' }}>
             Volver a Mis Eventos
-          </button>
-        </Link>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <div>
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center', 
-        marginBottom: '2rem' 
-      }}>
-        <div>
-          <h1>Gestión de: {eventDetails?.nombre}</h1>
-          <p style={{ color: 'var(--neutral-600)' }}>
+    <div className="organizer-page">
+      <div className="admin-header">
+        <div className="header-content">
+          <h1 className="page-title">Gestión de: {eventDetails?.nombre}</h1>
+          <p className="page-subtitle">
             Detalles del evento y lista de participantes inscritos
           </p>
         </div>
-        <Link to="/organizer/events">
-          <button style={{
-            padding: '0.75rem 1.5rem',
-            backgroundColor: 'transparent',
-            color: 'var(--primary-500)',
-            border: '1px solid var(--primary-500)',
-            borderRadius: '4px',
-            cursor: 'pointer',
-            fontWeight: 'bold'
-          }}>
+        <div className="header-actions">
+          <Link to="/organizer/events" className="btn btn-outline">
             ← Volver a Mis Eventos
-          </button>
-        </Link>
+          </Link>
+        </div>
       </div>
 
       {/* Información del Evento */}
       {eventDetails && (
-        <div style={{ 
-          backgroundColor: 'white', 
-          borderRadius: '8px', 
-          border: '1px solid var(--neutral-200)',
-          padding: '2rem',
-          marginBottom: '2rem'
-        }}>
-          <h3 style={{ color: 'var(--primary-600)', marginBottom: '1rem' }}>Información del Evento</h3>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-            gap: '1rem' 
-          }}>
+        <div className="content-section" style={{ marginBottom: '2rem' }}>
+          <h3 className="section-title">Información del Evento</h3>
+          <div className="grid grid-3 gap-4">
             <div>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Descripción:</strong> {eventDetails.descripcion || 'Sin descripción'}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Fecha de inicio:</strong> {formatDate(eventDetails.fecha_inicio)}
-              </p>
-              {eventDetails.fecha_fin && (
-                <p style={{ margin: '0.5rem 0' }}>
-                  <strong>Fecha de fin:</strong> {formatDate(eventDetails.fecha_fin)}
-                </p>
-              )}
+              <p className="mb-1"><strong>Descripción:</strong></p>
+              <p className="text-muted">{eventDetails.descripcion || 'Sin descripción'}</p>
             </div>
             <div>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Ubicación:</strong> {eventDetails.ubicacion}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Distancia:</strong> {eventDetails.distancia_km} km
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Dificultad:</strong> {eventDetails.dificultad}
-              </p>
+              <p className="mb-1"><strong>Fecha de inicio:</strong></p>
+              <p className="text-muted">{formatDate(eventDetails.fecha_inicio)}</p>
             </div>
             <div>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Estado:</strong> 
-                <span style={{
-                  marginLeft: '0.5rem',
-                  padding: '0.25rem 0.75rem',
-                  backgroundColor: getStatusColor(eventDetails.estado),
-                  color: 'white',
-                  borderRadius: '20px',
-                  fontSize: '0.75rem',
-                  fontWeight: 'bold',
-                  textTransform: 'uppercase'
-                }}>
+              <p className="mb-1"><strong>Ubicación:</strong></p>
+              <p className="text-muted">{eventDetails.ubicacion}</p>
+            </div>
+            <div>
+              <p className="mb-1"><strong>Distancia:</strong></p>
+              <p className="text-muted">{eventDetails.distancia_km} km</p>
+            </div>
+            <div>
+              <p className="mb-1"><strong>Dificultad:</strong></p>
+              <p className="text-muted">{eventDetails.dificultad}</p>
+            </div>
+            <div>
+              <p className="mb-1"><strong>Estado:</strong></p>
+              <p>
+                <span className={`status-badge ${getStatusClass(eventDetails.estado)}`}>
                   {getStatusText(eventDetails.estado)}
                 </span>
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Máximo participantes:</strong> {eventDetails.maximo_participantes || '∞'}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Tipo:</strong> {eventDetails.tipo}
               </p>
             </div>
           </div>
@@ -220,218 +164,85 @@ function OrganizerEventDetailPage() {
       )}
 
       {/* Lista de Participantes */}
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        border: '1px solid var(--neutral-200)',
-        overflow: 'hidden'
-      }}>
-        <div style={{ 
-          padding: '1.5rem',
-          borderBottom: '1px solid var(--neutral-200)',
-          backgroundColor: 'var(--neutral-50)'
-        }}>
-          <h2 style={{ margin: 0, color: 'var(--neutral-800)' }}>Participantes Inscritos</h2>
-          <p style={{ margin: '0.5rem 0 0 0', color: 'var(--neutral-600)' }}>
-            Total: {participants.length} participantes
-          </p>
+      <div className="admin-table-container">
+        <div className="table-header">
+          <div className="table-header-content">
+            <h2 className="table-title">Participantes Inscritos</h2>
+            <p className="table-subtitle">Total: {participants.length} participantes</p>
+          </div>
         </div>
 
         {participants.length === 0 ? (
-          <div style={{ 
-            textAlign: 'center', 
-            padding: '3rem 2rem',
-            color: 'var(--neutral-500)'
-          }}>
-            <h3>No hay participantes inscritos aún</h3>
-            <p>Los participantes aparecerán aquí una vez que se inscriban en el evento.</p>
+          <div className="empty-state" style={{ boxShadow: 'none', border: 'none' }}>
+            <div className="empty-icon">👥</div>
+            <h3 className="empty-title">No hay participantes inscritos aún</h3>
+            <p className="empty-description">Los participantes aparecerán aquí una vez que se inscriban.</p>
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ 
-              width: '100%', 
-              borderCollapse: 'collapse' 
-            }}>
+            <table className="admin-table">
               <thead>
-                <tr style={{ 
-                  backgroundColor: 'var(--neutral-50)',
-                  borderBottom: '1px solid var(--neutral-200)'
-                }}>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)'
-                  }}>
-                    Nombre Completo
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)'
-                  }}>
-                    Email
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)'
-                  }}>
-                    Estado
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)'
-                  }}>
-                    Número Dorsal
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)'
-                  }}>
-                    Alias Dorsal
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)'
-                  }}>
-                    Fecha Inscripción
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)'
-                  }}>
-                    Acciones
-                  </th>
+                <tr>
+                  <th>Nombre Completo</th>
+                  <th>Email</th>
+                  <th>Estado</th>
+                  <th>Dorsal</th>
+                  <th>Alias</th>
+                  <th>Fecha Inscripción</th>
+                  <th className="text-center">Acciones</th>
                 </tr>
               </thead>
               <tbody>
                 {participants.map((participant, index) => (
-                  <tr 
-                    key={index}
-                    style={{ 
-                      borderBottom: '1px solid var(--neutral-100)',
-                      transition: 'background-color 0.2s ease'
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = 'var(--neutral-50)';
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                  >
-                    <td style={{ padding: '1rem', color: 'var(--neutral-800)', fontWeight: '500' }}>
-                      {participant.nombre_completo}
-                    </td>
-                    <td style={{ padding: '1rem', color: 'var(--neutral-700)' }}>
-                      {participant.correo_electronico}
-                    </td>
-                    <td style={{ padding: '1rem' }}>
-                      <span style={{
-                        padding: '0.25rem 0.75rem',
-                        backgroundColor: getStatusColor(participant.estado),
-                        color: 'white',
-                        borderRadius: '20px',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase'
-                      }}>
+                  <tr key={index}>
+                    <td style={{ fontWeight: '500' }}>{participant.nombre_completo}</td>
+                    <td>{participant.correo_electronico}</td>
+                    <td>
+                      <span className={`status-badge ${getStatusClass(participant.estado)}`}>
                         {getStatusText(participant.estado)}
                       </span>
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--neutral-800)', fontWeight: 'bold' }}>
-                      {participant.numero_dorsal || '-'}
-                    </td>
-                    <td style={{ padding: '1rem', color: 'var(--neutral-700)' }}>
-                      {participant.alias_dorsal || '-'}
-                    </td>
-                    <td style={{ padding: '1rem', color: 'var(--neutral-600)' }}>
-                      {formatDate(participant.fecha_inscripcion)}
-                    </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <div style={{ 
-                        display: 'flex', 
-                        gap: '0.5rem', 
-                        justifyContent: 'center' 
-                      }}>
-                        {/* Botón Confirmar para inscripciones pendientes */}
+                    <td style={{ fontWeight: 'bold' }}>{participant.numero_dorsal || '-'}</td>
+                    <td>{participant.alias_dorsal || '-'}</td>
+                    <td style={{ fontSize: '0.9rem' }}>{formatDate(participant.fecha_inscripcion)}</td>
+                    <td className="text-center">
+                      <div className="table-actions" style={{ justifyContent: 'center' }}>
+                        
                         {participant.estado === 'pendiente' && (
-                          <button 
+                          <button
                             onClick={() => handleUpdateStatus(participant.id_inscripcion, 'confirmada')}
                             disabled={updatingInscription === participant.id_inscripcion}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              backgroundColor: updatingInscription === participant.id_inscripcion ? 'var(--neutral-400)' : 'var(--success)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: updatingInscription === participant.id_inscripcion ? 'not-allowed' : 'pointer',
-                              fontSize: '0.875rem',
-                              fontWeight: 'bold'
-                            }}
+                            className="action-btn"
+                            style={{ backgroundColor: 'var(--app-text-success)' }}
                           >
-                            {updatingInscription === participant.id_inscripcion ? '...' : 'Confirmar'}
+                            {updatingInscription === participant.id_inscripcion ? <Spinner/> : 'Confirmar'}
                           </button>
                         )}
                         
-                        {/* Botón Cancelar para inscripciones confirmadas */}
                         {participant.estado === 'confirmada' && (
-                          <button 
+                          <button
                             onClick={() => handleUpdateStatus(participant.id_inscripcion, 'cancelada')}
                             disabled={updatingInscription === participant.id_inscripcion}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              backgroundColor: updatingInscription === participant.id_inscripcion ? 'var(--neutral-400)' : 'var(--error)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: updatingInscription === participant.id_inscripcion ? 'not-allowed' : 'pointer',
-                              fontSize: '0.875rem',
-                              fontWeight: 'bold'
-                            }}
+                            className="action-btn"
+                            style={{ backgroundColor: 'var(--app-text-error)' }}
                           >
-                            {updatingInscription === participant.id_inscripcion ? '...' : 'Cancelar'}
+                            {updatingInscription === participant.id_inscripcion ? <Spinner/> : 'Cancelar'}
                           </button>
                         )}
                         
-                        {/* Botón Reactivar para inscripciones canceladas */}
                         {participant.estado === 'cancelada' && (
-                          <button 
+                          <button
                             onClick={() => handleUpdateStatus(participant.id_inscripcion, 'pendiente')}
                             disabled={updatingInscription === participant.id_inscripcion}
-                            style={{
-                              padding: '0.5rem 1rem',
-                              backgroundColor: updatingInscription === participant.id_inscripcion ? 'var(--neutral-400)' : 'var(--warning)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '4px',
-                              cursor: updatingInscription === participant.id_inscripcion ? 'not-allowed' : 'pointer',
-                              fontSize: '0.875rem',
-                              fontWeight: 'bold'
-                            }}
+                            className="action-btn"
+                            style={{ backgroundColor: 'var(--app-text-warning)', color: 'var(--app-text-primary)' }}
                           >
-                            {updatingInscription === participant.id_inscripcion ? '...' : 'Reactivar'}
+                            {updatingInscription === participant.id_inscripcion ? <Spinner/> : 'Reactivar'}
                           </button>
                         )}
                         
-                        {/* Estado completado - sin acciones */}
                         {participant.estado === 'completada' && (
-                          <span style={{
-                            padding: '0.5rem 1rem',
-                            color: 'var(--neutral-500)',
-                            fontSize: '0.875rem',
-                            fontStyle: 'italic'
-                          }}>
+                          <span style={{ fontStyle: 'italic', fontSize: '0.875rem' }}>
                             Completada
                           </span>
                         )}
@@ -443,121 +254,6 @@ function OrganizerEventDetailPage() {
             </table>
           </div>
         )}
-      </div>
-
-      {/* Resumen de estadísticas de participantes */}
-      {participants.length > 0 && (
-        <div style={{ 
-          marginTop: '2rem',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
-          gap: '1rem'
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '8px',
-            border: '1px solid var(--neutral-200)',
-            textAlign: 'center'
-          }}>
-            <h3 style={{ 
-              color: 'var(--primary-600)', 
-              margin: '0 0 0.5rem 0',
-              fontSize: '2rem'
-            }}>
-              {participants.length}
-            </h3>
-            <p style={{ margin: 0, color: 'var(--neutral-600)' }}>Total Inscritos</p>
-          </div>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '8px',
-            border: '1px solid var(--neutral-200)',
-            textAlign: 'center'
-          }}>
-            <h3 style={{ 
-              color: 'var(--success)', 
-              margin: '0 0 0.5rem 0',
-              fontSize: '2rem'
-            }}>
-              {participants.filter(p => p.estado === 'confirmada').length}
-            </h3>
-            <p style={{ margin: 0, color: 'var(--neutral-600)' }}>Confirmados</p>
-          </div>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '8px',
-            border: '1px solid var(--neutral-200)',
-            textAlign: 'center'
-          }}>
-            <h3 style={{ 
-              color: 'var(--warning)', 
-              margin: '0 0 0.5rem 0',
-              fontSize: '2rem'
-            }}>
-              {participants.filter(p => p.estado === 'pendiente').length}
-            </h3>
-            <p style={{ margin: 0, color: 'var(--neutral-600)' }}>Pendientes</p>
-          </div>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '1.5rem',
-            borderRadius: '8px',
-            border: '1px solid var(--neutral-200)',
-            textAlign: 'center'
-          }}>
-            <h3 style={{ 
-              color: 'var(--error)', 
-              margin: '0 0 0.5rem 0',
-              fontSize: '2rem'
-            }}>
-              {participants.filter(p => p.estado === 'cancelada').length}
-            </h3>
-            <p style={{ margin: 0, color: 'var(--neutral-600)' }}>Cancelados</p>
-          </div>
-        </div>
-      )}
-
-      {/* Leyenda de estados */}
-      <div style={{ 
-        marginTop: '2rem',
-        padding: '1rem',
-        backgroundColor: 'var(--neutral-50)',
-        borderRadius: '8px',
-        border: '1px solid var(--neutral-200)'
-      }}>
-        <h4 style={{ marginBottom: '0.5rem', color: 'var(--neutral-700)' }}>Leyenda de Estados:</h4>
-        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              backgroundColor: 'var(--warning)',
-              borderRadius: '50%'
-            }}></div>
-            <span style={{ fontSize: '0.875rem' }}>Pendiente - Esperando confirmación</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              backgroundColor: 'var(--success)',
-              borderRadius: '50%'
-            }}></div>
-            <span style={{ fontSize: '0.875rem' }}>Confirmada - Participante activo</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <div style={{
-              width: '12px',
-              height: '12px',
-              backgroundColor: 'var(--error)',
-              borderRadius: '50%'
-            }}></div>
-            <span style={{ fontSize: '0.875rem' }}>Cancelada - Inscripción anulada</span>
-          </div>
-        </div>
       </div>
     </div>
   );

@@ -257,3 +257,16 @@
     width: 100%;
   }
 }
+
+.admin-card-link {
+  text-decoration: none;
+}
+.admin-card .text-muted {
+  color: var(--app-text-muted);
+}
+.admin-grid-view {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: var(--spacing-lg);
+  padding: var(--spacing-xl);
+}

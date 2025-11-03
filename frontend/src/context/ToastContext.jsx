@@ -22,7 +22,12 @@ export const ToastProvider = ({ children }) => {
       timestamp: Date.now()
     };
     
-    setToasts(prevToasts => [...prevToasts, newToast]);
+    setToasts(prevToasts => [newToast, ...prevToasts]); // Añade al principio
+    
+    // Auto-eliminar después de 5 segundos
+    setTimeout(() => {
+      removeToast(id);
+    }, 5000);
     
     return id;
   }, []);

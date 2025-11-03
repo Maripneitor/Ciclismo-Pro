@@ -1,6 +1,7 @@
 import { useToast } from '../context/ToastContext';
-import Toast from './Toast';
-import './Toast.css';
+import Alert from './Alert'; // <-- Importa tu nuevo componente
+import './Toast.css'; // <-- Este es el .css del *contenedor*
+import './Alert.css'; // <-- Importa los estilos de la tarjeta de alerta
 
 function ToastContainer() {
   const { toasts, removeToast } = useToast();
@@ -8,11 +9,10 @@ function ToastContainer() {
   return (
     <div className="toast-container">
       {toasts.map((toast) => (
-        <Toast
+        <Alert
           key={toast.id}
-          message={toast.message}
-          type={toast.type}
-          onClose={() => removeToast(toast.id)}
+          toast={toast}
+          onRemove={removeToast}
         />
       ))}
     </div>

@@ -3,8 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import Spinner from '../components/Spinner';
 import { useToast } from '../context/ToastContext';
-// Importa los estilos comunes que ahora están en el Layout
-// (No es necesario importar OrganizerCommon.css aquí) 
+import './admin/AdminCommon.css'; // Usamos estilos de admin para los formularios
+import './organizer/OrganizerCommon.css'; // Y de organizador
 
 function RegistrationPage() {
   const { id } = useParams();
@@ -31,7 +31,7 @@ function RegistrationPage() {
     const fetchRegistrationData = async () => {
       try {
         setLoading(true);
-        setError(''); // Limpia errores anteriores
+        setError('');
         const [
           eventResponse,
           categoriesResponse,
@@ -40,18 +40,18 @@ function RegistrationPage() {
         ] = await Promise.all([
           apiClient.get(`/eventos/${id}`),
           apiClient.get(`/eventos/${id}/categories`),
-          apiClient.get('/data/tallas-playera'),
+          apiClient.get('/data/tallas-playera'), // Asumiendo que esta ruta existe
           apiClient.get('/teams/my-teams')
         ]);
 
         setEvent(eventResponse.data.data);
         setCategories(categoriesResponse.data.data);
-        setShirtSizes(shirtSizesResponse.data.data);
+        setShirtSizes(shirtSizesResponse.data.data); // Asumiendo que /data/tallas-playera devuelve { data: [...] }
         setUserTeams(teamsResponse.data.data);
 
       } catch (error) {
         console.error('Error fetching registration data:', error);
-        setError('Error al cargar los datos de inscripción');
+        setError('Error al cargar los datos de inscripción. Es posible que el evento no tenga categorías o tallas asignadas.');
         addToast('Error al cargar los datos de inscripción', 'error');
       } finally {
         setLoading(false);
@@ -93,8 +93,7 @@ function RegistrationPage() {
       const response = await apiClient.post('/inscripciones', inscriptionData);
       
       addToast('¡Inscripción exitosa!', 'success');
-      // Asegúrate que la ruta de éxito use el 'id'
-      navigate(`/eventos/${id}/success`); 
+      navigate(`/eventos/${id}/success`);
 
     } catch (error) {
       console.error('Error creating inscription:', error);
@@ -102,7 +101,7 @@ function RegistrationPage() {
       if (error.response) {
         errorMessage = error.response.data?.message || `Error ${error.response.status}`;
       } else if (error.request) {
-        errorMessage = 'No se pudo conectar con el servidor. Verifica tu conexión.';
+        errorMessage = 'No se pudo conectar con el servidor.';
       }
       setError(errorMessage);
       addToast(errorMessage, 'error');
@@ -113,7 +112,7 @@ function RegistrationPage() {
 
   if (loading) {
     return (
-      <div className="container">
+      <div className="admin-page">
         <div className="loading-state" style={{ minHeight: '60vh' }}>
           <div className="loading-spinner"></div>
           <h2>Cargando formulario de inscripción...</h2>
@@ -124,10 +123,10 @@ function RegistrationPage() {
 
   if (error && !event) {
     return (
-      <div className="container" style={{ paddingTop: '2rem' }}>
+      <div className="admin-page">
         <div className="empty-state">
           <div className="empty-icon">⚠️</div>
-          <h2 className="empty-title text-error">Error</h2>
+          <h2 className="empty-title text-error">Error al Cargar</h2>
           <p className="empty-description">{error}</p>
           <Link to={`/eventos/${id}`} className="btn btn-primary">
             Volver al Evento
@@ -137,9 +136,10 @@ function RegistrationPage() {
     );
   }
 
+  if (!event) return null; // No renderizar nada si el evento no existe
+
   return (
-    <div className="container" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
-      {/* Usamos 'admin-card' porque es un panel genérico con los estilos correctos */ }
+    <div className="admin-page" style={{ paddingTop: '2rem', paddingBottom: '2rem' }}>
       <div className="admin-card" style={{ maxWidth: '800px', margin: '0 auto' }}>
         
         <div className="admin-header" style={{ paddingBottom: '1rem', marginBottom: '2rem' }}>
@@ -155,7 +155,6 @@ function RegistrationPage() {
           </div>
         </div>
         
-        {/* Usamos 'content-section' para un fondo diferenciado */ }
         <div className="content-section" style={{ padding: '1.5rem', backgroundColor: 'var(--app-bg-primary)', boxShadow: 'none', marginBottom: '2rem' }}>
           <h3 className="section-title" style={{ border: 'none', padding: 0, fontSize: '1.25rem' }}>Detalles del Evento</h3>
           <div className="grid grid-2 gap-4">
@@ -167,19 +166,11 @@ function RegistrationPage() {
               <p className="mb-1"><strong>Ubicación:</strong></p>
               <p className="text-muted">{event.ubicacion}</p>
             </div>
-            <div>
-              <p className="mb-1"><strong>Distancia:</strong></p>
-              <p className="text-muted">{event.distancia_km} km</p>
-            </div>
-            <div>
-              <p className="mb-1"><strong>Dificultad:</strong></p>
-              <p className="text-muted">{event.dificultad}</p>
-            </div>
           </div>
         </div>
 
         {error && (
-          <div className="alert-error" role="alert" style={{ margin: '1.5rem 0' }}>
+          <div className="alert alert-error" role="alert" style={{ margin: '1.5rem 0' }}>
             {error}
           </div>
         )}
@@ -189,7 +180,7 @@ function RegistrationPage() {
           <div className="form-group">
             <label className="form-label" htmlFor="id_categoria">Categoría *</label>
             <select name="id_categoria" id="id_categoria" value={formData.id_categoria} onChange={handleChange} required>
-              <option value="">Selecciona una categoría</option>
+              <option value="">{categories.length > 0 ? 'Selecciona una categoría' : 'No hay categorías disponibles'}</option>
               {categories.map(category => (
                 <option key={category.id_categoria} value={category.id_categoria}>
                   {category.nombre} {category.descripcion ? `- ${category.descripcion}` : ''}
@@ -201,7 +192,7 @@ function RegistrationPage() {
           <div className="form-group">
             <label className="form-label" htmlFor="id_talla_playera">Talla de Playera *</label>
             <select name="id_talla_playera" id="id_talla_playera" value={formData.id_talla_playera} onChange={handleChange} required>
-              <option value="">Selecciona una talla</option>
+              <option value="">{shirtSizes.length > 0 ? 'Selecciona una talla' : 'No hay tallas disponibles'}</option>
               {shirtSizes.map(size => (
                 <option key={size.id_talla_playera} value={size.id_talla_playera}>
                   {size.talla} - {size.descripcion}
@@ -213,16 +204,13 @@ function RegistrationPage() {
           <div className="form-group">
             <label className="form-label" htmlFor="id_equipo">Equipo (Opcional)</label>
             <select name="id_equipo" id="id_equipo" value={formData.id_equipo} onChange={handleChange}>
-              <option value="">Ninguno (Participar individualmente)</option>
+              <option value="">{userTeams.length > 0 ? 'Ninguno (Participar individualmente)' : 'No perteneces a ningún equipo'}</option>
               {userTeams.map(team => (
                 <option key={team.id_equipo} value={team.id_equipo}>
                   {team.nombre}
                 </option>
               ))}
             </select>
-            <small className="text-muted" style={{ marginTop: '0.5rem' }}>
-              Si no seleccionas un equipo, participarás individualmente.
-            </small>
           </div>
 
           <div className="form-group">

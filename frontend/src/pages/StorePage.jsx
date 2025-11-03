@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useCart } from '../context/CartContext';
+import { useToast } from '../context/ToastContext'; // <-- 1. IMPORTAR EL HOOK
 import StoreHeroCarousel from '../components/StoreHeroCarousel';
 import { FaTag, FaMoneyBillWave, FaBoxOpen } from 'react-icons/fa';
 import './StorePage.css';
@@ -11,6 +12,7 @@ function StorePage() {
   const [error, setError] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('todos');
   const { addToCart } = useCart();
+  const { addToast } = useToast(); // <-- 2. LLAMAR AL HOOK
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -31,7 +33,8 @@ function StorePage() {
 
   const handleAddToCart = (product) => {
     addToCart(product);
-    alert(`¡${product.nombre} añadido al carrito! 🛒\n\nPrecio: $${product.precio}`);
+    // <-- 3. REEMPLAZAR ALERT CON ADDTOAST -->
+    addToast(`¡${product.nombre} añadido al carrito!`, 'success');
   };
 
   const getCategoryColor = (categoria) => {
@@ -75,9 +78,9 @@ function StorePage() {
   if (loading) {
     return (
       <div className="container">
-        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
+        <div className="loading-state" style={{ minHeight: '60vh' }}>
+          <div className="loading-spinner"></div>
           <h2>Cargando productos...</h2>
-          <p>Explorando nuestro catálogo de productos...</p>
         </div>
       </div>
     );
@@ -85,10 +88,11 @@ function StorePage() {
 
   if (error) {
     return (
-      <div className="container">
-        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <h2 style={{ color: 'var(--color-error)' }}>Error</h2>
-          <p>{error}</p>
+      <div className="container" style={{ paddingTop: '2rem' }}>
+        <div className="empty-state">
+          <div className="empty-icon">⚠️</div>
+          <h2 className="empty-title text-error">Error al Cargar</h2>
+          <p className="empty-description">{error}</p>
           <button 
             onClick={() => window.location.reload()}
             className="btn btn-primary"
@@ -105,56 +109,36 @@ function StorePage() {
     <div className="container">
       <StoreHeroCarousel />
 
-      {/* Header actualizado para coincidir con el diseño de referencia */}
+      {/* Header actualizado */}
       <div className="store-header">
         <h1>Tienda de Ciclismo</h1>
         <p>Descubre los mejores productos para ciclistas. Equipamiento, accesorios y mucho más para tu próxima aventura.</p>
       </div>
 
-      <div className="store-stats">
-        <div className="stat-card">
-          <div className="stat-number">{products.length}</div>
+      {/* Usamos admin-grid-view y admin-card para unificar estilos */}
+      <div className="admin-grid-view" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', padding: 0, marginBottom: '2rem' }}>
+        <div className="admin-card text-center">
+          <h3 className="stat-number">{products.length}</h3>
           <p className="stat-label">Productos Disponibles</p>
         </div>
-        <div className="stat-card">
-          <div className="stat-number">{getUniqueCategories().length - 1}</div>
+        <div className="admin-card text-center">
+          <h3 className="stat-number">{getUniqueCategories().length - 1}</h3>
           <p className="stat-label">Categorías</p>
         </div>
-        <div className="stat-card">
-          <div className="stat-number">{products.reduce((total, product) => total + product.inventario, 0)}</div>
+        <div className="admin-card text-center">
+          <h3 className="stat-number">{products.reduce((total, product) => total + product.inventario, 0)}</h3>
           <p className="stat-label">Unidades en Stock</p>
         </div>
       </div>
 
-      <div className="category-filters">
-        <h3>Filtrar por Categoría</h3>
+      <div className="admin-card" style={{ marginBottom: '2rem' }}>
+        <h3 className="section-title" style={{ border: 'none', padding: 0, margin: 0, marginBottom: '1rem' }}>Filtrar por Categoría</h3>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
           {getUniqueCategories().map(category => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: selectedCategory === category ? getCategoryColor(category) : 'var(--color-gray-light)',
-                color: selectedCategory === category ? 'var(--color-white)' : 'var(--color-gray-dark)',
-                border: 'none',
-                borderRadius: '25px',
-                cursor: 'pointer',
-                fontWeight: '500',
-                transition: 'all 0.2s ease'
-              }}
-              onMouseOver={(e) => {
-                if (selectedCategory !== category) {
-                  e.currentTarget.style.backgroundColor = getCategoryColor(category);
-                  e.currentTarget.style.color = 'var(--color-white)';
-                }
-              }}
-              onMouseOut={(e) => {
-                if (selectedCategory !== category) {
-                  e.currentTarget.style.backgroundColor = 'var(--color-gray-light)';
-                  e.currentTarget.style.color = 'var(--color-gray-dark)';
-                }
-              }}
+              className={`btn ${selectedCategory === category ? 'btn-primary' : 'btn-outline'}`}
             >
               {getCategoryLabel(category)}
             </button>
@@ -163,17 +147,12 @@ function StorePage() {
       </div>
 
       {filteredProducts.length === 0 ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '4rem 2rem',
-          backgroundColor: 'var(--color-white)',
-          borderRadius: 'var(--border-radius-md)',
-          border: '1px solid var(--color-gray-light)'
-        }}>
-          <h3 style={{ color: 'var(--color-gray-medium)', marginBottom: '1rem' }}>
+        <div className="empty-state">
+          <div className="empty-icon">🛍️</div>
+          <h3 className="empty-title">
             {selectedCategory === 'todos' ? 'No hay productos disponibles' : `No hay productos en la categoría ${getCategoryLabel(selectedCategory)}`}
           </h3>
-          <p style={{ color: 'var(--color-gray-medium)' }}>
+          <p className="empty-description">
             {selectedCategory !== 'todos' && 'Prueba con otra categoría o vuelve a "Todos los productos"'}
           </p>
           {selectedCategory !== 'todos' && (
@@ -188,16 +167,13 @@ function StorePage() {
         </div>
       ) : (
         <>
-          <div style={{ 
-            marginBottom: '1rem',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center'
-          }}>
-            <h2>
-              {getCategoryLabel(selectedCategory)} ({filteredProducts.length})
-            </h2>
-            <small style={{ color: 'var(--color-gray-medium)' }}>
+          <div className="admin-header" style={{ padding: 0, marginBottom: '1rem' }}>
+            <div className="header-content">
+              <h2 className="page-title" style={{ fontSize: '1.75rem' }}>
+                {getCategoryLabel(selectedCategory)} ({filteredProducts.length})
+              </h2>
+            </div>
+            <small className="text-muted">
               Mostrando {filteredProducts.length} de {products.length} productos
             </small>
           </div>
@@ -234,7 +210,7 @@ function StorePage() {
                       <FaMoneyBillWave />
                       {formatCurrency(product.precio)}
                     </div>
-                    <small className="product-stock">
+                    <small className="product-stock" style={{ color: product.inventario > 5 ? 'var(--app-text-success)' : 'var(--app-text-warning)' }}>
                       <FaBoxOpen />
                       {product.inventario > 10 ? 'En stock' : `Solo ${product.inventario} unidades`}
                     </small>
@@ -244,6 +220,7 @@ function StorePage() {
                 <button
                   onClick={() => handleAddToCart(product)}
                   className="btn btn-primary"
+                  style={{ width: '100%' }} // Asegura que el botón ocupe todo el ancho
                 >
                   🛒 Añadir al Carrito
                 </button>
@@ -252,27 +229,6 @@ function StorePage() {
           </div>
         </>
       )}
-
-      <div className="store-info">
-        <h3>🚴 ¿Necesitas ayuda para elegir?</h3>
-        <p style={{ marginBottom: '1.5rem' }}>
-          Nuestros expertos en ciclismo están disponibles para asesorarte en la selección del equipo perfecto para tus necesidades.
-        </p>
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: 'var(--color-success)', fontWeight: 'bold' }}>✓</span>
-            <span>Envío gratuito desde $50</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: 'var(--color-success)', fontWeight: 'bold' }}>✓</span>
-            <span>Devoluciones en 30 días</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span style={{ color: 'var(--color-success)', fontWeight: 'bold' }}>✓</span>
-            <span>Garantía del fabricante</span>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

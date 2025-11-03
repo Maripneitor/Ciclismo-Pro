@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../services/api';
+import Spinner from '../components/Spinner';
 
 function JoinWithCodePage() {
   const [inviteCode, setInviteCode] = useState('');
@@ -38,89 +39,54 @@ function JoinWithCodePage() {
   };
 
   return (
-    <div className="container">
-      <div style={{ 
-        maxWidth: '500px', 
-        margin: '0 auto',
-        border: '1px solid #ccc', 
-        padding: '2rem', 
-        borderRadius: '8px',
-        backgroundColor: 'white'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h1>Unirse a un Equipo</h1>
-          <Link to="/dashboard/teams" style={{ color: 'var(--primary-500)' }}>
-            ← Volver
-          </Link>
+    <div className="admin-page">
+      <div className="admin-card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        
+        <div className="admin-header" style={{ paddingBottom: '1rem', marginBottom: '2rem' }}>
+          <div className="header-content">
+            <h1 className="page-title" style={{ fontSize: '1.75rem' }}>Unirse a un Equipo</h1>
+          </div>
+          <div className="header-actions">
+            <Link to="/dashboard/teams" className="btn btn-outline">
+              ← Volver
+            </Link>
+          </div>
         </div>
 
         {error && (
-          <div style={{ 
-            color: 'var(--error)', 
-            marginBottom: '1rem', 
-            padding: '0.75rem',
-            backgroundColor: '#ffe6e6',
-            border: '1px solid var(--error)',
-            borderRadius: '4px'
-          }}>
+          <div className="alert alert-error" role="alert" style={{ marginBottom: '1.5rem' }}>
             {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="inviteCode">
               Código de Invitación *
             </label>
             <input
               type="text"
+              id="inviteCode"
               value={inviteCode}
               onChange={(e) => setInviteCode(e.target.value)}
               required
               placeholder="Ingresa el código de invitación del equipo"
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
             />
-            <small style={{ color: 'var(--neutral-500)', marginTop: '0.5rem', display: 'block' }}>
+            <small className="text-muted" style={{ marginTop: '0.5rem' }}>
               Pídele al capitán del equipo que te comparta el código de invitación.
             </small>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-            <Link to="/dashboard/teams">
-              <button 
-                type="button"
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: 'transparent',
-                  color: 'var(--neutral-600)',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Cancelar
-              </button>
+          <div className="flex justify-end gap-3" style={{ marginTop: '2rem' }}>
+            <Link to="/dashboard/teams" className="btn btn-outline">
+              Cancelar
             </Link>
             <button 
               type="submit" 
               disabled={loading}
-              style={{
-                padding: '0.75rem 2rem',
-                backgroundColor: loading ? 'var(--neutral-400)' : 'var(--primary-500)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                fontSize: '1rem'
-              }}
+              className="btn btn-primary"
             >
-              {loading ? 'Uniéndose...' : 'Unirse al Equipo'}
+              {loading ? <Spinner /> : 'Unirse al Equipo'}
             </button>
           </div>
         </form>

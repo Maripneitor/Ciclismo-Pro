@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../services/api';
+import Spinner from '../components/Spinner';
 
 function CreateTeamPage() {
   const [formData, setFormData] = useState({
@@ -32,9 +33,14 @@ function CreateTeamPage() {
 
     try {
       const response = await apiClient.post('/teams', formData);
-      navigate('/dashboard/teams');
+      navigate('/dashboard/teams', { 
+        state: { 
+          message: response.data.message || '¡Equipo creado exitosamente!'
+        }
+      });
     } catch (error) {
       console.error('Error creating team:', error);
+      // El error de "nombre duplicado" ahora será manejado por el backend
       setError(error.response?.data?.message || 'Error al crear el equipo');
     } finally {
       setLoading(false);
@@ -42,97 +48,66 @@ function CreateTeamPage() {
   };
 
   return (
-    <div className="container">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-        <h1>Crear Nuevo Equipo</h1>
-        <Link to="/dashboard/teams" style={{ color: 'var(--primary-500)' }}>
-          ← Volver a Mis Equipos
-        </Link>
-      </div>
-
-      <div style={{ 
-        maxWidth: '600px', 
-        margin: '0 auto',
-        border: '1px solid #ccc', 
-        padding: '2rem', 
-        borderRadius: '8px',
-        backgroundColor: 'white'
-      }}>
-        {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
+    <div className="admin-page">
+      <div className="admin-card" style={{ maxWidth: '600px', margin: '0 auto' }}>
+        
+        <div className="admin-header" style={{ paddingBottom: '1rem', marginBottom: '2rem' }}>
+          <div className="header-content">
+            <h1 className="page-title" style={{ fontSize: '1.75rem' }}>Crear Nuevo Equipo</h1>
+          </div>
+          <div className="header-actions">
+            <Link to="/dashboard/teams" className="btn btn-outline">
+              ← Volver
+            </Link>
+          </div>
+        </div>
+        
+        {error && (
+          <div className="alert alert-error" role="alert" style={{ marginBottom: '1.5rem' }}>
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="nombre">
               Nombre del Equipo *
             </label>
             <input
               type="text"
               name="nombre"
+              id="nombre"
               value={formData.nombre}
               onChange={handleChange}
               required
               placeholder="Ej: Los Veloces, Ciclistas Pro, etc."
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
             />
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
+          <div className="form-group">
+            <label className="form-label" htmlFor="descripcion">
               Descripción (Opcional)
             </label>
             <textarea
               name="descripcion"
+              id="descripcion"
               value={formData.descripcion}
               onChange={handleChange}
               rows="4"
               placeholder="Describe tu equipo, objetivos, nivel de experiencia, etc."
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem',
-                resize: 'vertical'
-              }}
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-            <Link to="/dashboard/teams">
-              <button 
-                type="button"
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: 'transparent',
-                  color: 'var(--neutral-600)',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Cancelar
-              </button>
+          <div className="flex justify-end gap-3" style={{ marginTop: '2rem' }}>
+            <Link to="/dashboard/teams" className="btn btn-outline">
+              Cancelar
             </Link>
             <button 
               type="submit" 
               disabled={loading}
-              style={{
-                padding: '0.75rem 2rem',
-                backgroundColor: loading ? 'var(--neutral-400)' : 'var(--primary-500)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                fontSize: '1rem'
-              }}
+              className="btn btn-primary"
             >
-              {loading ? 'Creando...' : 'Crear Equipo'}
+              {loading ? <Spinner /> : 'Crear Equipo'}
             </button>
           </div>
         </form>

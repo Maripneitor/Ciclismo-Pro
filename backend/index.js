@@ -1,10 +1,11 @@
 // backend/index.js (actualización)
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+const config = require('./config');
+const errorHandler = require('./middleware/errorMiddleware');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = config.port;
 
 app.use(cors());
 app.use(express.json());
@@ -20,7 +21,7 @@ const inscriptionAdminRoutes = require('./routes/inscriptionAdminRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
-const passwordRoutes = require('./routes/passwordRoutes'); // NUEVA IMPORTACIÓN
+const passwordRoutes = require('./routes/passwordRoutes');
 
 app.use('/api/eventos', eventRoutes);
 app.use('/api/auth', authRoutes);
@@ -33,7 +34,10 @@ app.use('/api/admin/inscripciones', inscriptionAdminRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
-app.use('/api/auth', passwordRoutes); // NUEVA RUTA
+app.use('/api/auth', passwordRoutes);
+
+// Middleware de error debe ir AL FINAL
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Servidor backend ejecutándose en puerto ${PORT}`);

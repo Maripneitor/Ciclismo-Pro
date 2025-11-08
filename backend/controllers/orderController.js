@@ -60,7 +60,7 @@ const createOrder = async (req, res) => {
     const orderResult = await client.query(
       `INSERT INTO pedidos_tienda (id_usuario, total, estado) 
        VALUES ($1, $2, 'pendiente') 
-       RETURNING id_pedido, fecha_creacion`,
+       RETURNING id_pedido, fecha_pedido`,
       [userId, total]
     );
 

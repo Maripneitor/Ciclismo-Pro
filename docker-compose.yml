@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Base de Datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: ciclismo_db
+    environment:
+      POSTGRES_USER: ${PGUSER:-postgres}
+      POSTGRES_PASSWORD: ${PGPASSWORD:-postgres}
+      POSTGRES_DB: ${PGDATABASE:-ciclismo_pro}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./Base_de_datos_geminis.sql:/docker-entrypoint-initdb.d/init.sql # Archivo SQL original para inicializar la base de datos
+
+  # Backend (Node.js/Express)
+  backend:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: ciclismo_backend
+    ports:
+      - "3001:3001"
+    env_file:
+      - ./backend/.env
+    environment:
+      # Sobrescribir host para Docker
+      - PGHOST=db
+      - NODE_ENV=development
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+      - ./backend/uploads:/app/uploads
+
+  # Frontend (Vite/React)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ciclismo_frontend
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./frontend/.env
+    environment:
+      - VITE_API_URL=http://localhost:3001
+      - CHOKIDAR_USEPOLLING=true # Ayuda con el watch de Vite en Docker/Windows
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  postgres_data:

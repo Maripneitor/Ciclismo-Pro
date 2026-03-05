@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
-import EventSearchForm from '../components/EventSearchForm';
-import SkeletonCard from '../components/SkeletonCard';
-import EmptyState from '../components/EmptyState';
+import EventSearchForm from '../components/ui/EventSearchForm';
+import SkeletonCard from '../components/ui/SkeletonCard';
+import EmptyState from '../components/ui/EmptyState';
 import './EventsListPage.css';
 
 function EventsListPage() {
@@ -78,18 +78,18 @@ function EventsListPage() {
   return (
     <div className="events-list-page">
       {/* ========== PAGE HEADER ========== */}
-      <section className="events-header">
+      <section className="events-header py-5 bg-dark text-white">
         <div className="container">
-          <h1 className="events-title">Todos los Eventos</h1>
-          <p className="events-subtitle">
-            Descubre y participa en las mejores carreras y rutas ciclistas. 
-            Encuentra tu próxima aventura sobre ruedas.
+          <h1 className="text-white mb-2">Explora Próximos Eventos</h1>
+          <p className="caption text-gray-400 max-w-2xl">
+            Desde rutas de montaña hasta circuitos urbanos. Filtra por tu nivel y encuentra 
+            el desafío que elevará tu pasión por el pedal.
           </p>
         </div>
       </section>
 
       {/* ========== SEARCH FORM SECTION ========== */}
-      <section className="search-section">
+      <section className="search-section py-4 bg-white border-bottom sticky-top">
         <div className="container">
           <EventSearchForm 
             onSearch={handleSearch} 
@@ -98,19 +98,19 @@ function EventsListPage() {
           
           {/* Mostrar filtros activos */}
           {hasActiveFilters && (
-            <div className="active-filters">
-              <div className="active-filters-header">
-                <span>Filtros activos:</span>
+            <div className="active-filters mt-3">
+              <div className="flex justify-between align-center mb-2">
+                <span className="caption font-bold">Filtros activos:</span>
                 <button 
                   onClick={handleClearFilters}
-                  className="clear-filters-btn"
+                  className="btn btn-outline btn-small"
                 >
                   🗑️ Limpiar todos
                 </button>
               </div>
-              <div className="filter-tags">
+              <div className="flex flex-wrap gap-2">
                 {Object.entries(currentFilters).map(([key, value]) => (
-                  <span key={key} className="filter-tag">
+                  <span key={key} className="badge bg-primary-alpha text-primary flex align-center gap-2 p-2 rounded-full px-4 text-xs font-bold">
                     {key}: {value}
                     <button 
                       onClick={() => {
@@ -118,7 +118,7 @@ function EventsListPage() {
                         newParams.delete(key);
                         setSearchParams(newParams);
                       }}
-                      className="filter-tag-remove"
+                      className="border-none bg-none pointer text-primary font-bold"
                     >
                       ×
                     </button>
@@ -151,7 +151,7 @@ function EventsListPage() {
         </div>
 
         {isLoading ? (
-          <div className="events-grid">
+          <div className="responsive-grid container py-5">
             {renderSkeletonCards(6)}
           </div>
         ) : events.length === 0 ? (
@@ -184,68 +184,56 @@ function EventsListPage() {
             size="large"
           />
         ) : (
-          <>
-            <div className="events-grid">
+          <div className="container py-5">
+            <div className="responsive-grid">
               {events.map(event => (
                 <Link 
                   key={event.id_evento} 
                   to={`/eventos/${event.id_evento}`}
-                  className="event-card"
+                  className="card event-card animate-fadeIn"
                 >
-                  <span className="event-badge">{event.estado}</span>
+                  <span className={`event-type-badge ${event.estado}`}>{event.estado}</span>
                   
-                  <div className="event-header">
-                    <h3 className="event-title">{event.nombre}</h3>
-                    <p className="event-location">
-                      📍 {event.ubicacion}
+                  <div className="card-content p-0">
+                    <h3 className="event-title h4">{event.nombre}</h3>
+                    <p className="caption text-gray-500 mb-2">
+                       📍 {event.ubicacion}
                     </p>
-                  </div>
-                  
-                  <div className="event-details">
-                    <div className="event-detail">
-                      <span className="detail-label">📅 Fecha</span>
-                      <span className="detail-value">{formatDate(event.fecha_inicio)}</span>
-                    </div>
-                    <div className="event-detail">
-                      <span className="detail-label">🏁 Distancia</span>
-                      <span className="detail-value">{event.distancia_km} km</span>
-                    </div>
-                    <div className="event-detail">
-                      <span className="detail-label">⚡ Dificultad</span>
-                      <span 
-                        className="detail-value"
-                        style={{ color: getDifficultyColor(event.dificultad) }}
-                      >
-                        {event.dificultad}
-                      </span>
-                    </div>
-                    <div className="event-detail">
-                      <span className="detail-label">👥 Cupos</span>
-                      <span className="detail-value">{event.maximo_participantes} participantes</span>
+                    
+                    <div className="flex flex-column gap-2 mt-3">
+                      <div className="flex align-center gap-2 text-sm">
+                        <span>📅 {formatDate(event.fecha_inicio)}</span>
+                      </div>
+                      <div className="flex align-center gap-2 text-sm">
+                        <span>⚡ Dificultad: </span>
+                        <span style={{ color: getDifficultyColor(event.dificultad), fontWeight: 700 }}>
+                          {event.dificultad}
+                        </span>
+                      </div>
                     </div>
                   </div>
 
-                  <div className="event-footer">
-                    <span className="event-price">
-                      {formatCurrency(event.cuota_inscripcion)}
+                  <div className="card-footer-flex border-top mt-auto pt-3">
+                    <span className="price-label">
+                      {event.cuota_inscripcion > 0 ? formatCurrency(event.cuota_inscripcion) : 'Gratis'}
                     </span>
-                    <span className="btn btn-primary btn-sm">
-                      Ver Detalles
+                    <span className="btn btn-outline btn-small py-1 px-3">
+                      Inscribirse
                     </span>
                   </div>
                 </Link>
               ))}
             </div>
 
-            {/* Paginación placeholder */}
-            <div className="pagination">
-              <button className="pagination-btn" disabled>Anterior</button>
-              <button className="pagination-btn active">1</button>
-              <button className="pagination-btn">2</button>
-              <button className="pagination-btn">3</button>
-              <button className="pagination-btn">Siguiente</button>
+            {/* Paginación premium */}
+            <div className="flex flex-center gap-2 mt-5">
+              <button className="btn btn-outline btn-small opacity-50" disabled>«</button>
+              <button className="btn btn-primary btn-small py-1 px-3">1</button>
+              <button className="btn btn-outline btn-small py-1 px-3">2</button>
+              <button className="btn btn-outline btn-small py-1 px-3">3</button>
+              <button className="btn btn-outline btn-small">»</button>
             </div>
-          </>
+          </div>
         )}
       </section>
     </div>

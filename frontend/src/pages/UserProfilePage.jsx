@@ -1,7 +1,20 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../services/api';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/ui/Spinner';
+import { 
+  FiUser, 
+  FiActivity, 
+  FiPhone, 
+  FiHeart, 
+  FiMapPin, 
+  FiChevronLeft,
+  FiSave,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiTruck,
+  FiTool
+} from 'react-icons/fi';
 import './UserProfilePage.css';
 
 function UserProfilePage() {
@@ -62,8 +75,9 @@ function UserProfilePage() {
     setSuccess('');
 
     try {
-      const response = await apiClient.put('/users/profile', profileData);
+      await apiClient.put('/users/profile', profileData);
       setSuccess('¡Perfil actualizado exitosamente!');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error('Error updating profile:', error);
       setError('Error al actualizar el perfil');
@@ -76,46 +90,42 @@ function UserProfilePage() {
     return (
       <div className="profile-loading">
         <div className="loading-spinner"></div>
-        <p>Cargando perfil...</p>
+        <p className="text-muted">Cargando perfil...</p>
       </div>
     );
   }
 
   return (
-    <div className="profile-page">
+    <div className="profile-page animate-fadeIn">
       <div className="profile-header">
-        <div className="header-content">
-          <h1 className="page-title">Mi Perfil</h1>
-          <p className="page-subtitle">
-            Gestiona tu información personal y preferencias de ciclismo
-          </p>
+        <div>
+          <h1 className="page-title">Configuración de Perfil</h1>
+          <p className="page-subtitle">Personaliza tu experiencia en Ciclismo-Pro</p>
         </div>
-        <Link to="/dashboard" className="btn btn-outline">
-          ← Volver al Panel
+        <Link to="/dashboard" className="btn btn-outline btn-small flex align-center gap-1">
+          <FiChevronLeft /> Volver
         </Link>
       </div>
 
       {error && (
-        <div className="alert alert-error">
-          {error}
+        <div className="card bg-error-alpha p-3 mb-4 flex align-center gap-2 text-error">
+          <FiAlertCircle /> {error}
         </div>
       )}
       
       {success && (
-        <div className="alert alert-success">
-          {success}
+        <div className="card bg-success-alpha p-3 mb-4 flex align-center gap-2 text-success">
+          <FiCheckCircle /> {success}
         </div>
       )}
 
       <form onSubmit={handleSubmit} className="profile-form">
         <div className="form-sections">
           <section className="form-section">
-            <h2 className="section-title">Información Personal</h2>
+            <h2 className="section-title"><FiUser /> Información Personal</h2>
             <div className="form-grid">
               <div className="form-group">
-                <label className="form-label">
-                  Nombre Completo *
-                </label>
+                <label className="form-label">Nombre Completo *</label>
                 <input
                   type="text"
                   name="nombre_completo"
@@ -127,23 +137,18 @@ function UserProfilePage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">
-                  Email
-                </label>
+                <label className="form-label">Email</label>
                 <input
                   type="email"
-                  name="correo_electronico"
                   value={profileData.correo_electronico || ''}
                   disabled
                   className="form-input disabled"
                 />
-                <small className="form-help">El email no se puede modificar</small>
+                <small className="form-help">No se puede cambiar el correo</small>
               </div>
 
               <div className="form-group">
-                <label className="form-label">
-                  Fecha de Nacimiento
-                </label>
+                <label className="form-label">Fecha de Nacimiento</label>
                 <input
                   type="date"
                   name="fecha_nacimiento"
@@ -154,9 +159,7 @@ function UserProfilePage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">
-                  Género
-                </label>
+                <label className="form-label">Género</label>
                 <select
                   name="genero"
                   value={profileData.genero || ''}
@@ -167,19 +170,17 @@ function UserProfilePage() {
                   <option value="Masculino">Masculino</option>
                   <option value="Femenino">Femenino</option>
                   <option value="Otro">Otro</option>
-                  <option value="Prefiero no decir">Prefiero no decir</option>
+                  <option value="Privado">Prefiero no decir</option>
                 </select>
               </div>
             </div>
           </section>
 
           <section className="form-section">
-            <h2 className="section-title">Datos de Ciclismo</h2>
+            <h2 className="section-title"><FiActivity /> Preferencias de Ciclismo</h2>
             <div className="form-grid">
               <div className="form-group">
-                <label className="form-label">
-                  Talla de Playera
-                </label>
+                <label className="form-label">Talla de Jersey</label>
                 <select
                   name="talla_playera"
                   value={profileData.talla_playera || ''}
@@ -197,9 +198,7 @@ function UserProfilePage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label">
-                  Tipo de Bicicleta
-                </label>
+                <label className="form-label">Tipo de Bici Principal</label>
                 <select
                   name="tipo_bicicleta"
                   value={profileData.tipo_bicicleta || ''}
@@ -208,18 +207,14 @@ function UserProfilePage() {
                 >
                   <option value="">Seleccionar</option>
                   <option value="Carretera">Carretera</option>
-                  <option value="Montaña">Montaña</option>
-                  <option value="Híbrida">Híbrida</option>
-                  <option value="Urbana">Urbana</option>
+                  <option value="Montaña">MTB</option>
                   <option value="Gravel">Gravel</option>
-                  <option value="Eléctrica">Eléctrica</option>
+                  <option value="Urbana">Urbana</option>
                 </select>
               </div>
 
               <div className="form-group">
-                <label className="form-label">
-                  Nivel de Experiencia
-                </label>
+                <label className="form-label">Nivel</label>
                 <select
                   name="nivel_experiencia"
                   value={profileData.nivel_experiencia || ''}
@@ -230,32 +225,29 @@ function UserProfilePage() {
                   <option value="Principiante">Principiante</option>
                   <option value="Intermedio">Intermedio</option>
                   <option value="Avanzado">Avanzado</option>
-                  <option value="Profesional">Profesional</option>
+                  <option value="Pro">Profesional</option>
                 </select>
               </div>
             </div>
           </section>
 
           <section className="form-section">
-            <h2 className="section-title">Contacto de Emergencia</h2>
+            <h2 className="section-title"><FiPhone /> Emergencias</h2>
             <div className="form-grid">
               <div className="form-group">
-                <label className="form-label">
-                  Nombre del Contacto
-                </label>
+                <label className="form-label">Contacto de Confianza</label>
                 <input
                   type="text"
                   name="contacto_emergencia"
                   value={profileData.contacto_emergencia || ''}
                   onChange={handleChange}
                   className="form-input"
+                  placeholder="Nombre completo"
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label">
-                  Teléfono de Emergencia
-                </label>
+                <label className="form-label">Teléfono</label>
                 <input
                   type="tel"
                   name="telefono_emergencia"
@@ -268,33 +260,17 @@ function UserProfilePage() {
           </section>
 
           <section className="form-section">
-            <h2 className="section-title">Información Médica</h2>
+            <h2 className="section-title"><FiHeart /> Salud</h2>
             <div className="form-grid">
               <div className="form-group full-width">
-                <label className="form-label">
-                  Alergias
-                </label>
-                <textarea
-                  name="alergias"
-                  value={profileData.alergias || ''}
-                  onChange={handleChange}
-                  rows="3"
-                  className="form-textarea"
-                  placeholder="Lista cualquier alergia relevante..."
-                />
-              </div>
-
-              <div className="form-group full-width">
-                <label className="form-label">
-                  Condiciones Médicas
-                </label>
+                <label className="form-label">Alergias o Condiciones</label>
                 <textarea
                   name="condiciones_medicas"
                   value={profileData.condiciones_medicas || ''}
                   onChange={handleChange}
                   rows="3"
                   className="form-textarea"
-                  placeholder="Condiciones médicas que debamos conocer..."
+                  placeholder="Información vital para los organizadores..."
                 />
               </div>
             </div>
@@ -302,17 +278,13 @@ function UserProfilePage() {
         </div>
 
         <div className="form-actions">
-          <button 
+           <button 
             type="submit" 
             disabled={isLoading}
-            className="btn btn-primary"
+            className="btn btn-primary flex align-center gap-2"
           >
-            {isLoading ? <Spinner /> : 'Guardar Cambios'}
+            {isLoading ? <Spinner /> : <><FiSave /> Guardar Cambios</>}
           </button>
-          
-          <Link to="/dashboard" className="btn btn-outline">
-            Cancelar
-          </Link>
         </div>
       </form>
     </div>

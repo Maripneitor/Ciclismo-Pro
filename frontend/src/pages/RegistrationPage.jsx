@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/ui/Spinner';
 
 function RegistrationPage() {
   const { id } = useParams();
@@ -171,66 +171,38 @@ function RegistrationPage() {
   }
 
   return (
-    <div className="container">
-      <div style={{ 
-        maxWidth: '800px', 
-        margin: '0 auto',
-        border: '1px solid #ccc', 
-        padding: '2rem', 
-        borderRadius: '8px',
-        backgroundColor: 'white'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-          <h1>Inscripción para: {event.nombre}</h1>
-          <Link to={`/eventos/${id}`} style={{ color: 'var(--primary-500)' }}>
-            ← Volver al Evento
+    <div className="container py-5">
+      <div className="card shadow-xl max-w-2xl mx-auto p-5">
+        <div className="flex justify-between align-center mb-5">
+          <h1 className="h2 mb-0">Inscripción: {event.nombre}</h1>
+          <Link to={`/eventos/${id}`} className="caption font-bold text-primary">
+            ← Volver
           </Link>
         </div>
 
-        <div style={{ 
-          padding: '1.5rem', 
-          backgroundColor: 'var(--neutral-50)', 
-          borderRadius: '8px',
-          marginBottom: '2rem'
-        }}>
-          <h3 style={{ marginBottom: '1rem' }}>Información del Evento</h3>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-            <div>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Fecha:</strong> {new Date(event.fecha_inicio).toLocaleDateString()}
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Ubicación:</strong> {event.ubicacion}
-              </p>
+        <div className="bg-gray-100 p-4 rounded-md mb-5">
+          <h3 className="h5 mb-3">Resumen del Evento</h3>
+          <div className="grid grid-2 gap-3 text-sm">
+            <div className="flex flex-column gap-1">
+              <span className="font-bold">📅 Fecha:</span>
+              <span>{new Date(event.fecha_inicio).toLocaleDateString()}</span>
             </div>
-            <div>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Distancia:</strong> {event.distancia_km} km
-              </p>
-              <p style={{ margin: '0.5rem 0' }}>
-                <strong>Dificultad:</strong> {event.dificultad}
-              </p>
+            <div className="flex flex-column gap-1">
+              <span className="font-bold">📍 Ubicación:</span>
+              <span>{event.ubicacion}</span>
             </div>
           </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Categoría *
-            </label>
+        <form onSubmit={handleSubmit} className="flex flex-column gap-4">
+          <div className="form-group">
+            <label className="form-label">Categoría *</label>
             <select
               name="id_categoria"
               value={formData.id_categoria}
               onChange={handleChange}
               required
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
+              className="form-control"
             >
               <option value="">Selecciona una categoría</option>
               {categories.map(category => (
@@ -241,22 +213,14 @@ function RegistrationPage() {
             </select>
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Talla de Playera *
-            </label>
+          <div className="form-group">
+            <label className="form-label">Talla de Playera *</label>
             <select
               name="id_talla_playera"
               value={formData.id_talla_playera}
               onChange={handleChange}
               required
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
+              className="form-control"
             >
               <option value="">Selecciona una talla</option>
               {shirtSizes.map(size => (
@@ -267,21 +231,13 @@ function RegistrationPage() {
             </select>
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Equipo (Opcional)
-            </label>
+          <div className="form-group">
+            <label className="form-label">Equipo (Opcional)</label>
             <select
               name="id_equipo"
               value={formData.id_equipo}
               onChange={handleChange}
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
+              className="form-control"
             >
               <option value="">Ninguno (Participar individualmente)</option>
               {userTeams.map(team => (
@@ -290,15 +246,11 @@ function RegistrationPage() {
                 </option>
               ))}
             </select>
-            <small style={{ color: 'var(--neutral-500)', marginTop: '0.5rem', display: 'block' }}>
-              Si no seleccionas un equipo, participarás individualmente
-            </small>
+            <p className="caption mt-1">Si no seleccionas un equipo, participarás individualmente</p>
           </div>
 
-          <div style={{ marginBottom: '2rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-              Alias Dorsal (Opcional)
-            </label>
+          <div className="form-group">
+            <label className="form-label">Alias Dorsal (Opcional)</label>
             <input
               type="text"
               name="alias_dorsal"
@@ -306,63 +258,24 @@ function RegistrationPage() {
               onChange={handleChange}
               maxLength="3"
               placeholder="Máx. 3 caracteres"
-              style={{ 
-                width: '100%', 
-                padding: '0.75rem', 
-                border: '1px solid #ccc', 
-                borderRadius: '4px',
-                fontSize: '1rem'
-              }}
+              className="form-control"
             />
-            <small style={{ color: 'var(--neutral-500)', marginTop: '0.5rem', display: 'block' }}>
-              Este alias aparecerá en tu dorsal durante la carrera
-            </small>
+            <p className="caption mt-1">Este alias aparecerá en tu dorsal durante la carrera</p>
           </div>
 
-          <div style={{ 
-            padding: '1.5rem', 
-            backgroundColor: 'var(--primary-50)', 
-            borderRadius: '8px',
-            marginBottom: '2rem'
-          }}>
-            <h3 style={{ marginBottom: '1rem', color: 'var(--primary-700)' }}>Resumen de Inscripción</h3>
-            <p style={{ margin: '0.5rem 0' }}>
-              <strong>Cuota de inscripción:</strong> ${event.cuota_inscripcion || '0'}
-            </p>
-            <p style={{ margin: '0.5rem 0', fontSize: '0.9rem', color: 'var(--neutral-600)' }}>
-              Al hacer clic en "Confirmar Inscripción", serás inscrito en el evento.
-            </p>
+          <div className="bg-primary-alpha p-4 rounded-md mb-4">
+            <h3 className="h5 mb-2 text-primary">Resumen de Inscripción</h3>
+            <p className="font-bold">Cuota: ${event.cuota_inscripcion || '0'}</p>
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-            <Link to={`/eventos/${id}`}>
-              <button 
-                type="button"
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: 'transparent',
-                  color: 'var(--neutral-600)',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px',
-                  cursor: 'pointer'
-                }}
-              >
-                Cancelar
-              </button>
+          <div className="flex gap-3 justify-end mt-4">
+            <Link to={`/eventos/${id}`} className="btn btn-outline">
+              Cancelar
             </Link>
             <button 
               type="submit"
               disabled={isLoading}
-              style={{
-                padding: '0.75rem 2rem',
-                backgroundColor: isLoading ? 'var(--neutral-400)' : 'var(--primary-500)',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: isLoading ? 'not-allowed' : 'pointer',
-                fontSize: '1rem',
-                fontWeight: 'bold'
-              }}
+              className="btn btn-primary"
             >
               {isLoading ? <Spinner /> : 'Confirmar Inscripción'}
             </button>

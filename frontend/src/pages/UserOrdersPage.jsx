@@ -1,11 +1,24 @@
-// frontend/src/pages/UserOrdersPage.jsx
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import apiClient from '../services/api';
+import { 
+  FiPackage, 
+  FiTruck, 
+  FiCheckCircle, 
+  FiXCircle, 
+  FiClock, 
+  FiHelpCircle, 
+  FiChevronLeft,
+  FiShoppingBag,
+  FiInfo,
+  FiExternalLink
+} from 'react-icons/fi';
+
 function UserOrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
   useEffect(() => {
     const fetchMyOrders = async () => {
       try {
@@ -22,390 +35,127 @@ function UserOrdersPage() {
 
     fetchMyOrders();
   }, []);
+
   const formatCurrency = (amount) => {
     return `$${amount?.toLocaleString('es-ES', { minimumFractionDigits: 2 }) || '0.00'}`;
   };
+
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('es-ES', {
       year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      month: 'short',
+      day: 'numeric'
     });
   };
 
-  const getStatusColor = (status) => {
+  const getStatusBadge = (status) => {
     switch (status) {
-      case 'pendiente': return 'var(--warning)';
-      case 'procesando': return 'var(--info)';
-      case 'enviado': return 'var(--primary-500)';
-      case 'entregado': return 'var(--success)';
-      case 'cancelado': return 'var(--error)';
-      default: return 'var(--neutral-500)';
+      case 'pendiente': return <span className="badge bg-warning-alpha text-warning flex align-center gap-1"><FiClock /> Pendiente</span>;
+      case 'procesando': return <span className="badge bg-secondary-alpha text-secondary flex align-center gap-1"><FiTruck /> Procesando</span>;
+      case 'enviado': return <span className="badge bg-primary-alpha text-primary flex align-center gap-1"><FiTruck /> Enviado</span>;
+      case 'entregado': return <span className="badge bg-success-alpha text-success flex align-center gap-1"><FiCheckCircle /> Entregado</span>;
+      case 'cancelado': return <span className="badge bg-error-alpha text-error flex align-center gap-1"><FiXCircle /> Cancelado</span>;
+      default: return <span className="badge bg-gray-100 text-muted">{status}</span>;
     }
   };
 
-  const getStatusText = (status) => {
-    switch (status) {
-      case 'pendiente': return 'Pendiente';
-      case 'procesando': return 'Procesando';
-      case 'enviado': return 'Enviado';
-      case 'entregado': return 'Entregado';
-      case 'cancelado': return 'Cancelado';
-      default: return status;
-    }
-  };
+  if (loading) return (
+    <div className="flex flex-center py-5 min-h-400">
+      <div className="loading-spinner"></div>
+    </div>
+  );
 
-  if (loading) {
-    return (
-      <div className="container">
-        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <h2>Cargando pedidos...</h2>
-          <p>Obteniendo tu historial de compras...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container">
-        <div style={{ textAlign: 'center', padding: '4rem 2rem' }}>
-          <h2 style={{ color: 'var(--error)' }}>Error</h2>
-          <p>{error}</p>
-          <Link to="/dashboard">
-            <button style={{
-              padding: '0.75rem 1.5rem',
-              backgroundColor: 'var(--primary-500)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              marginTop: '1rem'
-            }}>
-              Volver al Dashboard
-            </button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  if (error) return (
+    <div className="card bg-error-alpha p-5 text-center">
+      <FiInfo className="text-error mb-3" size={32} />
+      <p className="text-error mb-4">{error}</p>
+      <Link to="/dashboard" className="btn btn-outline btn-small">Volver al Dashboard</Link>
+    </div>
+  );
 
   return (
-    <div className="container">
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        marginBottom: '2rem'
-      }}>
+    <div className="animate-fadeIn">
+      <div className="flex justify-between align-center mb-5">
         <div>
-          <h1>📦 Mis Pedidos</h1>
-          <p style={{ color: 'var(--neutral-600)' }}>
-            Revisa el historial de tus compras en la tienda
-          </p>
+          <h1 className="h2 mb-0">Mis Pedidos</h1>
+          <p className="text-muted text-sm">Historial de tus compras en la tienda oficial.</p>
         </div>
-        <Link to="/dashboard" style={{ color: 'var(--primary-500)' }}>
-          ← Volver al Dashboard
+        <Link to="/dashboard" className="btn btn-outline btn-small flex align-center gap-1">
+          <FiChevronLeft /> Volver
         </Link>
       </div>
 
       {orders.length === 0 ? (
-        <div style={{ 
-          textAlign: 'center', 
-          padding: '4rem 2rem',
-          border: '2px dashed var(--neutral-200)',
-          borderRadius: '8px',
-          backgroundColor: 'var(--neutral-50)'
-        }}>
-          <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>📦</div>
-          <h3 style={{ color: 'var(--neutral-600)', marginBottom: '1rem' }}>
-            Aún no tienes pedidos
-          </h3>
-          <p style={{ color: 'var(--neutral-500)', marginBottom: '2rem' }}>
-            ¡Descubre productos increíbles en nuestra tienda y realiza tu primera compra!
-          </p>
-          <Link to="/store">
-            <button style={{
-              padding: '1rem 2rem',
-              backgroundColor: 'var(--primary-500)',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '1.1rem',
-              fontWeight: 'bold'
-            }}>
-              Explorar Tienda
-            </button>
-          </Link>
+        <div className="card p-5 text-center bg-card shadow-sm border-dashed">
+          <div className="text-primary opacity-20 mb-4"><FiShoppingBag size={64} /></div>
+          <h3 className="h4 mb-2">Aún no tienes pedidos</h3>
+          <p className="text-muted mb-4">¡Descubre productos increíbles en nuestra tienda!</p>
+          <Link to="/store" className="btn btn-primary">Explorar Tienda</Link>
         </div>
       ) : (
-        <div style={{ 
-          backgroundColor: 'white',
-          borderRadius: '8px',
-          border: '1px solid var(--neutral-200)',
-          overflow: 'hidden',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-        }}>
-          {/* Header de la tabla */}
-          <div style={{ 
-            padding: '1.5rem',
-            borderBottom: '1px solid var(--neutral-200)',
-            backgroundColor: 'var(--neutral-50)'
-          }}>
-            <h2 style={{ margin: 0, color: 'var(--neutral-800)' }}>
-              Historial de Pedidos
-            </h2>
-            <p style={{ margin: '0.5rem 0 0 0', color: 'var(--neutral-600)' }}>
-              Mostrando {orders.length} pedido{orders.length !== 1 ?
-'s' : ''} en total
-            </p>
-          </div>
-
-          {/* Tabla de pedidos */}
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ 
-              width: '100%', 
-              borderCollapse: 'collapse' 
-            }}>
+        <div className="card bg-card shadow-md border-none overflow-hidden">
+          <div className="table-container">
+            <table className="table w-100">
               <thead>
-                <tr style={{ 
-                  backgroundColor: 'var(--neutral-50)',
-                  borderBottom: '2px solid var(--neutral-200)'
-                }}>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Pedido
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'left', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Fecha
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Estado
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'right', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Total
-                  </th>
-                  <th style={{ 
-                    padding: '1rem', 
-                    textAlign: 'center', 
-                    fontWeight: '600',
-                    color: 'var(--neutral-700)',
-                    fontSize: '0.9rem',
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.5px'
-                  }}>
-                    Productos
-                  </th>
+                <tr>
+                  <th>Pedido</th>
+                  <th>Fecha</th>
+                  <th className="text-center">Estado</th>
+                  <th className="text-right">Total</th>
+                  <th className="text-center">Productos</th>
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order, index) => (
-                  <tr 
-                    key={order.id_pedido}
-                    style={{ 
-                      borderBottom: index < orders.length - 1 ?
-'1px solid var(--neutral-100)' : 'none',
-                      transition: 'background-color 0.2s ease'
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.style.backgroundColor = 'var(--neutral-50)';
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.style.backgroundColor = 'transparent';
-                    }}
-                  >
-                    <td style={{ padding: '1rem' }}>
-                      <div>
-                        <strong style={{ 
-                          color: 'var(--neutral-800)',
-                          display: 'block',
-                          marginBottom: '0.25rem'
-                        }}>
-                          #ORD-{order.id_pedido.toString().padStart(6, '0')}
-                        </strong>
-                        <small style={{ 
-                          color: 'var(--neutral-500)',
-                          fontSize: '0.8rem'
-                        }}>
-                          ID: {order.id_pedido}
-                        </small>
+                {orders.map((order) => (
+                  <tr key={order.id_pedido}>
+                    <td>
+                      <div className="flex flex-column">
+                        <span className="font-bold text-main">#ORD-{order.id_pedido.toString().padStart(6, '0')}</span>
+                        <span className="text-xs text-muted">ID: {order.id_pedido}</span>
                       </div>
                     </td>
-                    <td style={{ padding: '1rem' }}>
-                      <div style={{ color: 'var(--neutral-700)' }}>
-                        {formatDate(order.fecha_creacion)}
-                      </div>
-                      {order.fecha_actualizacion && (
-                        <small style={{ 
-                          color: 'var(--neutral-500)',
-                          fontSize: '0.8rem',
-                          display: 'block',
-                          marginTop: '0.25rem'
-                        }}>
-                          Actualizado: {formatDate(order.fecha_actualizacion)}
-                        </small>
-                      )}
+                    <td>
+                       <span className="text-sm text-main">{formatDate(order.fecha_creacion)}</span>
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <span style={{
-                        padding: '0.5rem 1rem',
-                        backgroundColor: getStatusColor(order.estado),
-                        color: 'white',
-                        borderRadius: '20px',
-                        fontSize: '0.8rem',
-                        fontWeight: 'bold',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
-                      }}>
-                        {getStatusText(order.estado)}
-                      </span>
+                    <td className="text-center">
+                      {getStatusBadge(order.estado)}
                     </td>
-                    <td style={{ 
-                      padding: '1rem', 
-                      textAlign: 'right',
-                      color: 'var(--neutral-800)',
-                      fontWeight: 'bold',
-                      fontSize: '1.1rem'
-                    }}>
-                      {formatCurrency(order.total)}
+                    <td className="text-right">
+                      <span className="font-bold text-main">{formatCurrency(order.total)}</span>
                     </td>
-                    <td style={{ padding: '1rem', textAlign: 'center' }}>
-                      <div>
-                        <span style={{
-                          padding: '0.4rem 0.8rem',
-                          backgroundColor: 'var(--primary-50)',
-                          color: 'var(--primary-700)',
-                          borderRadius: '20px',
-                          fontSize: '0.8rem',
-                          fontWeight: 'bold'
-                        }}>
-                          {order.items?.length ||
-0} producto{order.items?.length !== 1 ? 's' : ''}
-                        </span>
-                        {order.items && (
-                          <div style={{ marginTop: '0.5rem' }}>
-                            <details style={{ cursor: 'pointer' }}>
-                              <summary style={{ 
-                                fontSize: '0.8rem',
-                                color: 'var(--primary-500)',
-                                fontWeight: '500'
-                              }}>
-                                Ver productos
-                              </summary>
-                              <div style={{ 
-                                marginTop: '0.5rem',
-                                padding: '0.75rem',
-                                backgroundColor: 'var(--neutral-50)',
-                                borderRadius: '4px',
-                                textAlign: 'left'
-                              }}>
-                                {order.items.map((item, itemIndex) => (
-                                  <div key={itemIndex} style={{ 
-                                    display: 'flex', 
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    padding: '0.25rem 0',
-                                    borderBottom: itemIndex < order.items.length - 1 ?
-'1px solid var(--neutral-200)' : 'none'
-                                  }}>
-                                    <span style={{ fontSize: '0.8rem' }}>
-                                      {item.nombre_producto}
-                                    </span>
-                                    <span style={{ 
-                                      fontSize: '0.8rem',
-                                      fontWeight: '500',
-                                      color: 'var(--neutral-600)'
-                                    }}>
-                                      {item.cantidad} x {formatCurrency(item.precio_unitario)}
-                                    </span>
-                                  </div>
-                                ))}
-                              </div>
-                            </details>
-                          </div>
-                        )}
-                      </div>
+                    <td className="text-center">
+                      <details className="dropdown-details">
+                        <summary className="btn btn-text btn-small text-primary p-0">
+                          {order.items?.length || 0} items <FiExternalLink size={12} />
+                        </summary>
+                        <div className="dropdown-content p-3 shadow-lg rounded-md bg-card border border-color mt-2 text-left absolute right-0">
+                           {order.items?.map((item, idx) => (
+                             <div key={idx} className="flex justify-between gap-4 py-1 border-bottom border-color last-none">
+                               <span className="text-xs text-main">{item.nombre_producto}</span>
+                               <span className="text-xs text-muted">x{item.cantidad}</span>
+                             </div>
+                           ))}
+                        </div>
+                      </details>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-
-          {/* Footer de la tabla */}
-          <div style={{ 
-            padding: '1rem 1.5rem',
-            borderTop: '1px solid var(--neutral-200)',
-            backgroundColor: 'var(--neutral-50)',
-            textAlign: 'center'
-          }}>
-            <p style={{ 
-              margin: 0, 
-              color: 'var(--neutral-500)',
-              fontSize: '0.9rem'
-            }}>
-              Si tienes alguna pregunta sobre tus pedidos, contacta a nuestro servicio al cliente.
-            </p>
-          </div>
         </div>
       )}
 
-      {/* Información adicional */}
-      <div style={{ 
-        marginTop: '2rem',
-        padding: '1.5rem',
-        backgroundColor: 'var(--primary-50)',
-        borderRadius: '8px',
-        border: '1px solid var(--primary-200)'
-      }}>
-        <h4 style={{ marginBottom: '1rem', color: 'var(--primary-700)' }}>
-          📞 ¿Necesitas ayuda con tus pedidos?
-        </h4>
-        <div style={{ display: 'grid', gap: '0.75rem' }}>
-          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
-            <strong>Tiempo de entrega:</strong> 2-5 días hábiles para pedidos estándar.
-          </p>
-          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
-            <strong>Seguimiento:</strong> Recibirás un email con el número de seguimiento cuando tu pedido sea enviado.
-          </p>
-          <p style={{ margin: 0, color: 'var(--primary-800)', fontSize: '0.95rem' }}>
-            <strong>Devoluciones:</strong> Aceptamos devoluciones dentro de los 30 días posteriores a la entrega.
-          </p>
-        </div>
+      <div className="card bg-primary-alpha p-4 mt-5 border-none flex align-start gap-3">
+         <FiHelpCircle className="text-primary" size={24} />
+         <div>
+            <h4 className="h5 mb-2 text-primary">¿Necesitas ayuda?</h4>
+            <div className="grid grid-3 gap-3">
+               <div className="text-xs text-muted"><strong className="text-main">Envío:</strong> 2-5 días hábiles.</div>
+               <div className="text-xs text-muted"><strong className="text-main">Seguimiento:</strong> Vía email.</div>
+               <div className="text-xs text-muted"><strong className="text-main">Devoluciones:</strong> Hasta 30 días.</div>
+            </div>
+         </div>
       </div>
     </div>
   );

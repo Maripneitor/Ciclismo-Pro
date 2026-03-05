@@ -1,7 +1,7 @@
 import { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
-import Spinner from '../components/Spinner';
+import Spinner from '../components/ui/Spinner';
 import './LoginPage.css';
 
 function LoginPage() {

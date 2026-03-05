@@ -2,8 +2,8 @@ import { useState, useEffect, useContext } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import Tabs from '../components/Tabs';
-import EventMap from '../components/EventMap';
+import Tabs from '../components/ui/Tabs';
+import EventMap from '../components/ui/EventMap';
 import './EventDetailPage.css';
 
 function EventDetailPage() {
@@ -78,207 +78,165 @@ function EventDetailPage() {
   }
 
   return (
-    <div className="event-detail-page">
-      <section className="event-hero">
-        <div className="hero-content">
-          <h1 className="event-title">{event.nombre}</h1>
-          
-          <div className="event-meta">
-            <div className="meta-item">
-              📅 {formatDate(event.fecha_inicio)}
-            </div>
-            <div className="meta-item">
-              📍 {event.ubicacion}
-            </div>
-            <div className="meta-item">
-              🏁 {event.distancia_km} km
-            </div>
-            <div className="meta-item">
-              ⚡ {event.dificultad}
-            </div>
+    <div className="event-detail-page bg-light">
+      {/* ========== EVENT HERO ========== */}
+      <section className="event-hero-premium relative overflow-hidden bg-dark text-white py-5">
+        <div className="container relative z-10 py-5">
+          <div className="flex flex-column gap-2 mb-4 animate-fadeIn">
+            <span className="badge bg-primary-alpha text-primary self-start px-4">{event.estado}</span>
+            <h1 className="display-1 text-white mb-0">{event.nombre}</h1>
+            <p className="h4 text-gray-400 font-normal">
+              📍 {event.ubicacion} • 📅 {new Date(event.fecha_inicio).toLocaleDateString()}
+            </p>
           </div>
 
-          <div className="hero-actions">
-            {isAuthenticated ? (
-              <Link to={`/eventos/${id}/register`} className="btn btn-primary registration-button">
-                🚀 Inscribirme Ahora
-              </Link>
-            ) : (
-              <Link to="/login" className="btn btn-secondary registration-button">
-                🔐 Iniciar Sesión para Inscribirme
-              </Link>
-            )}
-            <Link to="/eventos" className="btn btn-outline" style={{ 
-              backgroundColor: 'transparent', 
-              borderColor: 'var(--color-white)', 
-              color: 'var(--color-white)' 
-            }}>
-              ← Volver a Eventos
-            </Link>
+          <div className="flex flex-wrap gap-4 mt-5 animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+            <div className="flex align-center gap-2 bg-white-alpha-10 p-3 rounded-md border-white-alpha-10 backdrop-blur">
+              <span className="text-2xl">🏁</span>
+              <div className="flex flex-column">
+                <span className="caption text-gray-400 uppercase font-bold text-xs">Distancia</span>
+                <span className="font-bold">{event.distancia_km} km</span>
+              </div>
+            </div>
+            <div className="flex align-center gap-2 bg-white-alpha-10 p-3 rounded-md border-white-alpha-10 backdrop-blur">
+              <span className="text-2xl">⚡</span>
+              <div className="flex flex-column">
+                <span className="caption text-gray-400 uppercase font-bold text-xs">Dificultad</span>
+                <span className="font-bold">{event.dificultad}</span>
+              </div>
+            </div>
+            <div className="flex align-center gap-2 bg-white-alpha-10 p-3 rounded-md border-white-alpha-10 backdrop-blur">
+              <span className="text-2xl">👥</span>
+              <div className="flex flex-column">
+                <span className="caption text-gray-400 uppercase font-bold text-xs">Cupos</span>
+                <span className="font-bold">{event.maximo_participantes}</span>
+              </div>
+            </div>
           </div>
         </div>
+        <div className="hero-overlay-gradient"></div>
       </section>
 
-      <div className={`sticky-bar ${isStickyBarVisible ? 'visible' : ''}`}>
-        <div className="sticky-content">
-          <h3>{event.nombre}</h3>
+      {/* ========== STICKY NAV/CTA ========== */}
+      <div className={`sticky-cta-bar ${isStickyBarVisible ? 'is-visible' : ''} bg-white shadow-lg border-bottom`}>
+        <div className="container flex justify-between align-center py-2">
+          <div className="flex align-center gap-3">
+            <h4 className="mb-0 font-bold hidden-mobile">{event.nombre}</h4>
+            <span className="price-label text-primary">{formatCurrency(event.cuota_inscripcion)}</span>
+          </div>
           {isAuthenticated ? (
-            <Link to={`/eventos/${id}/register`} className="btn btn-primary">
-              🚀 Inscribirme Ahora
-            </Link>
+            <Link to={`/eventos/${id}/register`} className="btn btn-primary px-5">Inscribirme</Link>
           ) : (
-            <Link to="/login" className="btn btn-primary">
-              🔐 Iniciar Sesión
-            </Link>
+            <Link to="/login" className="btn btn-primary">Iniciar Sesión</Link>
           )}
         </div>
       </div>
 
-      <div className="event-content">
-        <div className="main-column">
-          <Tabs>
-            <div label="Descripción">
-              <section className="content-section">
-                <h2 className="section-title">Sobre este Evento</h2>
-                <div className="event-description">
-                  {event.descripcion || (
-                    <p>
-                      Un emocionante evento de ciclismo que reúne a apasionados de las dos ruedas 
-                      para disfrutar de una ruta espectacular. Perfecto para ciclistas de todos 
-                      los niveles que buscan desafiar sus límites y disfrutar del paisaje.
-                    </p>
-                  )}
-                </div>
-              </section>
-
-              <section className="content-section">
-                <h2 className="section-title">Detalles de la Ruta</h2>
-                <div className="details-grid">
-                  <div className="detail-card">
-                    <span className="detail-icon">📏</span>
-                    <span className="detail-value">{event.distancia_km} km</span>
-                    <span className="detail-label">Distancia Total</span>
+      <div className="container py-5">
+        <div className="grid grid-dashboard gap-5">
+          {/* Main Content */}
+          <div className="flex flex-column gap-5">
+            <div className="card shadow-sm p-0 overflow-hidden">
+              <Tabs variant="premium">
+                <div label="Descripción" className="p-5">
+                  <h2 className="h3 mb-4">Sobre esta carrera</h2>
+                  <div className="text-gray-600 line-height-relaxed mb-5">
+                    {event.descripcion || (
+                      <p>
+                        Prepárate para una experiencia inigualable. Esta ruta ha sido diseñada 
+                        para desafiar hasta a los ciclistas más experimentados, ofreciendo 
+                        vistas espectaculares y un entorno competitivo pero amigable.
+                      </p>
+                    )}
                   </div>
                   
-                  <div className="detail-card">
-                    <span className="detail-icon">⛰️</span>
-                    <span className="detail-value">{event.elevacion_total || 'N/A'}</span>
-                    <span className="detail-label">Elevación (m)</span>
-                  </div>
-                  
-                  <div className="detail-card">
-                    <span className="detail-icon">⚡</span>
-                    <span className="detail-value">{event.dificultad}</span>
-                    <span className="detail-label">Dificultad</span>
-                  </div>
-                  
-                  <div className="detail-card">
-                    <span className="detail-icon">👥</span>
-                    <span className="detail-value">{event.maximo_participantes}</span>
-                    <span className="detail-label">Cupos Totales</span>
+                  <h3 className="h4 mb-4">Información de la Ruta</h3>
+                  <div className="grid grid-2 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-md">
+                      <span className="font-bold block mb-1">🏁 Inicio:</span>
+                      <span className="text-gray-600">{formatDate(event.fecha_inicio)}</span>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-md">
+                      <span className="font-bold block mb-1">📍 Punto de Encuentro:</span>
+                      <span className="text-gray-600">{event.ubicacion}</span>
+                    </div>
                   </div>
                 </div>
-              </section>
 
-              <section className="content-section">
-                <h2 className="section-title">Información Importante</h2>
-                <div className="info-list">
-                  <div className="info-item">
-                    <span className="info-label">Tipo de Evento</span>
-                    <span className="info-value">{event.tipo || 'Competitivo'}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Estado</span>
-                    <span className="info-value" style={{ 
-                      color: event.estado === 'proximo' ? 'var(--color-success)' : 'var(--color-gray-medium)',
-                      fontWeight: '600'
-                    }}>
-                      {event.estado}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Fecha de Inicio</span>
-                    <span className="info-value">{formatDate(event.fecha_inicio)}</span>
-                  </div>
-                  <div className="info-item">
-                    <span className="info-label">Fecha de Fin</span>
-                    <span className="info-value">
-                      {event.fecha_fin ? formatDate(event.fecha_fin) : 'No especificada'}
-                    </span>
-                  </div>
+                <div label="Mapa y Ruta" className="p-0">
+                  <EventMap position={mapPosition} />
                 </div>
-              </section>
-            </div>
 
-            <div label="La Ruta">
-              <section className="content-section">
-                <h2 className="section-title">Mapa de la Ruta</h2>
-                <EventMap position={mapPosition} />
-              </section>
-            </div>
-
-            <div label="Categorías">
-              <section className="content-section">
-                <h2 className="section-title">Categorías del Evento</h2>
-                <div>Categorías del evento próximamente.</div>
-              </section>
-            </div>
-          </Tabs>
-        </div>
-
-        <div className="sidebar">
-          <div className="sidebar-card registration-card">
-            <div className="registration-price">
-              {formatCurrency(event.cuota_inscripcion)}
-            </div>
-            <p className="registration-label">Cuota de Inscripción</p>
-            
-            {isAuthenticated ? (
-              <Link to={`/eventos/${id}/register`} className="btn btn-secondary registration-button">
-                🚀 Inscribirme Ahora
-              </Link>
-            ) : (
-              <Link to="/login" className="btn btn-secondary registration-button">
-                🔐 Iniciar Sesión
-              </Link>
-            )}
-            
-            <p className="registration-note">
-              Incluye: Dorsal, playera oficial, seguro y kit de participante
-            </p>
-          </div>
-
-          <div className="sidebar-card">
-            <h3 style={{ marginBottom: '1rem', color: 'var(--color-secondary)' }}>📋 Información Rápida</h3>
-            <div className="info-list">
-              <div className="info-item">
-                <span className="info-label">Ubicación</span>
-                <span className="info-value">{event.ubicacion}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Distancia</span>
-                <span className="info-value">{event.distancia_km} km</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Dificultad</span>
-                <span className="info-value">{event.dificultad}</span>
-              </div>
-              <div className="info-item">
-                <span className="info-label">Cupos</span>
-                <span className="info-value">{event.maximo_participantes}</span>
-              </div>
+                <div label="Categorías" className="p-5">
+                   <h2 className="h3 mb-4">Categorías Disponibles</h2>
+                   <p className="text-gray-500 mb-4">Selecciona tu categoría al momento de inscribirte.</p>
+                   {/* Aquí se podrían mapear categorías reales si existieran en el estado */}
+                   <div className="flex flex-column gap-3">
+                     <div className="flex justify-between align-center p-3 border rounded-md">
+                       <span className="font-bold">Elite Masculino/Femenino</span>
+                       <span className="badge bg-dark text-white text-xs">Avanzado</span>
+                     </div>
+                     <div className="flex justify-between align-center p-3 border rounded-md">
+                       <span className="font-bold">Master A/B/C</span>
+                       <span className="badge bg-gray-200 text-gray-700 text-xs">Intermedio</span>
+                     </div>
+                   </div>
+                </div>
+              </Tabs>
             </div>
           </div>
 
-          <div className="sidebar-card">
-            <h3 style={{ marginBottom: '1rem', color: 'var(--color-secondary)' }}>🎯 Organizador</h3>
-            <div className="organizer-info">
-              <div className="organizer-avatar">
-                🚴
+          {/* Sidebar */}
+          <div className="flex flex-column gap-4">
+            <div className="card shadow-xl border-primary-alpha-20 bg-white p-5 sticky-top-offset">
+              <div className="flex flex-column align-center text-center gap-3">
+                <span className="caption uppercase font-bold text-gray-400">Total Inscripción</span>
+                <span className="display-2 font-black text-secondary leading-none">
+                  {formatCurrency(event.cuota_inscripcion)}
+                </span>
+                <p className="text-sm text-gray-500 mb-4">
+                  Incluye kit de competidor, seguro médico y medalla de finalista.
+                </p>
+                {isAuthenticated ? (
+                  <Link to={`/eventos/${id}/register`} className="btn btn-primary w-full py-3">
+                    Inscribirme Ahora
+                  </Link>
+                ) : (
+                  <Link to="/login" className="btn btn-secondary w-full py-3">
+                    Iniciar Sesión
+                  </Link>
+                )}
               </div>
-              <div className="organizer-details">
-                <h4>Ciclismo Pro Team</h4>
-                <p>Organizador oficial</p>
+            </div>
+
+            <div className="card shadow-sm p-4">
+              <h4 className="h5 mb-3">Detalles Técnicos</h4>
+              <ul className="list-none flex flex-column gap-3 p-0 m-0">
+                <li className="flex justify-between text-sm py-2 border-bottom">
+                  <span className="text-gray-500">Elevación:</span>
+                  <span className="font-bold">{event.elevacion_total || '450m'}</span>
+                </li>
+                <li className="flex justify-between text-sm py-2 border-bottom">
+                  <span className="text-gray-500">Superficie:</span>
+                  <span className="font-bold">Asfalto / Mixto</span>
+                </li>
+                <li className="flex justify-between text-sm py-2 border-bottom">
+                  <span className="text-gray-500">Hidratación:</span>
+                  <span className="font-bold">3 Puntos</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="card shadow-sm p-4 bg-dark text-white">
+              <h4 className="h5 mb-3 text-white">Organiza</h4>
+              <div className="flex align-center gap-3">
+                <div className="stat-icon-small bg-primary rounded-full p-2 flex flex-center">
+                  🚲
+                </div>
+                <div className="flex flex-column">
+                  <span className="font-bold">Ciclismo-Pro Team</span>
+                  <span className="text-xs text-gray-400">Verificado</span>
+                </div>
               </div>
             </div>
           </div>

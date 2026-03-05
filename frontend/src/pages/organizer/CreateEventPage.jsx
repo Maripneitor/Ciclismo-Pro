@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import apiClient from '../../services/api';
-import Spinner from '../../components/Spinner';
+import Spinner from '../../components/ui/Spinner';
 
 function CreateEventPage() {
   const navigate = useNavigate();
